@@ -1,0 +1,1 @@
+@livewire('left-main-action')

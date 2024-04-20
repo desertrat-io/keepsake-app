@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.keepsake__action-green-btn {
+    @apply bg-[#489185] rounded pt-1 pb-1 pl-6 pr-6 hover:bg-[#99B99D]
+}
+
+.keepsake__cancel-gray-btn {
+    @apply bg-[#728196] rounded pt-1 pb-1 pl-6 pr-6 hover:bg-[#9CACC3]
+}
+
+.keepsake__cancel-red-btn {
+    @apply bg-red-400 rounded pt-1 pb-1 pl-6 pr-6 hover:bg-red-300
+}
+
+.keepsake__form-text-std {
+    @apply p-4 border-b-2 border-b-[#489185] w-full bg-[#C3B3A9]
+}
+
+.keepsake__form-text-error {
+    @apply p-4 text-red-600
+}
+
+.keepsake__bg-brown {
+    @apply bg-[#6D3511]
+}
+
+.keepsake__layout-bg {
+    @apply bg-[#FAF1E7]
+}

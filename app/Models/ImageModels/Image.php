@@ -1,0 +1,108 @@
+<?php
+
+/*
+ * Copyright (c) 2023
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this
+ * software and associated documentation files (the "Software"), to deal in the Software
+ * without restriction, including without limitation the rights to use, copy, modify, merge,
+ *  publish, distribute, sublicense, and/or sell copies of the Software, and to permit
+ *  persons to whom the Software is furnished to do so, subject to the following
+ *  conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies
+ * or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPIRES
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NON INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+declare(strict_types=1);
+
+namespace App\Models\ImageModels;
+
+use App\Casts\Accounts\UserDataCast;
+use App\Casts\Images\ImageMetaDataCast;
+use App\Models\AccountModels\User;
+use App\Models\BoolDeleteColumn;
+use App\Models\GenerateUUID;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
+
+/**
+ * App\Models\ImageModels\ImageFacade
+ *
+ * @property int $id
+ * @property string $uuid
+ * @property string $storage_id
+ * @property string $storage_path
+ * @property int $uploaded_by
+ * @property bool $is_locked
+ * @property bool $is_dirty
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property Carbon|null $deleted_at
+ * @property-read ImageMeta|null $meta
+ * @method static Builder|Image newModelQuery()
+ * @method static Builder|Image newQuery()
+ * @method static Builder|Image onlyTrashed()
+ * @method static Builder|Image query()
+ * @method static Builder|Image whereCreatedAt($value)
+ * @method static Builder|Image whereDeletedAt($value)
+ * @method static Builder|Image whereId($value)
+ * @method static Builder|Image whereIsDirty($value)
+ * @method static Builder|Image whereIsLocked($value)
+ * @method static Builder|Image whereStorageId($value)
+ * @method static Builder|Image whereStoragePath($value)
+ * @method static Builder|Image whereUpdatedAt($value)
+ * @method static Builder|Image whereUploadedBy($value)
+ * @method static Builder|Image whereUuid($value)
+ * @method static Builder|Image withTrashed()
+ * @method static Builder|Image withoutTrashed()
+ * @property-read User|null $uploadedBy
+ * @property-read mixed $is_deleted
+ * @mixin Eloquent
+ */
+class Image extends Model
+{
+    use SoftDeletes;
+    use BoolDeleteColumn;
+    use GenerateUUID;
+
+
+    protected $fillable = [
+        'uuid',
+        'storage_id',
+        'storage_path',
+        'uploaded_by',
+        'is_locked',
+        'is_dirty'
+    ];
+
+    public function meta(): HasOne
+    {
+        return $this->hasOne(ImageMeta::class);
+    }
+
+    public function uploadedBy(): BelongsTo
+    {
+        return $this->belongsTo(related: User::class, foreignKey: 'uploaded_by');
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'uploadedBy' => UserDataCast::class,
+            'meta' => ImageMetaDataCast::class
+            ];
+    }
+}
