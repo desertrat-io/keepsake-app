@@ -37,8 +37,8 @@ jobs:
         env:
           PGPASSWORD: ${{ secrets.KEEPSAKE_TEST_DB_PASS }}
         run: |
-          psql -h localhost -U postgres -c 'DROP DATABASE IF EXISTS keepsake_test;' && \
-          psql -h localhost -U postgres -c 'CREATE DATABASE keepsake_test;'
+          PGPASSWORD=$PGPASSWORD psql -h localhost -U postgres -c 'DROP DATABASE IF EXISTS keepsake_test;' && \
+          PGPASSWORD=$PGPASSWORD psql -h localhost -U postgres -c 'CREATE DATABASE keepsake_test;'
 
       - name: Prep test database
         env:
