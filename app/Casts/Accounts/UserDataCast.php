@@ -18,6 +18,7 @@ class UserDataCast implements CastsAttributes
      */
     public function get(Model $model, string $key, mixed $value, array $attributes): UserData
     {
+        dd($attributes);
         return new UserData(
             id: $attributes['id'],
             uuid: $attributes['uuid'],
@@ -30,7 +31,7 @@ class UserDataCast implements CastsAttributes
             deletedAt: $attributes['deleted_at'],
             isDeleted: $model->is_deleted,
             rememberToken: $attributes['remember_token'],
-            images: $model->images()
+            images: $attributes['images']
         );
     }
 

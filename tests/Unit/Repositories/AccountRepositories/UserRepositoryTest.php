@@ -22,10 +22,7 @@ class UserRepositoryTest extends TestCase
     public function canCreateUser(): void
     {
         $userRepository = resolve(UserRepositoryContract::class);
-        $userData = new UserData(
-            name: fake()->name,
-            email: fake()->email
-        );
+        $userData = UserData::from(['name' => fake()->name, 'email' => fake()->email]);
         $newUser = $userRepository->createNewUser(
             userData: $userData,
             password: Hash::make(fake()->shuffleString)
@@ -34,5 +31,7 @@ class UserRepositoryTest extends TestCase
             'users',
             ['name' => $newUser->name, 'email' => $newUser->email]
         );
+        $this->assertEquals($newUser->name, $userData->name);
+        $this->assertEquals($newUser->email, $userData->email);
     }
 }

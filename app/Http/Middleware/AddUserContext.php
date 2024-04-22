@@ -19,18 +19,11 @@ class AddUserContext
     public function handle(Request $request, Closure $next): Response
     {
         $userViaEloquent = Auth::user()->load('account');
-        Context::add('user_data', new UserData(
-            id: $userViaEloquent->id,
-            uuid: $userViaEloquent->uuid,
-            account: $userViaEloquent->account,
-            name: $userViaEloquent->name,
-            email: $userViaEloquent->email,
-            emailVerifiedAt: $userViaEloquent->email_verified_at,
-            createdAt: $userViaEloquent->created_at,
-            updatedAt: $userViaEloquent->updated_at,
-            deletedAt: $userViaEloquent->deleted_at,
-            isDeleted: $userViaEloquent->is_deleted
-        ));
+        Context::add(
+            'user_data',
+            UserData::from($userViaEloquent)
+
+        );
         return $next($request);
     }
 }

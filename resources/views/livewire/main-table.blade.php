@@ -7,7 +7,6 @@
         <tbody>
 
         @foreach($images as $image)
-
             <tr>
                 <td><img src="{{ Storage::disk('s3')->url($image->storage_id) }}"/></td>
                 <td>{{ $image->meta->current_image_name }}</td>

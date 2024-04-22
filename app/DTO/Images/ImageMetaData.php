@@ -25,54 +25,35 @@ declare(strict_types=1);
 
 namespace App\DTO\Images;
 
-use App\DTO\DefaultIds;
-use App\DTO\DefaultTimestamps;
 use Carbon\Carbon;
+use Livewire\Wireable;
+use Spatie\LaravelData\Attributes\MapName;
+use Spatie\LaravelData\Concerns\WireableData;
+use Spatie\LaravelData\Data;
+use Spatie\LaravelData\Mappers\SnakeCaseMapper;
+use Spatie\LaravelData\Optional;
 
-class ImageMetaData
+#[MapName(SnakeCaseMapper::class)]
+class ImageMetaData extends Data implements Wireable
 {
-    use DefaultTimestamps;
-    use DefaultIds;
 
-    public readonly int $imageId;
-    public readonly string $originalImageName;
-    public readonly string $currentImageName;
-    public readonly string $originalImageMime;
-    public readonly int $originalFilesize;
-    public readonly int $currentFileSize;
-    public readonly string $originalFileExt;
-    public readonly bool $isDeleted;
-    public readonly ?ImageData $image;
-
+    use WireableData;
 
     public function __construct(
-        int $id,
-        int $imageId,
-        string $originalImageName,
-        string $currentImageName,
-        string $originalImageMime,
-        int $originalFilesize,
-        int $currentFileSize,
-        string $originalFileExt,
-        ?Carbon $createdAt,
-        ?Carbon $updatedAt,
-        ?Carbon $deletedAt,
-        bool $isDeleted,
-        ?ImageData $image
+        public ?int $id,
+        public ?int $imageId,
+        public ?string $originalImageName,
+        public ?string $currentImageName,
+        public ?string $originalImageMime,
+        public ?int $originalFilesize,
+        public ?int $currentFileSize,
+        public ?string $originalFileExt,
+        public ?Carbon $createdAt,
+        public ?Carbon $updatedAt,
+        public ?Carbon $deletedAt,
+        public ?bool $isDeleted,
+        public ImageData|Optional|null $image
     ) {
-        $this->imageId = $imageId;
-        $this->originalImageName = $originalImageName;
-        $this->currentImageName = $currentImageName;
-        $this->originalImageMime = $originalImageMime;
-        $this->originalFilesize = $originalFilesize;
-        $this->currentFileSize = $currentFileSize;
-        $this->originalFileExt = $originalFileExt;
-        $this->image = $image;
-        $this->isDeleted = $isDeleted;
-        $this->id = $id;
-        $this->createdAt = $createdAt;
-        $this->updatedAt = $updatedAt;
-        $this->deletedAt = $deletedAt;
     }
 
 

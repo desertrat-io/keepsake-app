@@ -23,13 +23,14 @@
 
 namespace App\Services\ServiceContracts;
 
+use App\DTO\Images\ImageData;
 use Illuminate\Contracts\Pagination\CursorPaginator;
 use Illuminate\Pagination\Cursor;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 interface ImageServiceContract
 {
-    public function saveImage(TemporaryUploadedFile $temporaryUploadedFile): void;
+    public function saveImage(TemporaryUploadedFile $temporaryUploadedFile): ImageData;
 
     public function getImages(
         int $total = 100,

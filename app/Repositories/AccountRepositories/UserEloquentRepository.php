@@ -54,18 +54,10 @@ class UserEloquentRepository implements KeepsakeRepository, UserRepositoryContra
 
     private function generateUserAsData(User $user, $includeAccount = false): UserData
     {
-        return new UserData(
-            id: $user->id,
-            uuid: $user->uuid,
-            account: $includeAccount ? $user->account : null,
-            name: $user->name,
-            email: $user->email,
-            emailVerifiedAt: $user->email_verified_at,
-            createdAt: $user->created_at,
-            updatedAt: $user->updated_at,
-            deletedAt: $user->deleted_at,
-            isDeleted: $user->is_deleted
-        );
+        if ($includeAccount) {
+            return UserData::from($user->load('account'));
+        }
+        return UserData::from($user);
     }
 
     public function getUserById(int $userId, bool $includeAccount = false, bool $asData = false): User|UserData

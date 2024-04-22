@@ -75,6 +75,15 @@ class ImageMeta extends Model
 
     protected $table = 'image_meta';
 
+    protected $fillable = [
+        'image_id',
+        'original_image_name',
+        'original_image_mime',
+        'current_image_name',
+        'original_filesize',
+        'original_file_ext',
+        'current_filesize'
+    ];
 
     public function image(): BelongsTo
     {

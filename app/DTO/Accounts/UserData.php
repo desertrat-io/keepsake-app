@@ -25,112 +25,30 @@ declare(strict_types=1);
 
 namespace App\DTO\Accounts;
 
-use App\DTO\DefaultIds;
-use App\DTO\DefaultTimestamps;
-use App\DTO\Images\ImageData;
 use Carbon\Carbon;
-use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Support\Collection;
-use JsonSerializable;
-use Override;
-use Ramsey\Uuid\Uuid;
+use Livewire\Wireable;
+use Spatie\LaravelData\Attributes\MapName;
+use Spatie\LaravelData\Concerns\WireableData;
+use Spatie\LaravelData\Data;
+use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
-class UserData implements JsonSerializable, Arrayable
+#[MapName(SnakeCaseMapper::class)]
+class UserData extends Data implements Wireable
 {
-    use DefaultTimestamps;
-    use DefaultIds;
+    use WireableData;
 
-
-    public readonly ?string $name;
-    public readonly ?string $email;
-    public readonly ?Carbon $emailVerifiedAt;
-    public readonly ?string $rememberToken;
-    public readonly ?bool $isDeleted;
-    public readonly ?AccountData $account;
-
-    /**
-     * @var Collection<ImageData>|null
-     */
-    public readonly ?Collection $images;
-
-
-    /**
-     * @param int|null $id
-     * @param string|null $uuid
-     * @param AccountData|null $account
-     * @param string|null $name
-     * @param string|null $email
-     * @param Carbon|null $emailVerifiedAt
-     * @param Carbon|null $createdAt
-     * @param Carbon|null $updatedAt
-     * @param Carbon|null $deletedAt
-     * @param bool|null $isDeleted
-     * @param string|null $rememberToken
-     * @param Collection|null $images
-     */
     public function __construct(
-        ?int $id = null,
-        ?Uuid $uuid = null,
-        ?AccountData $account = null,
-        ?string $name = null,
-        ?string $email = null,
-        ?Carbon $emailVerifiedAt = null,
-        ?Carbon $createdAt = null,
-        ?Carbon $updatedAt = null,
-        ?Carbon $deletedAt = null,
-        ?bool $isDeleted = false,
-        ?string $rememberToken = null,
-        ?Collection $images = null
+        public ?int $id,
+        public ?string $uuid,
+        public ?string $name,
+        public ?string $email,
+        public ?Carbon $emailVerifiedAt,
+        public ?string $rememberToken,
+        public ?Carbon $createdAt,
+        public ?Carbon $updatedAt,
+        public ?Carbon $deletedAt,
+        public ?bool $isDeleted
+
     ) {
-        $this->name = $name;
-        $this->account = $account;
-        $this->images = $images;
-        $this->email = $email;
-        $this->emailVerifiedAt = $emailVerifiedAt;
-        $this->rememberToken = $rememberToken;
-        $this->id = $id;
-        $this->uuid = $uuid;
-        $this->createdAt = $createdAt;
-        $this->updatedAt = $updatedAt;
-        $this->deletedAt = $deletedAt;
-        $this->isDeleted = $isDeleted;
-    }
-
-
-    #[Override] public function jsonSerialize(): mixed
-    {
-        // TODO: Implement jsonSerialize() method.
-        return json_encode([
-            'name' => $this->name,
-            'account' => $this->account,
-            'images' => $this->images,
-            'email' => $this->email,
-            'email_verified_at' => $this->emailVerifiedAt,
-            'remember_token' => $this->rememberToken,
-            'id' => $this->id,
-            'uuid' => $this->uuid,
-            'created_at' => $this->createdAt,
-            'updated_at' => $this->updatedAt,
-            'deleted_at' => $this->deletedAt,
-            'is_deleted' => $this->isDeleted
-        ]);
-    }
-
-    #[Override] public function toArray()
-    {
-        return [
-            'name' => $this->name,
-            'account' => $this->account,
-            'images' => $this->images,
-            'email' => $this->email,
-            'email_verified_at' => $this->emailVerifiedAt,
-            'remember_token' => $this->rememberToken,
-            'id' => $this->id,
-            'uuid' => $this->uuid,
-            'created_at' => $this->createdAt,
-            'updated_at' => $this->updatedAt,
-            'deleted_at' => $this->deletedAt,
-            'is_deleted' => $this->isDeleted
-        ];
     }
 }
