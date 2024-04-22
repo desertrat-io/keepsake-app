@@ -10,8 +10,7 @@ jobs:
       postgres:
         image: postgres:14
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: ${{ secrets.KEEPSAKE_TEST_DB_USER}}
           POSTGRES_DB: keepsake_test
         ports:
           - 5432:5432
@@ -35,10 +34,10 @@ jobs:
 
       - name: Create keepsake_test db
         env:
-          PGPASSWORD: ${{ secrets.KEEPSAKE_TEST_DB_PASS }}
+          PG_USER: ${{ secrets.KEEPSAKE_TEST_DB_USER }}
         run: |
-          PGPASSWORD=$PGPASSWORD psql -h localhost -U postgres -c 'DROP DATABASE IF EXISTS keepsake_test;' && \
-          PGPASSWORD=$PGPASSWORD psql -h localhost -U postgres -c 'CREATE DATABASE keepsake_test;'
+          psql -h localhost -U $PG_USER -c 'DROP DATABASE IF EXISTS keepsake_test;' && \
+           psql -h localhost -U $PG_USER -c 'CREATE DATABASE keepsake_test;'
 
       - name: Prep test database
         env:
@@ -46,7 +45,6 @@ jobs:
           DB_PORT: 5432
           DB_DATABASE: keepsake_test
           DB_USERNAME: ${{ secrets.KEEPSAKE_TEST_DB_USER }}
-          DB_PASSWORD: ${{ secrets.KEEPSAKE_TEST_DB_PASS }}
         run: php artisan migrate --env=testing
 
       - name: Run test and generate coverage
@@ -55,7 +53,6 @@ jobs:
           DB_PORT: 5432
           DB_DATABASE: keepsake_test
           DB_USERNAME: ${{ secrets.KEEPSAKE_TEST_DB_USER  }}
-          DB_PASSWORD: ${{ secrets.KEEPSAKE_TEST_DB_PASS }}
         run: php artisan test --env=testing --coverage-clover=coverage.xml
 
       - name: Codecov
