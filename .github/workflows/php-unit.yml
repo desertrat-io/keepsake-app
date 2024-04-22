@@ -34,11 +34,11 @@ jobs:
 
       - name: Create keepsake_test db
         env:
-          POSTGRES_HOST_AUTH_METHOD: 'trust'
+          POSTGRES_HOST_AUTH_METHOD: trust
           POSTGRES_USER: ${{ secrets.KEEPSAKE_TEST_DB_USER }}
         run: |
-          psql -h localhost -U $PG_USER -c 'DROP DATABASE IF EXISTS keepsake_test;' && \
-          psql -h localhost -U $PG_USER -c 'CREATE DATABASE keepsake_test;'
+          psql -h localhost -U $POSTGRES_USER -c 'DROP DATABASE IF EXISTS keepsake_test;' && \
+          psql -h localhost -U $POSTGRES_USER -c 'CREATE DATABASE keepsake_test;'
 
       - name: Prep test database
         env:
