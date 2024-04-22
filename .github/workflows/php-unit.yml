@@ -11,7 +11,7 @@ jobs:
         image: postgres:14
         env:
           POSTGRES_USER: ${{ secrets.KEEPSAKE_TEST_DB_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.KEEPSAKE_TEST_DB_PASS }}
+          POSTGRES_PASSWORD: fewfoewifjoi
           POSTGRES_DB: keepsake_test
         ports:
           - 5432:5432
