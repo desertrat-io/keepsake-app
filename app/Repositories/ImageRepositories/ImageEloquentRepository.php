@@ -48,9 +48,9 @@ class ImageEloquentRepository implements ImageRepositoryContract, KeepsakeReposi
             'is_locked' => false,
             'is_dirty' => true,
             'uploaded_by' => $imageData->uploadedBy->id
-        ]);
+        ])->load('uploadedBy');
 
-        return ImageData::from($image->load('uploadedBy'));
+        return ImageData::from($image);
     }
 
     #[Override] public function getImagePaths(array|int $ids): Collection|string

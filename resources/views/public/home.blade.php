@@ -10,18 +10,18 @@
             <div class="absolute bg-[#C3B3A9] p-[30px]">
                 <form action="{{ route('login') }}" method="post">
                     @csrf
-                    <label for="esd__email-login" id="esd__email-login-label">Email:</label>
-                    <input class="esd__form-text-std bg-[#EFDFD5]" name="email" type="email" id="esd__email-login"
-                           aria-labelledby="esd__email-login-label">
+                    <label for="keepsake__email-login" id="keepsake__email-login-label">Email:</label>
+                    <input class="keepsake__form-text-std bg-[#EFDFD5]" name="email" type="email" id="keepsake__email-login"
+                           aria-labelledby="keepsake__email-login-label">
                     <br>
-                    <label for="esd__password-login" id="esd__password-label">Password:</label>
-                    <input class="esd__form-text-std bg-[#EFDFD5]" name="password" type="password"
-                           id="esd__password-login"
-                           aria-labelledby="esd__password-label">
+                    <label for="keepsake__password-login" id="keepsake__password-label">Password:</label>
+                    <input class="keepsake__form-text-std bg-[#EFDFD5]" name="password" type="password"
+                           id="keepsake__password-login"
+                           aria-labelledby="keepsake__password-label">
                     <br>
                     <div class="mt-5 flex justify-between">
-                        <button type="reset" class="esd__cancel-gray-btn mr-2">Clear</button>
-                        <button type="submit" class="esd__action-green-btn">Login</button>
+                        <button type="reset" class="keepsake__cancel-gray-btn mr-2">Clear</button>
+                        <button type="submit" class="keepsake__action-green-btn">Login</button>
                     </div>
                 </form>
             </div>

@@ -54,9 +54,9 @@ class UploadNewDocument extends Component
                     ->min(config('keepsake.min_image_size'))
             ]
         ]);
-        $this->imageService->saveImage($this->image);
+        $imageData = $this->imageService->saveImage($this->image);
         $this->image = null;
         $this->isUploaded = true;
-        $this->dispatch('doc-uploaded');
+        $this->dispatch('doc-uploaded', imageData: $imageData);
     }
 }

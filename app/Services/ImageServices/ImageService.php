@@ -53,11 +53,13 @@ class ImageService implements ImageServiceContract, KeepsakeService
     }
 
     #[Override]
-    public function saveImage(TemporaryUploadedFile $temporaryUploadedFile): void
+    public function saveImage(TemporaryUploadedFile $temporaryUploadedFile): ImageData
     {
         $imageName = explode('.', $temporaryUploadedFile->getClientOriginalName())[0];
-        $storagePath = 'media/images/' . config('keepsake.tenant_name', env('DEFAULT_TENANT_NAME')) . '/' . Str::orderedUuid(
-        );
+        $storagePath = 'media/images/' . config(
+                'keepsake.tenant_name',
+                env('DEFAULT_TENANT_NAME')
+            ) . '/' . Str::orderedUuid();
         // livewire doesn't decorate the file handler so that you can mutate it before storing...to my knowledge
 
         $thumbNail = Image::read($temporaryUploadedFile);
@@ -72,19 +74,26 @@ class ImageService implements ImageServiceContract, KeepsakeService
             name: $imageName . '.' . $temporaryUploadedFile->getClientOriginalExtension(),
             options: 's3'
         );
-        $imageData = $this->createImageData($storageId, $storagePath, uploadedBy: $this->userRepository->getUserById(
-            Auth::id(),
-            asData: true
-        ));
-        $insertedImageData = $this->imageRepository->createImage($imageData);
+        $imageData = $this->createImageData(
+            $storageId,
+            $storagePath,
+            uploadedBy: $this->userRepository->getUserById(
+                Auth::id(),
+                asData: true
+            )
+        );
+        $imageData = $insertedImageData = $this->imageRepository->createImage($imageData);
         $imageMetaData = $this->createImageMetaData($insertedImageData, $temporaryUploadedFile, $imageName);
         $this->imageMetaRepository->createImageMeta($imageMetaData);
         event(new ImageUploaded($imageData, $imageMetaData));
+        return $imageData;
     }
 
     private function createImageData(string|bool $storageId, string $storagePath, UserData $uploadedBy): ImageData
     {
-        return new ImageData(storageId: $storageId, storagePath: $storagePath, uploadedBy: $uploadedBy);
+        return ImageData::from(
+            ['storageId' => $storageId, 'storagePath' => $storagePath, 'uploadedBy' => $uploadedBy]
+        );
     }
 
     private function createImageMetaData(
@@ -92,15 +101,17 @@ class ImageService implements ImageServiceContract, KeepsakeService
         TemporaryUploadedFile $temporaryUploadedFile,
         string $imageName
     ): ImageMetaData {
-        return ImageMetaData::from([
-            'image' => $imageData,
-            'original_image_name' => $temporaryUploadedFile->getClientOriginalName(),
-            'current_image_name' => $imageName,
-            'original_image_mime' => $temporaryUploadedFile->getClientMimeType(),
-            'original_file_ext' => $temporaryUploadedFile->getClientOriginalExtension(),
-            'original_filesize' => $temporaryUploadedFile->getSize(),
-            'current_filesize' => $temporaryUploadedFile->getSize()
-        ]);
+        return ImageMetaData::from(
+            [
+                'originalImageName' => $temporaryUploadedFile->getClientOriginalName(),
+                'currentImageName' => $imageName,
+                'originalImageMime' => $temporaryUploadedFile->getClientMimeType(),
+                'originalFilesize' => $temporaryUploadedFile->getSize(),
+                'currentFileSize' => $temporaryUploadedFile->getSize(),
+                'originalFileExt' => $temporaryUploadedFile->getClientOriginalExtension(),
+                'image' => $imageData
+            ]
+        );
     }
 
     /**
@@ -108,7 +119,7 @@ class ImageService implements ImageServiceContract, KeepsakeService
      * @param int $page
      * @param int|null $perPage
      * @param Cursor|null $cursor
-     * @return DataCollection<ImageData>
+     * @return CursorPaginator
      */
     #[Override]
     public function getImages(

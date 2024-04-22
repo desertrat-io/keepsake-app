@@ -3,7 +3,6 @@
 namespace App\Models\AccountModels;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Casts\Accounts\AccountDataCast;
 use App\DTO\Accounts\AccountData;
 use App\Models\BoolDeleteColumn;
 use App\Models\GenerateUUID;
@@ -108,13 +107,6 @@ class User extends Authenticatable
     public function images(): HasMany
     {
         return $this->hasMany(Image::class);
-    }
-
-    protected function casts(): array
-    {
-        return [
-            'account' => AccountDataCast::class
-        ];
     }
 
 }

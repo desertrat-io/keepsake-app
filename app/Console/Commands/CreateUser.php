@@ -43,7 +43,7 @@ class CreateUser extends Command
         } while ($password !== $confirmPassword);
 
         $result = $this->accountService->createUser(
-            UserData::from(collect(['name' => $name, 'email' => $email, 'password' => $password]))
+            new UserData(name: $name, email: $email), password: $password
         );
 
         $this->info('User created with id: ' . $result->id);

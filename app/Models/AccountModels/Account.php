@@ -25,7 +25,6 @@ declare(strict_types=1);
 
 namespace App\Models\AccountModels;
 
-use App\Casts\Accounts\UserDataCast;
 use App\Models\BoolDeleteColumn;
 use App\Models\GenerateUUID;
 use Eloquent;
@@ -84,7 +83,7 @@ class Account extends Model
     protected function casts(): array
     {
         return [
-            'user' => UserDataCast::class,
+            'uuid' => 'string'
         ];
     }
 }

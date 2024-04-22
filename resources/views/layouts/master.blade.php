@@ -12,10 +12,10 @@
     @livewireStyles
 </head>
 <body class="h-auto keepsake__layout-bg">
-<div id="esd__app" class="w-auto relative">
+<div id="keepsake__app" class="w-auto relative">
     @includeUnless(Auth::check(), 'layouts.public.masthead')
     @auth
-        <div id="esd__masthead">
+        <div id="keepsake__masthead">
             @include('layouts.private.masthead')
         </div>
     @endauth

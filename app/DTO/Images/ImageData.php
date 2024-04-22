@@ -26,60 +26,32 @@ declare(strict_types=1);
 namespace App\DTO\Images;
 
 use App\DTO\Accounts\UserData;
-use App\DTO\DefaultIds;
-use App\DTO\DefaultTimestamps;
 use Carbon\Carbon;
+use Livewire\Wireable;
+use Spatie\LaravelData\Attributes\MapName;
+use Spatie\LaravelData\Concerns\WireableData;
+use Spatie\LaravelData\Data;
+use Spatie\LaravelData\Mappers\SnakeCaseMapper;
+use Spatie\LaravelData\Optional;
 
-class ImageData
+#[MapName(SnakeCaseMapper::class)]
+class ImageData extends Data implements Wireable
 {
-    use DefaultIds;
-    use DefaultTimestamps;
 
-    public readonly ?string $storageId;
-    public readonly ?string $storagePath;
-    public readonly ?UserData $uploadedBy;
-    public readonly ?bool $isLocked;
-    public readonly ?bool $isDirty;
-    public readonly ?bool $isDeleted;
+    use WireableData;
 
-    /**
-     * @param int|null $id
-     * @param string|null $uuid
-     * @param string|null $storageId
-     * @param string|null $storagePath
-     * @param UserData|null $uploadedBy
-     * @param bool|null $isLocked
-     * @param bool|null $isDirty
-     * @param Carbon|null $createdAt
-     * @param Carbon|null $updatedAt
-     * @param Carbon|null $deletedAt
-     * @param bool|null $isDeleted
-     */
     public function __construct(
-        ?int $id = null,
-        ?string $uuid = null,
-        ?string $storageId = null,
-        ?string $storagePath = null,
-        ?UserData $uploadedBy = null,
-        ?bool $isLocked = false,
-        ?bool $isDirty = false,
-        ?Carbon $createdAt = null,
-        ?Carbon $updatedAt = null,
-        ?Carbon $deletedAt = null,
-        ?bool $isDeleted = false
+        public ?int $id,
+        public ?string $uuid,
+        public ?string $storageId,
+        public ?string $storagePath,
+        public null|UserData|Optional $uploadedBy,
+        public ?bool $isLocked,
+        public ?bool $isDirty,
+        public ?Carbon $createdAt,
+        public ?Carbon $updatedAt,
+        public ?Carbon $deletedAt,
+        public ?bool $isDeleted
     ) {
-        $this->storageId = $storageId;
-        $this->storagePath = $storagePath;
-        $this->uploadedBy = $uploadedBy;
-        $this->isLocked = $isLocked;
-        $this->isDirty = $isDirty;
-        $this->id = $id;
-        $this->uuid = $uuid;
-        $this->createdAt = $createdAt;
-        $this->updatedAt = $updatedAt;
-        $this->deletedAt = $deletedAt;
-        $this->isDeleted = $isDeleted;
     }
-
-
 }

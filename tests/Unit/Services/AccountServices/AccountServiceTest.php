@@ -56,11 +56,10 @@ class AccountServiceTest extends TestCase
         $name = fake()->name;
         $email = fake()->email;
         $pass = Hash::make(fake()->shuffleString);
-        $newUser = $accountService->createUser(new UserData(name: $name, email: $email), password: $pass);
+        $newUser = $accountService->createUser(UserData::from(['name' => $name, 'email' => $email]), password: $pass);
         $this->assertDatabaseHas(table: 'users', data: ['name' => $name, 'email' => $email]);
         $this->assertEquals($newUser->name, $name);
         $this->assertEquals($newUser->email, $email);
-
     }
 
 }

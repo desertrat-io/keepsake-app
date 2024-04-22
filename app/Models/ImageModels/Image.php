@@ -25,8 +25,6 @@ declare(strict_types=1);
 
 namespace App\Models\ImageModels;
 
-use App\Casts\Accounts\UserDataCast;
-use App\Casts\Images\ImageMetaDataCast;
 use App\Models\AccountModels\User;
 use App\Models\BoolDeleteColumn;
 use App\Models\GenerateUUID;
@@ -101,8 +99,7 @@ class Image extends Model
     protected function casts(): array
     {
         return [
-            'uploadedBy' => UserDataCast::class,
-            'meta' => ImageMetaDataCast::class
-            ];
+            'uuid' => 'string'
+        ];
     }
 }
