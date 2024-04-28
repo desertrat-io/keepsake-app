@@ -11,11 +11,9 @@ class MainTable extends Component
 {
     use WithPagination;
 
-    private const int PER_PAGE = 2;
-
     public $cursor;
 
-    // livewire really doesn't like poagination
+    // livewire really doesn't like pagination
     private $images;
     public int $perPage = 10;
 
@@ -27,14 +25,14 @@ class MainTable extends Component
     }
 
     #[On('doc-uploaded')]
-    public function updateImageList($imageData)
+    public function updateImageList($imageData): void
     {
-        $this->images = $this->imageService->getImages(perPage: self::PER_PAGE);
+        $this->images = $this->imageService->getImages(perPage: $this->perPage);
     }
 
     public function render()
     {
-        $this->images = $this->imageService->getImages(perPage: self::PER_PAGE);
+        $this->images = $this->imageService->getImages(perPage: $this->perPage);
 
         return view(
             'livewire.main-table',

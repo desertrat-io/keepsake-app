@@ -39,7 +39,8 @@ return [
     'pages' => [
         'main' => [
             'document_list_thumb' => 'Thumbnail',
-            'document_list_name' => 'Document Name'
+            'document_list_name' => 'Document Name',
+            'document_list_user' => 'By'
         ]
     ]
 ];

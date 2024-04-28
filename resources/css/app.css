@@ -29,3 +29,15 @@
 .keepsake__layout-bg {
     @apply bg-[#FAF1E7]
 }
+
+.keepsake__action-green-link {
+    @apply bg-[#489185] pt-1 pb-1 pl-6 pr-6 hover:bg-[#99B99D]
+}
+
+.keepsake__action-green-link-disabled {
+    @apply pt-1 pb-1 pl-6 pr-6 bg-[#99B99D]
+}
+
+.keepsake__table-row-highlight {
+    @apply hover:bg-[#99B99D]
+}

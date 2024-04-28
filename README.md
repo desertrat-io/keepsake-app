@@ -9,3 +9,5 @@ won't change it any time soon. Like, if that happens we've got bigger
 problems". I'm gonna make this a TALL app because I can and you can't stop me
 
 [![Keepsake Api](https://github.com/desertrat-io/keepsake-app/actions/workflows/php-unit.yml/badge.svg)](https://github.com/desertrat-io/keepsake-app/actions/workflows/php-unit.yml)
+
+[![codecov](https://codecov.io/github/desertrat-io/keepsake-app/graph/badge.svg?token=TGVCFXS0NA)](https://codecov.io/github/desertrat-io/keepsake-app)

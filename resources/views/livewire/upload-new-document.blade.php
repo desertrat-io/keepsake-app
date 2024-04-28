@@ -4,15 +4,13 @@
             {{ __('keepsake.button.add_document') }}
 
         </button>
-        <div x-show="$wire.isUploaded">fwejfpewifjeowfij</div>
-
         <div x-show="isOpen && !$wire.isUploaded"
              x-on:livewire-upload-start="uploading = true"
              x-on:livewire-upload-finish="uploading = false"
              x-on:livewire-upload-cancel="uploading = false"
              x-on:livewire-upload-error="uploading = false"
              x-on:livewire-upload-progress="progress = $event.detail.progress"
-             class="fixed inset-0 flex items-center justify-center">
+             class="fixed inset-0 flex items-center justify-center z-50">
             <div class="bg-[#C3B3A9] p-6 rounded-lg shadow-lg w-[600px]">
                 <h2 class="text-lg font-bold mb-4">{{ __('keepsake.title.add_document_modal_title') }}</h2>
                 <form wire:submit="saveImage" class="w-[500px] h-[200px]">
