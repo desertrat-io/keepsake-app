@@ -1,5 +1,6 @@
 <?php
 
+use App\Lib\Providers\KeepsakeServiceProvider;
 use App\Providers\FortifyServiceProvider;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\ServiceProvider;
@@ -170,7 +171,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        App\Providers\KeepsakeServiceProvider::class,
+        KeepsakeServiceProvider::class,
         FortifyServiceProvider::class,
         MongoDBServiceProvider::class
     ])->toArray(),

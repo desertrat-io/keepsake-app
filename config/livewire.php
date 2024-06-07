@@ -46,11 +46,11 @@ return [
     | Livewire Assets URL
     |--------------------------------------------------------------------------
     |
-    | This value sets the path to Livewire JavaScript assets, for cases where
+    | This value sets the path to Livewire JavaScript media, for cases where
     | your app's domain root is not the correct path. By default, Livewire
-    | will load its JavaScript assets from the app's "relative root".
+    | will load its JavaScript media from the app's "relative root".
     |
-    | Examples: "/assets", "myurl.com/app".
+    | Examples: "/media", "myurl.com/app".
     |
     */
 
@@ -61,7 +61,7 @@ return [
     | Livewire App URL
     |--------------------------------------------------------------------------
     |
-    | This value should be used if livewire assets are served from CDN.
+    | This value should be used if livewire media are served from CDN.
     | Livewire will communicate with an app through this url.
     |
     | Examples: "https://my-app.com", "myurl.com/app".

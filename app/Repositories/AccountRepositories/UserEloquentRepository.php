@@ -27,11 +27,11 @@ namespace App\Repositories\AccountRepositories;
 
 use App\DTO\Accounts\UserData;
 use App\Models\AccountModels\User;
-use App\Repositories\KeepsakeRepository;
+use App\Repositories\KeepsakeEloquentRepository;
 use App\Repositories\RepositoryContracts\UserRepositoryContract;
 use Hash;
 
-class UserEloquentRepository implements KeepsakeRepository, UserRepositoryContract
+class UserEloquentRepository implements KeepsakeEloquentRepository, UserRepositoryContract
 {
     public function concreteEntityClass(): string
     {

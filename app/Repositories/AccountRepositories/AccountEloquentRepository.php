@@ -28,10 +28,10 @@ namespace App\Repositories\AccountRepositories;
 use App\DTO\Accounts\AccountData;
 use App\DTO\Accounts\UserData;
 use App\Models\AccountModels\Account;
-use App\Repositories\KeepsakeRepository;
+use App\Repositories\KeepsakeEloquentRepository;
 use App\Repositories\RepositoryContracts\AccountRepositoryContract;
 
-class AccountEloquentRepository implements AccountRepositoryContract, KeepsakeRepository
+class AccountEloquentRepository implements AccountRepositoryContract, KeepsakeEloquentRepository
 {
     public function concreteEntityClass(): string
     {

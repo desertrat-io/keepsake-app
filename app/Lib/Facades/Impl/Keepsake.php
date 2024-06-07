@@ -25,6 +25,21 @@ declare(strict_types=1);
 
 namespace App\Lib\Facades\Impl;
 
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
+
 class Keepsake
 {
+    public function idFromKey(string $keepsakeKey): UuidInterface
+    {
+        return Uuid::fromString(explode('-', $keepsakeKey)[2]);
+    }
+
+    public function idToKey(Uuid|string $keepsakeKey): string
+    {
+        if ($keepsakeKey instanceof Uuid) {
+            return 'keepsake-key-' . $keepsakeKey->toString();
+        }
+        return 'keepsake-key-' . $keepsakeKey;
+    }
 }

@@ -22,6 +22,9 @@ class UploadNewDocument extends Component
     public $image;
     public bool $isUploaded = false;
 
+    #[Validate('required')]
+    public string $imageTitle = '';
+
     private ImageServiceContract $imageService;
 
     public function boot(ImageServiceContract $imageService): void
@@ -39,6 +42,7 @@ class UploadNewDocument extends Component
         } else {
             $this->validateOnly($propertyName);
         }
+        $this->imageTitle = $this->image?->getClientOriginalName();
     }
 
     public function render(): View
@@ -54,7 +58,12 @@ class UploadNewDocument extends Component
                     ->min(config('keepsake.min_image_size'))
             ]
         ]);
-        $imageData = $this->imageService->saveImage($this->image);
+        if ($this->imageTitle !== '') {
+            $imageData = $this->imageService->saveImage(temporaryUploadedFile: $this->image, customTitle: $this->imageTitle);
+            $this->dispatch('doc-uploaded-custom-title');
+        } else {
+            $imageData = $this->imageService->saveImage(temporaryUploadedFile: $this->image);
+        }
         $this->image = null;
         $this->isUploaded = true;
         $this->dispatch('doc-uploaded', imageData: $imageData);

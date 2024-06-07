@@ -11,7 +11,7 @@
              x-on:livewire-upload-error="uploading = false"
              x-on:livewire-upload-progress="progress = $event.detail.progress"
              class="fixed inset-0 flex items-center justify-center z-50">
-            <div class="bg-[#C3B3A9] p-6 rounded-lg shadow-lg w-[600px]">
+            <div class="bg-[#C3B3A9] p-6 relative rounded-lg shadow-lg w-[80%] h-[80%]">
                 <h2 class="text-lg font-bold mb-4">{{ __('keepsake.title.add_document_modal_title') }}</h2>
                 <form wire:submit="saveImage" class="w-[500px] h-[200px]">
 
@@ -26,7 +26,15 @@
                     <br>
                     @if ($image)
 
-                        <img class="w-24 h-24 m-1" src="{{ $image->temporaryUrl() }}">
+                        <img class="m-1 max-w-[500px] max-h-[500px]" src="{{ $image->temporaryUrl() }}">
+                        <div class="absolute right-[25%] top-0 mt-5 mr-5">
+                            <label class="" id="keepsake__add-doc-title-label"
+                                   aria-label="keepsake_add-doc-title-input">
+                                {{ __('keepsake.field_label.modal_doc_title') }}
+                            </label>
+                            <input class="keepsake__form-text-std" id="keepsake_add-doc-title-input" type="text"
+                                   wire:model.live="imageTitle" aria-labelledby="keepsake__add-doc-title-label">
+                        </div>
 
                     @endif
                     <input type="file" id="keepsake__add-doc-input" wire:model.live="image"
@@ -34,17 +42,18 @@
                            class="z-[-1] hidden">
                     <div wire:loading wire:target="image">{{ __('keepsake.field_label.modal_add_loading') }}</div>
                     @error('image') <p class="keepsake__form-text-error">{{ $message  }}</p> @enderror
+                    <div x-show="uploading">
+                        <progress max="100" x-bind:value="progress"></progress>
+                    </div>
                     @if($image)
-                        <div x-show="uploading">
-                            <progress max="100" x-bind:value="progress"></progress>
-                        </div>
+
                         <button type="submit"
                                 class="keepsake__action-green-btn">{{ __('keepsake.field_label.modal_save_uploaded') }}</button>
                     @endif
                 </form>
                 <br>
                 <button @click="isOpen = false"
-                        class="keepsake__cancel-gray-btn float-end">
+                        class="keepsake__cancel-gray-btn absolute bottom-0 right-0 m-10">
                     {{ __('keepsake.button.close') }}
                 </button>
             </div>

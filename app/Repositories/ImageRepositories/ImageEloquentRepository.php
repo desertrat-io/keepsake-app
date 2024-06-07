@@ -27,13 +27,13 @@ namespace App\Repositories\ImageRepositories;
 
 use App\DTO\Images\ImageData;
 use App\Models\ImageModels\Image;
-use App\Repositories\KeepsakeRepository;
+use App\Repositories\KeepsakeEloquentRepository;
 use App\Repositories\RepositoryContracts\ImageRepositoryContract;
 use Illuminate\Contracts\Pagination\CursorPaginator;
 use Illuminate\Support\Collection;
 use Override;
 
-class ImageEloquentRepository implements ImageRepositoryContract, KeepsakeRepository
+class ImageEloquentRepository implements ImageRepositoryContract, KeepsakeEloquentRepository
 {
     #[Override] public function concreteEntityClass(): string
     {
@@ -70,8 +70,8 @@ class ImageEloquentRepository implements ImageRepositoryContract, KeepsakeReposi
      */
     #[Override] public function getImages(
         ?string $cursor = null,
-        int $perPage = 10,
-        int $limit = 100
+        int     $perPage = 10,
+        int     $limit = 100
     ): CursorPaginator {
         return
             Image::with(['meta', 'uploadedBy'])->limit($limit)->orderByDesc(
@@ -82,7 +82,8 @@ class ImageEloquentRepository implements ImageRepositoryContract, KeepsakeReposi
                 'storage_id',
                 'storage_path',
                 'created_at',
-                'uploaded_by'
+                'uploaded_by',
+                'is_dirty'
             ], cursor: $cursor);
     }
 
