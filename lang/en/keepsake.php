@@ -26,21 +26,37 @@ declare(strict_types=1);
 return [
     'button' => [
         'add_document' => 'Add Document',
-        'close' => 'Close'
+        'close' => 'Close',
+        'quick_look' => 'Quick Look',
+        'full_record' => 'Full Record'
     ],
     'title' => [
-        'add_document_modal_title' => 'Add or Upload New Document'
+        'add_document_modal_title' => 'Add or Upload New Document',
+        'quick_look_modal_title' => 'Quick Look'
     ],
     'field_label' => [
         'modal_add_document' => 'Attach PDF or Image File',
         'modal_save_uploaded' => 'Add File',
-        'modal_add_loading' => 'Loading Preview'
+        'modal_add_loading' => 'Loading Preview',
+        'modal_doc_title' => 'Document Title'
     ],
     'pages' => [
         'main' => [
             'document_list_thumb' => 'Thumbnail',
             'document_list_name' => 'Document Name',
             'document_list_user' => 'By'
+        ]
+    ],
+    'image_detail' => [
+        'current_title' => 'Current Title',
+        'original_title' => 'Original Title',
+        'current_filesize' => 'Current Filesize (in bytes)',
+        'original_filesize' => 'Original Filesize (in bytes)',
+        'uploaded_by' => 'Uploaded By',
+        'dirty' => [
+            'dirty_state' => 'Finished processing',
+            'is_dirty' => 'Not Processed',
+            'is_not_dirty' => 'Processed',
         ]
     ]
 ];

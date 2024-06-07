@@ -23,7 +23,7 @@
 
 namespace App\Repositories;
 
-interface KeepsakeRepository
+interface KeepsakeEloquentRepository
 {
     public function concreteEntityClass(): string;
 }

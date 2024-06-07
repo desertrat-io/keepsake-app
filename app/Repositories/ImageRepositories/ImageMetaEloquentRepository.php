@@ -27,11 +27,11 @@ namespace App\Repositories\ImageRepositories;
 
 use App\DTO\Images\ImageMetaData;
 use App\Models\ImageModels\ImageMeta;
-use App\Repositories\KeepsakeRepository;
+use App\Repositories\KeepsakeEloquentRepository;
 use App\Repositories\RepositoryContracts\ImageMetaRepositoryContract;
 use Override;
 
-class ImageMetaEloquentRepository implements ImageMetaRepositoryContract, KeepsakeRepository
+class ImageMetaEloquentRepository implements ImageMetaRepositoryContract, KeepsakeEloquentRepository
 {
     #[Override] public function concreteEntityClass(): string
     {

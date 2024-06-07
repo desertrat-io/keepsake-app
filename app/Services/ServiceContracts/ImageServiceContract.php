@@ -30,7 +30,7 @@ use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 interface ImageServiceContract
 {
-    public function saveImage(TemporaryUploadedFile $temporaryUploadedFile): ImageData;
+    public function saveImage(TemporaryUploadedFile $temporaryUploadedFile, ?string $customTitle): ImageData;
 
     public function getImages(
         int $total = 100,

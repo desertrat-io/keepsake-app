@@ -2,7 +2,9 @@
 
 namespace App\Exceptions;
 
+use App\Exceptions\KeepsakeExceptions\KeepsakeException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Psr\Log\LogLevel;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -13,7 +15,7 @@ class Handler extends ExceptionHandler
      * @var array<class-string<\Throwable>, \Psr\Log\LogLevel::*>
      */
     protected $levels = [
-        //
+        KeepsakeException::class => LogLevel::ERROR
     ];
 
     /**

@@ -58,4 +58,9 @@ jobs:
 
       - name: Codecov
         uses: codecov/codecov-action@v4.3.0
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: coverage.xml
+          flags: unittests
+          name: codecov-umbrella
 

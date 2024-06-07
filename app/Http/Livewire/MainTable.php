@@ -14,9 +14,8 @@ class MainTable extends Component
     public $cursor;
 
     // livewire really doesn't like pagination
-    private $images;
     public int $perPage = 10;
-
+    private $images;
     private ImageServiceContract $imageService;
 
     public function boot(ImageServiceContract $imageService): void
@@ -33,7 +32,7 @@ class MainTable extends Component
     public function render()
     {
         $this->images = $this->imageService->getImages(perPage: $this->perPage);
-
+            
         return view(
             'livewire.main-table',
             ['images' => $this->images]

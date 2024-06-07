@@ -23,7 +23,7 @@
 
 namespace App\Lib\Enum;
 
-enum ErrorResponseCode
+enum ErrorResponseCode: int
 {
-
+ case IMAGE_STORAGE_ERROR = 1;
 }

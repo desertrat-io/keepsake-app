@@ -16,10 +16,10 @@
             <span>
                 {{-- Previous Page Link --}}
                 @if ($paginator->onFirstPage())
-                    <span
+                    <div
                         class="keepsake__action-green-link-disabled">
                         {!! __('pagination.previous') !!}
-                    </span>
+                    </div>
                 @else
                     @if(method_exists($paginator,'getCursorName'))
                         <button type="button" dusk="previousPage"
@@ -61,10 +61,10 @@
                         </button>
                     @endif
                 @else
-                    <span
+                    <div
                         class="keepsake__action-green-link-disabled">
                         {!! __('pagination.next') !!}
-                    </span>
+                    </div>
                 @endif
             </span>
         </nav>

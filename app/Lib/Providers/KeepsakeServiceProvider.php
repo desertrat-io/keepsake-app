@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Providers;
+namespace App\Lib\Providers;
 
 use App\Lib\Facades\Impl\Keepsake;
 use App\Repositories\AccountRepositories\AccountEloquentRepository;
@@ -47,7 +47,7 @@ class KeepsakeServiceProvider extends ServiceProvider
     {
         array_walk(
             $this->serviceContracts,
-            fn (string $concrete, string $abstract) => $this->app->bind($abstract, $concrete)
+            fn(string $concrete, string $abstract) => $this->app->bind($abstract, $concrete)
         );
     }
 
@@ -76,8 +76,8 @@ class KeepsakeServiceProvider extends ServiceProvider
 
     protected function bindCustomFacades(): void
     {
-        $this->app->bind('image', fn (): ImageManager => new ImageManager(config('image.driver.imagick')));
-        $this->app->bind('keepsake', fn (): Keepsake => new Keepsake());
+        $this->app->bind('image', fn(): ImageManager => new ImageManager(config('image.driver.imagick')));
+        $this->app->bind('keepsake', fn(): Keepsake => new Keepsake());
     }
 
     /**
