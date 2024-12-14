@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use App\Events\ImageUploaded;
+use App\Events\ImageViewed;
 use App\Events\KeepsakeExceptionThrown;
 use App\Listeners\ImageUploadedListener;
+use App\Listeners\ImageViewedListener;
 use App\Listeners\KeepsakeExceptionThrownListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -26,6 +28,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         KeepsakeExceptionThrown::class => [
             KeepsakeExceptionThrownListener::class
+        ],
+        ImageViewed::class => [
+            ImageViewedListener::class
         ]
     ];
 

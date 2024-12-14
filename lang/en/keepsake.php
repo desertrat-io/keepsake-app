@@ -49,7 +49,7 @@ return [
     ],
     'image_detail' => [
         'current_title' => 'Current Title',
-        'original_title' => 'Original Title',
+        'original_title' => 'Original Filename',
         'current_filesize' => 'Current Filesize (in bytes)',
         'original_filesize' => 'Original Filesize (in bytes)',
         'uploaded_by' => 'Uploaded By',

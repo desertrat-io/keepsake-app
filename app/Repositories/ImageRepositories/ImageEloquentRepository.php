@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace App\Repositories\ImageRepositories;
 
+use App\DTO\Accounts\UserData;
 use App\DTO\Images\ImageData;
 use App\Models\ImageModels\Image;
 use App\Repositories\KeepsakeEloquentRepository;
@@ -49,8 +50,8 @@ class ImageEloquentRepository implements ImageRepositoryContract, KeepsakeEloque
             'is_dirty' => true,
             'uploaded_by' => $imageData->uploadedBy->id
         ])->load('uploadedBy');
-
-        return ImageData::from($image);
+        // some kind of weird quirk with spatie data, you end up having to create the model, then query it
+        return ImageData::fromModel($image);
     }
 
     #[Override] public function getImagePaths(array|int $ids): Collection|string
@@ -68,11 +69,8 @@ class ImageEloquentRepository implements ImageRepositoryContract, KeepsakeEloque
      * @param int $limit
      * @return CursorPaginator
      */
-    #[Override] public function getImages(
-        ?string $cursor = null,
-        int     $perPage = 10,
-        int     $limit = 100
-    ): CursorPaginator {
+    #[Override] public function getImages(?string $cursor = null, int $perPage = 10, int $limit = 100): CursorPaginator
+    {
         return
             Image::with(['meta', 'uploadedBy'])->limit($limit)->orderByDesc(
                 'created_at'

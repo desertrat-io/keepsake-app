@@ -25,10 +25,15 @@ declare(strict_types=1);
 
 namespace App\Models\ImageModels;
 
+use App\DTO\Accounts\UserData;
+use App\DTO\Images\ImageMetaData;
 use App\Models\AccountModels\User;
 use App\Models\BoolDeleteColumn;
 use App\Models\GenerateUUID;
 use Eloquent;
+use Illuminate\Contracts\Database\Eloquent\Castable;
+use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+use Illuminate\Contracts\Database\Eloquent\CastsInboundAttributes;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -86,6 +91,13 @@ class Image extends Model
         'is_dirty'
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'uuid' => 'string'
+        ];
+    }
+
     public function meta(): HasOne
     {
         return $this->hasOne(ImageMeta::class);
@@ -96,10 +108,4 @@ class Image extends Model
         return $this->belongsTo(related: User::class, foreignKey: 'uploaded_by');
     }
 
-    protected function casts(): array
-    {
-        return [
-            'uuid' => 'string'
-        ];
-    }
 }

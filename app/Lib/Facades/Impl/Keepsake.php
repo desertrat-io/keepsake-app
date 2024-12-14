@@ -25,6 +25,8 @@ declare(strict_types=1);
 
 namespace App\Lib\Facades\Impl;
 
+use App\Events\KeepsakeExceptionThrown;
+use App\Exceptions\KeepsakeExceptions\KeepsakeException;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
@@ -41,5 +43,10 @@ class Keepsake
             return 'keepsake-key-' . $keepsakeKey->toString();
         }
         return 'keepsake-key-' . $keepsakeKey;
+    }
+
+    public function logException(KeepsakeException $exception): void
+    {
+        event(new KeepsakeExceptionThrown($exception));
     }
 }

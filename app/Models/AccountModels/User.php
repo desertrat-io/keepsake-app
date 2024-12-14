@@ -109,4 +109,10 @@ class User extends Authenticatable
         return $this->hasMany(Image::class);
     }
 
+    protected function casts(): array
+    {
+        return [
+            'uuid' => 'string'
+        ];
+    }
 }

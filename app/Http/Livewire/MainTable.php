@@ -32,7 +32,7 @@ class MainTable extends Component
     public function render()
     {
         $this->images = $this->imageService->getImages(perPage: $this->perPage);
-            
+
         return view(
             'livewire.main-table',
             ['images' => $this->images]

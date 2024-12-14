@@ -26,32 +26,49 @@ declare(strict_types=1);
 namespace App\DTO\Images;
 
 use App\DTO\Accounts\UserData;
+use App\Models\ImageModels\Image;
 use Carbon\Carbon;
 use Livewire\Wireable;
 use Spatie\LaravelData\Attributes\MapName;
 use Spatie\LaravelData\Concerns\WireableData;
 use Spatie\LaravelData\Data;
+use Spatie\LaravelData\Lazy;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
-use Spatie\LaravelData\Optional;
 
 #[MapName(SnakeCaseMapper::class)]
 class ImageData extends Data implements Wireable
 {
-
     use WireableData;
 
     public function __construct(
-        public ?int $id,
-        public ?string $uuid,
-        public ?string $storageId,
-        public ?string $storagePath,
-        public null|UserData|Optional $uploadedBy,
-        public ?bool $isLocked,
-        public ?bool $isDirty,
-        public ?Carbon $createdAt,
-        public ?Carbon $updatedAt,
-        public ?Carbon $deletedAt,
-        public ?bool $isDeleted
+        public readonly ?int $id,
+        public readonly ?string $uuid,
+        public readonly ?string $storageId,
+        public readonly ?string $storagePath,
+        public readonly UserData|Lazy $uploadedBy,
+        public readonly ?bool $isLocked,
+        public readonly ?bool $isDirty,
+        public readonly ?Carbon $createdAt,
+        public readonly ?Carbon $updatedAt,
+        public readonly ?Carbon $deletedAt,
+        public readonly ?bool $isDeleted
     ) {
+    }
+
+    public static function fromModel(Image $image): ImageData
+    {
+        return new self(
+            id: $image->id,
+            uuid: $image->uuid,
+            storageId: $image->storage_id,
+            storagePath: $image->storage_path,
+            uploadedBy: Lazy::create(fn() => $image->uploadedBy),
+            isLocked: $image->is_locked,
+            isDirty: $image->is_dirty,
+            createdAt: $image->created_at,
+            updatedAt: $image->updated_at,
+            deletedAt: $image->deleted_at,
+            isDeleted: $image->is_deleted,
+        );
     }
 }
