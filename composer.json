@@ -13,6 +13,10 @@
     "license": "MIT",
     "require": {
         "php": "^8.3",
+        "ext-grpc": "*",
+        "deserat-io/keepsake": "^1.0",
+        "google/protobuf": "^4.28",
+        "grpc/grpc": "^1.57",
         "guzzlehttp/guzzle": "^7.2",
         "intervention/image": "*",
         "laravel/fortify": "^1.17",
@@ -79,5 +83,11 @@
         }
     },
     "minimum-stability": "stable",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://composer.cloudsmith.io/desertrat-io/keepsake/"
+        }
+    ]
 }

@@ -25,35 +25,54 @@ declare(strict_types=1);
 
 namespace App\DTO\Images;
 
+use App\Models\ImageModels\ImageMeta;
 use Carbon\Carbon;
 use Livewire\Wireable;
 use Spatie\LaravelData\Attributes\MapName;
 use Spatie\LaravelData\Concerns\WireableData;
 use Spatie\LaravelData\Data;
+use Spatie\LaravelData\Lazy;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
-use Spatie\LaravelData\Optional;
 
 #[MapName(SnakeCaseMapper::class)]
 class ImageMetaData extends Data implements Wireable
 {
-
     use WireableData;
 
     public function __construct(
-        public ?int $id,
-        public ?int $imageId,
-        public ?string $originalImageName,
-        public ?string $currentImageName,
-        public ?string $originalImageMime,
-        public ?int $originalFilesize,
-        public ?int $currentFileSize,
-        public ?string $originalFileExt,
-        public ?Carbon $createdAt,
-        public ?Carbon $updatedAt,
-        public ?Carbon $deletedAt,
-        public ?bool $isDeleted,
-        public ImageData|Optional|null $image
+        public readonly ?int $id,
+        public readonly ?int $imageId,
+        public readonly ?string $originalImageName,
+        public readonly ?string $currentImageName,
+        public readonly ?string $originalImageMime,
+        public readonly ?int $originalFilesize,
+        public readonly ?int $currentFilesize,
+        public readonly ?string $originalFileExt,
+        public readonly ?Carbon $createdAt,
+        public readonly ?Carbon $updatedAt,
+        public readonly ?Carbon $deletedAt,
+        public readonly ?bool $isDeleted,
+        public readonly ImageData|Lazy $image
     ) {
+    }
+
+    public static function fromModel(ImageMeta $imageMeta): self
+    {
+        return new self(
+            id: $imageMeta->id,
+            imageId: $imageMeta->image_id,
+            originalImageName: $imageMeta->original_image_name,
+            currentImageName: $imageMeta->current_image_name,
+            originalImageMime: $imageMeta->original_image_mime,
+            originalFilesize: $imageMeta->original_filesize,
+            currentFilesize: $imageMeta->current_filesize,
+            originalFileExt: $imageMeta->original_file_ext,
+            createdAt: $imageMeta->created_at,
+            updatedAt: $imageMeta->updated_at,
+            deletedAt: $imageMeta->deleted_at,
+            isDeleted: $imageMeta->is_deleted,
+            image: Lazy::create(fn() => $imageMeta->image)
+        );
     }
 
 

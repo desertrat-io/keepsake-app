@@ -25,11 +25,14 @@ declare(strict_types=1);
 
 namespace App\DTO\Accounts;
 
+use App\DTO\Images\ImageData;
+use App\Models\AccountModels\User;
 use Carbon\Carbon;
 use Livewire\Wireable;
 use Spatie\LaravelData\Attributes\MapName;
 use Spatie\LaravelData\Concerns\WireableData;
 use Spatie\LaravelData\Data;
+use Spatie\LaravelData\Lazy;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
 #[MapName(SnakeCaseMapper::class)]
@@ -38,17 +41,37 @@ class UserData extends Data implements Wireable
     use WireableData;
 
     public function __construct(
-        public ?int $id,
-        public ?string $uuid,
-        public ?string $name,
-        public ?string $email,
-        public ?Carbon $emailVerifiedAt,
-        public ?string $rememberToken,
-        public ?Carbon $createdAt,
-        public ?Carbon $updatedAt,
-        public ?Carbon $deletedAt,
-        public ?bool $isDeleted
-
+        public readonly ?int $id,
+        public readonly ?string $uuid,
+        public readonly ?string $name,
+        public readonly ?string $email,
+        public readonly ?Carbon $emailVerifiedAt,
+        public readonly ?string $rememberToken,
+        public readonly ?Carbon $createdAt,
+        public readonly ?Carbon $updatedAt,
+        public readonly ?Carbon $deletedAt,
+        public readonly ?bool $isDeleted,
+        /** @var array<ImageData> */
+        public readonly null|array|Lazy $images,
+        public readonly null|Lazy|AccountData $account
     ) {
+    }
+
+    public static function fromModel(User $user): self
+    {
+        return new self(
+            id: $user->id,
+            uuid: $user->uuid,
+            name: $user->name,
+            email: $user->email,
+            emailVerifiedAt: $user->email_verified_at,
+            rememberToken: $user->remember_token,
+            createdAt: $user->created_at,
+            updatedAt: $user->updated_at,
+            deletedAt: $user->deleted_at,
+            isDeleted: false,
+            images: Lazy::create(fn() => $user->images),
+            account: Lazy::create(fn() => $user->account),
+        );
     }
 }

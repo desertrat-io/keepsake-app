@@ -43,6 +43,6 @@ class UserApiController extends ApiController
             fn (string $key) => $finalUserFields->put($key, $createUserRequest->input($key))
         );
         $userData = UserData::from($finalUserFields);
-        $this->accountService->createUser($userData);
+        $this->accountService->createUser($userData, $createUserRequest->input('password'));
     }
 }

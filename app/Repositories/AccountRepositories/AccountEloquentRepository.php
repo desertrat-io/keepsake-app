@@ -42,17 +42,7 @@ class AccountEloquentRepository implements AccountRepositoryContract, KeepsakeEl
     public function createNewAccountFromUser(UserData $userData): AccountData
     {
         $newAccount = Account::create(['user_id' => $userData->id, 'is_locked' => false, 'mfa_enabled' => false]);
-        return new AccountData(
-            id: $newAccount->id,
-            uuid: $newAccount->uuid,
-            userId: $newAccount->user_id,
-            isLocked: $newAccount->is_locked,
-            isMfaEnabled: $newAccount->mfa_enabled,
-            createdAt: $newAccount->created_at,
-            updatedAt: $newAccount->updated_at,
-            deletedAt: $newAccount->deleted_at,
-            isDeleted: $newAccount->is_deleted
-        );
+        return AccountData::fromModel($newAccount);
     }
 
 }

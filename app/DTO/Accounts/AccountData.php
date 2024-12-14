@@ -25,28 +25,44 @@ declare(strict_types=1);
 
 namespace App\DTO\Accounts;
 
+use App\Models\AccountModels\Account;
 use Carbon\Carbon;
 use Livewire\Wireable;
 use Spatie\LaravelData\Concerns\WireableData;
 use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Optional;
+use Spatie\LaravelData\Lazy;
 
 class AccountData extends Data implements Wireable
 {
     use WireableData;
 
     public function __construct(
-        public ?int $id,
-        public ?string $uuid,
-        public ?int $userId,
-        public ?bool $isLocked,
-        public ?bool $isMfaEnabled,
-        public ?Carbon $createdAt,
-        public ?Carbon $updatedAt,
-        public ?Carbon $deletedAt,
-        public ?bool $isDeleted,
-        public null|Optional|UserData $user = null
+        public readonly ?int $id,
+        public readonly ?string $uuid,
+        public readonly ?int $userId,
+        public readonly ?bool $isLocked,
+        public readonly ?bool $isMfaEnabled,
+        public readonly ?Carbon $createdAt,
+        public readonly ?Carbon $updatedAt,
+        public readonly ?Carbon $deletedAt,
+        public readonly ?bool $isDeleted,
+        public readonly Lazy|UserData $user
     ) {
     }
 
+    public static function fromModel(Account $account): self
+    {
+        return new self(
+            id: $account->id,
+            uuid: $account->uuid,
+            userId: $account->user_id,
+            isLocked: $account->is_locked,
+            isMfaEnabled: $account->mfa_enabled,
+            createdAt: $account->created_at,
+            updatedAt: $account->updated_at,
+            deletedAt: $account->deleted_at,
+            isDeleted: $account->is_deleted,
+            user: Lazy::create(fn () => $account->user)
+        );
+    }
 }

@@ -47,9 +47,9 @@ class ImageMetaEloquentRepository implements ImageMetaRepositoryContract, Keepsa
             'current_image_name' => $imageMetaData->currentImageName,
             'original_filesize' => $imageMetaData->originalFilesize,
             'original_file_ext' => $imageMetaData->originalFileExt,
-            'current_filesize' => $imageMetaData->currentFileSize
+            'current_filesize' => $imageMetaData->currentFilesize
         ]);
-        return ImageMetaData::from($imageMeta);
+        return ImageMetaData::fromModel($imageMeta);
     }
 
 

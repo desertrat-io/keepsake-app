@@ -61,10 +61,10 @@ class ImageService implements ImageServiceContract, KeepsakeService
     public function saveImage(TemporaryUploadedFile $temporaryUploadedFile, ?string $customTitle = null): ImageData
     {
         $imageName = explode('.', $customTitle ?? $temporaryUploadedFile->getClientOriginalName())[0];
-        $storagePath = 'media/images/'.config(
+        $storagePath = 'media/images/' . config(
             'keepsake.tenant_name',
             env('DEFAULT_TENANT_NAME')
-        ).'/'.Str::orderedUuid();
+        ) . '/' . Str::orderedUuid();
         // livewire doesn't decorate the file handler so that you can mutate it before storing...to my knowledge
 
         $thumbNail = Image::read($temporaryUploadedFile);
@@ -74,14 +74,14 @@ class ImageService implements ImageServiceContract, KeepsakeService
             file: $thumbNail->toJpeg()->toDataUri(),
             name: "$imageName.thumb.{$temporaryUploadedFile->getClientOriginalExtension()}"
         );
-        if (! $storageId) {
+        if (!$storageId) {
             $exception = new KeepsakeStorageException('Upload to S3 failed');
             event(new KeepsakeExceptionThrown($exception));
             throw $exception;
         }
         $temporaryUploadedFile->storeAs(
             path: $storagePath,
-            name: $imageName.'.'.$temporaryUploadedFile->getClientOriginalExtension(),
+            name: $imageName . '.' . $temporaryUploadedFile->getClientOriginalExtension(),
             options: 's3'
         );
         $imageData = $this->createImageData(
@@ -118,7 +118,7 @@ class ImageService implements ImageServiceContract, KeepsakeService
                 'currentImageName' => $imageName,
                 'originalImageMime' => $temporaryUploadedFile->getClientMimeType(),
                 'originalFilesize' => $temporaryUploadedFile->getSize(),
-                'currentFileSize' => $temporaryUploadedFile->getSize(),
+                'currentFilesize' => $temporaryUploadedFile->getSize(),
                 'originalFileExt' => $temporaryUploadedFile->getClientOriginalExtension(),
                 'image' => $imageData,
             ]
