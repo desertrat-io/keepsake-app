@@ -5,15 +5,19 @@ namespace App\Lib\Providers;
 use App\Lib\Facades\Impl\Keepsake;
 use App\Repositories\AccountRepositories\AccountEloquentRepository;
 use App\Repositories\AccountRepositories\UserEloquentRepository;
+use App\Repositories\DocumentRepositories\DocumentEloquentRepository;
 use App\Repositories\ImageRepositories\ImageEloquentRepository;
 use App\Repositories\ImageRepositories\ImageMetaEloquentRepository;
 use App\Repositories\RepositoryContracts\AccountRepositoryContract;
+use App\Repositories\RepositoryContracts\DocumentRepositoryContract;
 use App\Repositories\RepositoryContracts\ImageMetaRepositoryContract;
 use App\Repositories\RepositoryContracts\ImageRepositoryContract;
 use App\Repositories\RepositoryContracts\UserRepositoryContract;
 use App\Services\AccountServices\AccountService;
+use App\Services\DocumentServices\DocumentService;
 use App\Services\ImageServices\ImageService;
 use App\Services\ServiceContracts\AccountServiceContract;
+use App\Services\ServiceContracts\DocumentServiceContract;
 use App\Services\ServiceContracts\ImageServiceContract;
 use Illuminate\Support\ServiceProvider;
 use Intervention\Image\ImageManager;
@@ -22,14 +26,16 @@ class KeepsakeServiceProvider extends ServiceProvider
 {
     protected array $serviceContracts = [
         AccountServiceContract::class => AccountService::class,
-        ImageServiceContract::class => ImageService::class
+        ImageServiceContract::class => ImageService::class,
+        DocumentServiceContract::class => DocumentService::class,
     ];
 
     protected array $repositoryContracts = [
         UserRepositoryContract::class => UserEloquentRepository::class,
         AccountRepositoryContract::class => AccountEloquentRepository::class,
         ImageRepositoryContract::class => ImageEloquentRepository::class,
-        ImageMetaRepositoryContract::class => ImageMetaEloquentRepository::class
+        ImageMetaRepositoryContract::class => ImageMetaEloquentRepository::class,
+        DocumentRepositoryContract::class => DocumentEloquentRepository::class,
     ];
 
     /**
@@ -47,7 +53,7 @@ class KeepsakeServiceProvider extends ServiceProvider
     {
         array_walk(
             $this->serviceContracts,
-            fn(string $concrete, string $abstract) => $this->app->bind($abstract, $concrete)
+            fn (string $concrete, string $abstract) => $this->app->bind($abstract, $concrete)
         );
     }
 
@@ -70,14 +76,18 @@ class KeepsakeServiceProvider extends ServiceProvider
                 ImageMetaRepositoryContract::class
             )->give($this->repositoryContracts[ImageMetaRepositoryContract::class]);
 
+            $this->app->when($this->serviceContracts[DocumentServiceContract::class])->needs(
+                DocumentRepositoryContract::class
+            )->give($this->repositoryContracts[DocumentRepositoryContract::class]);
+
             $this->app->bind(UserRepositoryContract::class, $this->repositoryContracts[UserRepositoryContract::class]);
         }
     }
 
     protected function bindCustomFacades(): void
     {
-        $this->app->bind('image', fn(): ImageManager => new ImageManager(config('image.driver.imagick')));
-        $this->app->bind('keepsake', fn(): Keepsake => new Keepsake());
+        $this->app->bind('image', fn (): ImageManager => new ImageManager(config('image.driver.imagick')));
+        $this->app->bind('keepsake', fn (): Keepsake => new Keepsake());
     }
 
     /**

@@ -25,9 +25,11 @@ declare(strict_types=1);
 
 namespace App\DTO\Accounts;
 
+use App\DTO\Documents\DocumentData;
 use App\DTO\Images\ImageData;
 use App\Models\AccountModels\User;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use Livewire\Wireable;
 use Spatie\LaravelData\Attributes\MapName;
 use Spatie\LaravelData\Concerns\WireableData;
@@ -51,8 +53,10 @@ class UserData extends Data implements Wireable
         public readonly ?Carbon $updatedAt,
         public readonly ?Carbon $deletedAt,
         public readonly ?bool $isDeleted,
-        /** @var array<ImageData> */
-        public readonly null|array|Lazy $images,
+        /** @var Collection<ImageData> */
+        public readonly null|Collection|Lazy $images,
+        /** @var Collection<DocumentData> */
+        public readonly null|Collection|Lazy $documents,
         public readonly null|Lazy|AccountData $account
     ) {
     }
@@ -70,8 +74,9 @@ class UserData extends Data implements Wireable
             updatedAt: $user->updated_at,
             deletedAt: $user->deleted_at,
             isDeleted: false,
-            images: Lazy::create(fn() => $user->images),
-            account: Lazy::create(fn() => $user->account),
+            images: Lazy::create(fn() => ImageData::collect($user->images)),
+            documents: Lazy::create(fn() => DocumentData::collect($user->documents)),
+            account: Lazy::create(fn() => AccountData::fromModel($user->account)),
         );
     }
 }

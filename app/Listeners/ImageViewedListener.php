@@ -21,7 +21,7 @@ class ImageViewedListener
     public function handle(ImageViewed $event): void
     {
         $imageViewedEvent = new ImageViewedEvent();
-        $imageViewedEvent->email = $event->email;
+        $imageViewedEvent->user_id = $event->userId;
         $imageViewedEvent->viewed_at = $event->eventTime;
         $imageViewedEvent->image_viewed = $event->imageId;
         $imageViewedEvent->save();

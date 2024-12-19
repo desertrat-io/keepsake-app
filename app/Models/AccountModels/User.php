@@ -5,6 +5,7 @@ namespace App\Models\AccountModels;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\DTO\Accounts\AccountData;
 use App\Models\BoolDeleteColumn;
+use App\Models\DocumentModels\Document;
 use App\Models\GenerateUUID;
 use App\Models\ImageModels\Image;
 use Eloquent;
@@ -59,8 +60,10 @@ use Illuminate\Support\Carbon;
  * @method static Builder|User withTrashed()
  * @method static Builder|User withoutTrashed()
  * @property-read Collection<int, Image> $images
+ * @property-read Collection<int, Document> $documents
  * @property-read int|null $images_count
  * @property-read mixed $is_deleted
+ * @property-read int|null $documents_count
  * @mixin Eloquent
  */
 class User extends Authenticatable
@@ -106,7 +109,12 @@ class User extends Authenticatable
 
     public function images(): HasMany
     {
-        return $this->hasMany(Image::class);
+        return $this->hasMany(Image::class, 'uploaded_by', 'id');
+    }
+
+    public function documents(): HasMany
+    {
+        return $this->hasMany(Document::class);
     }
 
     protected function casts(): array

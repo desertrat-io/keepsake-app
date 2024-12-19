@@ -2,14 +2,14 @@
 
 namespace App\Events;
 
-use Carbon\Carbon;
+use App\DTO\Documents\DocumentData;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class ImageViewed
+class PdfUploaded
 {
     use Dispatchable;
     use InteractsWithSockets;
@@ -18,11 +18,9 @@ class ImageViewed
     /**
      * Create a new event instance.
      */
-    public function __construct(
-        public readonly string $userId,
-        public readonly Carbon $eventTime,
-        public readonly int $imageId
-    ) {
+    public function __construct(public readonly DocumentData $document)
+    {
+        //
     }
 
     /**
