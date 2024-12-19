@@ -29,6 +29,7 @@ use App\Events\KeepsakeExceptionThrown;
 use App\Exceptions\KeepsakeExceptions\KeepsakeException;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
+use Str;
 
 class Keepsake
 {
@@ -48,5 +49,13 @@ class Keepsake
     public function logException(KeepsakeException $exception): void
     {
         event(new KeepsakeExceptionThrown($exception));
+    }
+
+    public function getNewStoragePath(): string
+    {
+        return 'media/images/' . config(
+                'keepsake.tenant_name',
+                env('DEFAULT_TENANT_NAME')
+            ) . '/' . Str::orderedUuid();
     }
 }

@@ -10,7 +10,6 @@ use Keepsake\Common\S3DataStore;
 use Keepsake\Lib\Protocols\PdfConverter\ConvertPdfToJpegRequest;
 use Keepsake\Lib\Protocols\PdfConverter\ConvertPdfToJpegResponse;
 use Keepsake\Lib\Protocols\PdfConverter\KeepsakePdfConverterClient;
-use ReflectionClass;
 
 class ConvertJpegToPdf extends Command
 {
@@ -34,11 +33,13 @@ class ConvertJpegToPdf extends Command
      */
     public function handle()
     {
-
-        $client = new KeepsakePdfConverterClient('localhost:5005', ['credentials' => ChannelCredentials::createInsecure()]);
+        $client = new KeepsakePdfConverterClient(
+            '127.0.0.1:50051',
+            ['credentials' => ChannelCredentials::createInsecure()]
+        );
         $converter = new ConvertPdfToJpegRequest();
         $converter->setCorrelationId(uniqid());
-        $converter->setFileLocator('abc');
+        $converter->setFileLocator('ansökan engelska-complete.pdf');
         $converter->setOriginalMime('image/jpeg');
         $dataStore = new S3DataStore();
         $dataStore->setRegion(env('AWS_DEFAULT_REGION', 'eu-north-1'));
@@ -47,15 +48,15 @@ class ConvertJpegToPdf extends Command
         $converter->setS3DataStore($dataStore);
         try {
             list($result, $status) = $client->ConvertToPdf($converter)->wait();
+
             if ($result instanceof ConvertPdfToJpegResponse) {
-                $this->info($result->getMeta());
+                $this->info('Got a response supposedly');
+                $this->info($result->getMeta()->getMessage());
             }
-            $this->info(gettype($result));
-            $this->info(json_encode((new ReflectionClass($status))->getProperties()));
+            $this->info(json_encode($result));
         } catch (Exception $exception) {
             $this->error($exception->getMessage());
             Log::error($exception->getMessage());
         }
-
     }
 }

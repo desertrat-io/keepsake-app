@@ -71,7 +71,7 @@ class ImageMetaData extends Data implements Wireable
             updatedAt: $imageMeta->updated_at,
             deletedAt: $imageMeta->deleted_at,
             isDeleted: $imageMeta->is_deleted,
-            image: Lazy::create(fn() => $imageMeta->image)
+            image: Lazy::create(fn () => ImageData::fromModel($imageMeta->image))
         );
     }
 

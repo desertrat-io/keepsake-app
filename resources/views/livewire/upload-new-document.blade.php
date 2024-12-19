@@ -26,7 +26,9 @@
                     <br>
                     @if ($image)
 
-                        <img class="m-1 max-w-[500px] max-h-[500px]" src="{{ $image->temporaryUrl() }}">
+                        @if($image->getClientOriginalExtension() !== 'pdf')
+                            <img class="m-1 max-w-[500px] max-h-[500px]" src="{{ $image->temporaryUrl() }}">
+                        @endif
                         <div class="absolute right-[25%] top-0 mt-5 mr-5">
                             <label class="" id="keepsake__add-doc-title-label"
                                    aria-label="keepsake_add-doc-title-input">

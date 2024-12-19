@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Services\ServiceContracts\DocumentServiceContract;
 use App\Services\ServiceContracts\ImageServiceContract;
 use Illuminate\Contracts\View\View;
 use Illuminate\Validation\Rules\File;
@@ -14,11 +15,12 @@ class UploadNewDocument extends Component
 {
     use WithFileUploads;
 
+    private const array ALLOWED_FILE_TYPES = ['jpg', 'pdf', 'jpeg', 'png', 'bmp'];
     /**
      * You can't type this field before upload, so we'll use old school annotations
      * @var TemporaryUploadedFile
      */
-    #[Validate('image')]
+    #[Validate(['file', 'extensions:jpg, pdf, jpeg, png, bmp'])]
     public $image;
     public bool $isUploaded = false;
 
@@ -27,16 +29,19 @@ class UploadNewDocument extends Component
 
     private ImageServiceContract $imageService;
 
-    public function boot(ImageServiceContract $imageService): void
+    private DocumentServiceContract $documentService;
+
+    public function boot(ImageServiceContract $imageService, DocumentServiceContract $documentService): void
     {
         $this->imageService = $imageService;
+        $this->documentService = $documentService;
     }
 
     public function updatedImage(string $propertyName)
     {
         if ($propertyName === 'image') {
             $this->validateOnly($propertyName, [
-                File::types(['jpg', 'pdf', 'jpeg', 'png', 'bmp'])
+                File::types(self::ALLOWED_FILE_TYPES)
                     ->min(config('keepsake.min_image_size'))
             ]);
         } else {
@@ -54,15 +59,27 @@ class UploadNewDocument extends Component
     {
         $this->validate([
             'image' => [
-                File::types(['jpg', 'pdf', 'jpeg', 'png', 'bmp'])
+                File::types(self::ALLOWED_FILE_TYPES)
                     ->min(config('keepsake.min_image_size'))
             ]
         ]);
         if ($this->imageTitle !== '') {
-            $imageData = $this->imageService->saveImage(temporaryUploadedFile: $this->image, customTitle: $this->imageTitle);
+            if ($this->image->getClientOriginalExtension() !== 'pdf') {
+                $imageData = $this->imageService->saveImage(
+                    temporaryUploadedFile: $this->image,
+                    customTitle: $this->imageTitle
+                );
+            } else {
+                $imageData = $this->documentService->createDocument(temporaryUploadedFile: $this->image, customTitle: $this->imageTitle);
+            }
             $this->dispatch('doc-uploaded-custom-title');
         } else {
-            $imageData = $this->imageService->saveImage(temporaryUploadedFile: $this->image);
+            // TODO: refactor the custom title handler
+            if ($this->image->getClientOriginalExtension() !== 'pdf') {
+                $imageData = $this->documentService->createDocument(temporaryUploadedFile: $this->image);
+            } else {
+                $imageData = $this->imageService->saveImage(temporaryUploadedFile: $this->image);
+            }
         }
         $this->image = null;
         $this->isUploaded = true;

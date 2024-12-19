@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use App\Events\ImageViewed;
 use App\Models\ImageModels\Image;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Lazy;
 use Livewire\Component;
 
@@ -15,7 +16,7 @@ class DocumentQuickLook extends Component
 
     public function render()
     {
-        event(new ImageViewed($this->image->uploadedBy->email, now(), $this->image->id));
+        event(new ImageViewed(userId: Auth::id(), eventTime: now(), imageId: $this->image->id));
         return view('livewire.document-quick-look');
     }
 }

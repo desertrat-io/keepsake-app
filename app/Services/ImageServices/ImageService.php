@@ -29,7 +29,6 @@ use App\DTO\Accounts\UserData;
 use App\DTO\Images\ImageData;
 use App\DTO\Images\ImageMetaData;
 use App\Events\ImageUploaded;
-use App\Events\KeepsakeExceptionThrown;
 use App\Exceptions\KeepsakeExceptions\KeepsakeStorageException;
 use App\Repositories\RepositoryContracts\ImageMetaRepositoryContract;
 use App\Repositories\RepositoryContracts\ImageRepositoryContract;
@@ -40,10 +39,10 @@ use Auth;
 use Illuminate\Contracts\Pagination\CursorPaginator;
 use Illuminate\Pagination\Cursor;
 use Image;
+use Keepsake;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Override;
 use Storage;
-use Str;
 
 class ImageService implements ImageServiceContract, KeepsakeService
 {
@@ -61,10 +60,7 @@ class ImageService implements ImageServiceContract, KeepsakeService
     public function saveImage(TemporaryUploadedFile $temporaryUploadedFile, ?string $customTitle = null): ImageData
     {
         $imageName = explode('.', $customTitle ?? $temporaryUploadedFile->getClientOriginalName())[0];
-        $storagePath = 'media/images/' . config(
-            'keepsake.tenant_name',
-            env('DEFAULT_TENANT_NAME')
-        ) . '/' . Str::orderedUuid();
+        $storagePath = Keepsake::getNewStoragePath();
         // livewire doesn't decorate the file handler so that you can mutate it before storing...to my knowledge
 
         $thumbNail = Image::read($temporaryUploadedFile);
@@ -75,8 +71,8 @@ class ImageService implements ImageServiceContract, KeepsakeService
             name: "$imageName.thumb.{$temporaryUploadedFile->getClientOriginalExtension()}"
         );
         if (!$storageId) {
-            $exception = new KeepsakeStorageException('Upload to S3 failed');
-            event(new KeepsakeExceptionThrown($exception));
+            $exception = new KeepsakeStorageException('Image upload to S3 failed');
+            Keepsake::logException($exception);
             throw $exception;
         }
         $temporaryUploadedFile->storeAs(
@@ -140,4 +136,6 @@ class ImageService implements ImageServiceContract, KeepsakeService
 
         return $this->imageRepository->getImages(cursor: $cursor, perPage: $per, limit: $total);
     }
+
+
 }

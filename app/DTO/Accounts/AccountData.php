@@ -62,7 +62,7 @@ class AccountData extends Data implements Wireable
             updatedAt: $account->updated_at,
             deletedAt: $account->deleted_at,
             isDeleted: $account->is_deleted,
-            user: Lazy::create(fn () => $account->user)
+            user: Lazy::create(fn() => UserData::fromModel($account->user))
         );
     }
 }

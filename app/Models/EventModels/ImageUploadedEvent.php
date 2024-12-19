@@ -27,6 +27,33 @@ namespace App\Models\EventModels;
 
 use MongoDB\Laravel\Eloquent\Model;
 
+/**
+ * 
+ *
+ * @property string $_id 4 occurrences
+ * @property \Illuminate\Support\Carbon|null $created_at 4 occurrences
+ * @property string|null $meta 4 occurrences
+ * @property \Illuminate\Support\Carbon|null $updated_at 4 occurrences
+ * @property int|null $uploaded_id 4 occurrences
+ * @property string|null $uploader 4 occurrences
+ * @property-read mixed $id
+ * @method static \MongoDB\Laravel\Eloquent\Builder<static>|ImageUploadedEvent addHybridHas(\Illuminate\Database\Eloquent\Relations\Relation $relation, string $operator = '>=', string $count = 1, string $boolean = 'and', ?\Closure $callback = null)
+ * @method static \MongoDB\Laravel\Eloquent\Builder<static>|ImageUploadedEvent aggregate($function = null, $columns = [])
+ * @method static \MongoDB\Laravel\Eloquent\Builder<static>|ImageUploadedEvent getConnection()
+ * @method static \MongoDB\Laravel\Eloquent\Builder<static>|ImageUploadedEvent insert(array $values)
+ * @method static \MongoDB\Laravel\Eloquent\Builder<static>|ImageUploadedEvent insertGetId(array $values, $sequence = null)
+ * @method static \MongoDB\Laravel\Eloquent\Builder<static>|ImageUploadedEvent newModelQuery()
+ * @method static \MongoDB\Laravel\Eloquent\Builder<static>|ImageUploadedEvent newQuery()
+ * @method static \MongoDB\Laravel\Eloquent\Builder<static>|ImageUploadedEvent query()
+ * @method static \MongoDB\Laravel\Eloquent\Builder<static>|ImageUploadedEvent raw($value = null)
+ * @method static \MongoDB\Laravel\Eloquent\Builder<static>|ImageUploadedEvent whereCreatedAt($value)
+ * @method static \MongoDB\Laravel\Eloquent\Builder<static>|ImageUploadedEvent whereId($value)
+ * @method static \MongoDB\Laravel\Eloquent\Builder<static>|ImageUploadedEvent whereMeta($value)
+ * @method static \MongoDB\Laravel\Eloquent\Builder<static>|ImageUploadedEvent whereUpdatedAt($value)
+ * @method static \MongoDB\Laravel\Eloquent\Builder<static>|ImageUploadedEvent whereUploadedId($value)
+ * @method static \MongoDB\Laravel\Eloquent\Builder<static>|ImageUploadedEvent whereUploader($value)
+ * @mixin \Eloquent
+ */
 class ImageUploadedEvent extends Model
 {
     protected $connection = 'mongodb';

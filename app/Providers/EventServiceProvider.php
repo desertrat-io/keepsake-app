@@ -5,9 +5,12 @@ namespace App\Providers;
 use App\Events\ImageUploaded;
 use App\Events\ImageViewed;
 use App\Events\KeepsakeExceptionThrown;
+use App\Events\PdfUploaded;
+use App\Listeners\ConvertUploadedPdfListener;
 use App\Listeners\ImageUploadedListener;
 use App\Listeners\ImageViewedListener;
 use App\Listeners\KeepsakeExceptionThrownListener;
+use App\Listeners\PdfUploadedListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -25,6 +28,10 @@ class EventServiceProvider extends ServiceProvider
         ],
         ImageUploaded::class => [
             ImageUploadedListener::class
+        ],
+        PdfUploaded::class => [
+            PdfUploadedListener::class,
+            ConvertUploadedPdfListener::class
         ],
         KeepsakeExceptionThrown::class => [
             KeepsakeExceptionThrownListener::class
