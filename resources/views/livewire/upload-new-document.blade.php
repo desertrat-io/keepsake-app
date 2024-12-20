@@ -42,7 +42,7 @@
                     <input type="file" id="keepsake__add-doc-input" wire:model.live="image"
                            aria-labelledby="keepsake__add-doc-input-label"
                            class="z-[-1] hidden">
-                    <div wire:loading wire:target="image">{{ __('keepsake.field_label.modal_add_loading') }}</div>
+                    <div wire:loading wire:target="saveImage">{{ __('keepsake.field_label.modal_add_loading') }}</div>
                     @error('image') <p class="keepsake__form-text-error">{{ $message  }}</p> @enderror
                     <div x-show="uploading">
                         <progress max="100" x-bind:value="progress"></progress>
