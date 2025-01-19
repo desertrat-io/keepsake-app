@@ -2,6 +2,8 @@
 
 namespace App\Jobs;
 
+use App\DTO\Documents\DocumentData;
+use App\Services\ServiceContracts\DocumentConverterServiceContract as DocumentConverterService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
@@ -12,7 +14,7 @@ class ConvertPdfToJpeg implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct()
+    public function __construct(public readonly DocumentData $documentData)
     {
         //
     }
@@ -20,8 +22,9 @@ class ConvertPdfToJpeg implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(): void
+    public function handle(DocumentConverterService $documentConverterService): void
     {
-        //
+
+        $splitIMages = $documentConverterService->convertViaGrpcService($this->documentData);
     }
 }

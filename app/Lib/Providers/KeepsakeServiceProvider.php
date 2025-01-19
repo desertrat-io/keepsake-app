@@ -14,9 +14,11 @@ use App\Repositories\RepositoryContracts\ImageMetaRepositoryContract;
 use App\Repositories\RepositoryContracts\ImageRepositoryContract;
 use App\Repositories\RepositoryContracts\UserRepositoryContract;
 use App\Services\AccountServices\AccountService;
+use App\Services\DocumentServices\DocumentConverterService;
 use App\Services\DocumentServices\DocumentService;
 use App\Services\ImageServices\ImageService;
 use App\Services\ServiceContracts\AccountServiceContract;
+use App\Services\ServiceContracts\DocumentConverterServiceContract;
 use App\Services\ServiceContracts\DocumentServiceContract;
 use App\Services\ServiceContracts\ImageServiceContract;
 use Illuminate\Support\ServiceProvider;
@@ -28,9 +30,10 @@ class KeepsakeServiceProvider extends ServiceProvider
         AccountServiceContract::class => AccountService::class,
         ImageServiceContract::class => ImageService::class,
         DocumentServiceContract::class => DocumentService::class,
+        DocumentConverterServiceContract::class => DocumentConverterService::class,
     ];
 
-    protected array $repositoryContracts = [
+    protected array $eloquentContracts = [
         UserRepositoryContract::class => UserEloquentRepository::class,
         AccountRepositoryContract::class => AccountEloquentRepository::class,
         ImageRepositoryContract::class => ImageEloquentRepository::class,
@@ -60,27 +63,10 @@ class KeepsakeServiceProvider extends ServiceProvider
     protected function bindRepositoryContracts(): void
     {
         if (config('keepsake.model_mode') === 'eloquent') {
-            $this->app->when($this->serviceContracts[AccountServiceContract::class])->needs(
-                UserRepositoryContract::class
-            )->give($this->repositoryContracts[UserRepositoryContract::class]);
-
-            $this->app->when($this->serviceContracts[AccountServiceContract::class])->needs(
-                AccountRepositoryContract::class
-            )->give($this->repositoryContracts[AccountRepositoryContract::class]);
-
-            $this->app->when($this->serviceContracts[ImageServiceContract::class])->needs(
-                ImageRepositoryContract::class
-            )->give($this->repositoryContracts[ImageRepositoryContract::class]);
-
-            $this->app->when($this->serviceContracts[ImageServiceContract::class])->needs(
-                ImageMetaRepositoryContract::class
-            )->give($this->repositoryContracts[ImageMetaRepositoryContract::class]);
-
-            $this->app->when($this->serviceContracts[DocumentServiceContract::class])->needs(
-                DocumentRepositoryContract::class
-            )->give($this->repositoryContracts[DocumentRepositoryContract::class]);
-
-            $this->app->bind(UserRepositoryContract::class, $this->repositoryContracts[UserRepositoryContract::class]);
+            array_walk(
+                $this->eloquentContracts,
+                fn (string $concrete, string $abstract) => $this->app->bind($abstract, $concrete)
+            );
         }
     }
 
@@ -96,14 +82,6 @@ class KeepsakeServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //
-    }
-
-    protected function contextualRepositoryBindings(string $abstract, string $concrete): void
-    {
-    }
-
-    protected function contextualServiceBindings(string $abstract, string $concrete): void
-    {
     }
 
 }
