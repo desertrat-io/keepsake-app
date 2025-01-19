@@ -6,12 +6,12 @@ use Exception;
 use Grpc\ChannelCredentials;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
-use Keepsake\Common\S3DataStore;
 use Keepsake\Lib\Protocols\PdfConverter\ConvertPdfToJpegRequest;
 use Keepsake\Lib\Protocols\PdfConverter\ConvertPdfToJpegResponse;
 use Keepsake\Lib\Protocols\PdfConverter\KeepsakePdfConverterClient;
+use Keepsake\Lib\Protocols\S3DataStore;
 
-class ConvertJpegToPdf extends Command
+class ConvertPdfToJpeg extends Command
 {
     public const string KAFKA_IP_VER = 'v4';
     /**
@@ -39,21 +39,27 @@ class ConvertJpegToPdf extends Command
         );
         $converter = new ConvertPdfToJpegRequest();
         $converter->setCorrelationId(uniqid());
-        $converter->setFileLocator('ansökan engelska-complete.pdf');
-        $converter->setOriginalMime('image/jpeg');
+        $converter->setFileLocator('media/images/dev/9dc58545-d64c-4b9a-bf9f-277f14c37169/017beslutsunderlag1020241104_241141517.pdf');
+        $converter->setFileName('017beslutsunderlag1020241104_241141517.pdf');
+        $converter->setOriginalMime('application/pdf');
         $dataStore = new S3DataStore();
         $dataStore->setRegion(env('AWS_DEFAULT_REGION', 'eu-north-1'));
         $dataStore->setBucketName(env('AWS_BUCKET'));
         $dataStore->setTenantName(env('DEFAULT_TENANT_NAME'));
+        $dataStore->setFileKey('media/images/dev/9dc58545-d64c-4b9a-bf9f-277f14c37169/017beslutsunderlag1020241104_241141517.pdf');
+        $dataStore->setFilePath('media/images/dev/9dc58545-d64c-4b9a-bf9f-277f14c37169');
+        $dataStore->setFileName('017beslutsunderlag1020241104_241141517.pdf');
         $converter->setS3DataStore($dataStore);
         try {
-            list($result, $status) = $client->ConvertToPdf($converter)->wait();
-
+            [$result, $status] = $client->ConvertToPdf($converter)->wait();
             if ($result instanceof ConvertPdfToJpegResponse) {
-                $this->info('Got a response supposedly');
-                $this->info($result->getMeta()->getMessage());
+                $this->info('Response received!');
+                $this->info(json_encode($result->serializeToJsonString()));
+                foreach ($result->getFiles() as $file) {
+                    $this->info($file->getFileFinalLocation());
+                    $this->info($file->getFileName());
+                }
             }
-            $this->info(json_encode($result));
         } catch (Exception $exception) {
             $this->error($exception->getMessage());
             Log::error($exception->getMessage());

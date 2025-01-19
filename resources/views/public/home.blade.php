@@ -4,7 +4,7 @@
     <div class="flex justify-center items-center">
         @unless(Auth::check())
             <video autoplay muted loop id="keepsake__bg-docs-vid" class="w-full h-full">
-                <source src="{{ asset('storage/media/mixkit-inside-an-old-library-24632-large.mp4') }}"
+                <source src="{{ asset('media/mixkit-inside-an-old-library-24632-hd-ready.mp4') }}"
                         type="video/mp4">
             </video>
             <div class="absolute bg-[#C3B3A9] p-[30px]">
