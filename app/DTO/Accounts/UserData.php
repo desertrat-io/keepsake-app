@@ -74,9 +74,9 @@ class UserData extends Data implements Wireable
             updatedAt: $user->updated_at,
             deletedAt: $user->deleted_at,
             isDeleted: false,
-            images: Lazy::create(fn() => ImageData::collect($user->images)),
-            documents: Lazy::create(fn() => DocumentData::collect($user->documents)),
-            account: Lazy::create(fn() => AccountData::fromModel($user->account)),
+            images: Lazy::create(fn () => ImageData::collect($user->images)),
+            documents: Lazy::create(fn () => DocumentData::collect($user->documents)),
+            account: Lazy::create(fn () => AccountData::fromModel($user->account)),
         );
     }
 }

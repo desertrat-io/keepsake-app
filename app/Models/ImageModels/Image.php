@@ -29,8 +29,10 @@ use App\Models\AccountModels\User;
 use App\Models\BoolDeleteColumn;
 use App\Models\DocumentModels\Document;
 use App\Models\GenerateUUID;
+use Database\Factories\ImageModels\ImageFactory;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -72,6 +74,8 @@ use Illuminate\Support\Carbon;
  * @property int|null $document_id
  * @method static Builder<static>|Image whereDocumentId($value)
  * @property-read Document|null $pageOf
+ * @property-read \App\Models\ImageModels\TFactory|null $use_factory
+ * @method static \Database\Factories\ImageModels\ImageFactory factory($count = null, $state = [])
  * @mixin Eloquent
  */
 class Image extends Model
@@ -79,6 +83,7 @@ class Image extends Model
     use SoftDeletes;
     use BoolDeleteColumn;
     use GenerateUUID;
+    use HasFactory;
 
 
     protected $fillable = [
@@ -112,4 +117,8 @@ class Image extends Model
         ];
     }
 
+    protected static function newFactory(): ImageFactory
+    {
+        return ImageFactory::new();
+    }
 }

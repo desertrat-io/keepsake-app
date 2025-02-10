@@ -55,9 +55,9 @@ class UserEloquentRepository implements KeepsakeEloquentRepository, UserReposito
     private function generateUserAsData(User $user, $includeAccount = false): UserData
     {
         if ($includeAccount) {
-            return UserData::from($user->load('account'));
+            return UserData::fromModel($user->load('account'));
         }
-        return UserData::from($user);
+        return UserData::fromModel($user);
     }
 
     public function getUserById(int $userId, bool $includeAccount = false, bool $asData = false): User|UserData

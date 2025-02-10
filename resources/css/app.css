@@ -1,17 +1,35 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@plugin '@tailwindcss/forms';
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
 
 .keepsake__action-green-btn {
-    @apply bg-[#489185] rounded pt-1 pb-1 pl-6 pr-6 hover:bg-[#99B99D]
+    @apply bg-[#489185] rounded-sm pt-1 pb-1 pl-6 pr-6 hover:bg-[#99B99D]
 }
 
 .keepsake__cancel-gray-btn {
-    @apply bg-[#728196] rounded pt-1 pb-1 pl-6 pr-6 hover:bg-[#9CACC3]
+    @apply bg-[#728196] rounded-sm pt-1 pb-1 pl-6 pr-6 hover:bg-[#9CACC3]
 }
 
 .keepsake__cancel-red-btn {
-    @apply bg-red-400 rounded pt-1 pb-1 pl-6 pr-6 hover:bg-red-300
+    @apply bg-red-400 rounded-sm pt-1 pb-1 pl-6 pr-6 hover:bg-red-300
 }
 
 .keepsake__form-text-std {

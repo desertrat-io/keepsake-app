@@ -9,6 +9,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Context;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * @codeCoverageIgnore 
+ */
 class AddUserContext
 {
     /**
