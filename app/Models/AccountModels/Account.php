@@ -32,7 +32,7 @@ use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
@@ -63,8 +63,8 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Account withTrashed()
  * @method static Builder|Account withoutTrashed()
  * @property-read mixed $is_deleted
- * @property-read \App\Models\AccountModels\TFactory|null $use_factory
- * @method static \Database\Factories\AccountModels\AccountFactory factory($count = null, $state = [])
+ * @property-read TFactory|null $use_factory
+ * @method static AccountFactory factory($count = null, $state = [])
  * @mixin Eloquent
  */
 class Account extends Model
@@ -80,9 +80,14 @@ class Account extends Model
         'is_locked'
     ];
 
-    public function user(): HasOne
+    protected static function newFactory()
     {
-        return $this->hasOne(User::class);
+        return AccountFactory::new();
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     protected function casts(): array
@@ -90,10 +95,5 @@ class Account extends Model
         return [
             'uuid' => 'string'
         ];
-    }
-
-    protected static function newFactory()
-    {
-        return AccountFactory::new();
     }
 }

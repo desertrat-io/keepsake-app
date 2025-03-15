@@ -7,7 +7,7 @@ use Illuminate\Support\ServiceProvider;
 use Laravel\Telescope\TelescopeServiceProvider;
 
 /**
- * @codeCoverageIgnore 
+ * @codeCoverageIgnore
  */
 class AppServiceProvider extends ServiceProvider
 {

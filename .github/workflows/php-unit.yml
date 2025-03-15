@@ -54,7 +54,7 @@ jobs:
           DB_PORT: 5432
           DB_DATABASE: keepsake_test
           DB_USERNAME: postgres
-        run: php artisan test --env=testing --coverage --coverage-clover=coverage.xml
+        run: php artisan test --env=testing --min=75 --coverage --coverage-clover=coverage.xml
 
       - name: Codecov
         uses: codecov/codecov-action@v4.3.0

@@ -35,12 +35,12 @@ class Keepsake
 {
     public function idFromKey(string $keepsakeKey): UuidInterface
     {
-        return Uuid::fromString(explode('-', $keepsakeKey)[2]);
+        return Uuid::fromString(Str::replace('keepsake-key-', '', $keepsakeKey));
     }
 
-    public function idToKey(Uuid|string $keepsakeKey): string
+    public function idToKey(UuidInterface|string $keepsakeKey): string
     {
-        if ($keepsakeKey instanceof Uuid) {
+        if ($keepsakeKey instanceof UuidInterface) {
             return 'keepsake-key-' . $keepsakeKey->toString();
         }
         return 'keepsake-key-' . $keepsakeKey;
@@ -57,5 +57,14 @@ class Keepsake
                 'keepsake.tenant_name',
                 env('DEFAULT_TENANT_NAME')
             ) . '/' . Str::orderedUuid();
+    }
+
+    public function getCurrentDiskName(): string
+    {
+        $diskName = 's3';
+        if (app()->environment('testing')) {
+            $diskName = 'local';
+        }
+        return $diskName;
     }
 }

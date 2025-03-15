@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace App\Models\ImageModels;
 
+use App\DTO\Images\ImageData;
 use App\Models\AccountModels\User;
 use App\Models\BoolDeleteColumn;
 use App\Models\DocumentModels\Document;
@@ -38,6 +39,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
+use Spatie\LaravelData\WithData;
 
 /**
  * App\Models\ImageModels\ImageFacade
@@ -74,8 +76,8 @@ use Illuminate\Support\Carbon;
  * @property int|null $document_id
  * @method static Builder<static>|Image whereDocumentId($value)
  * @property-read Document|null $pageOf
- * @property-read \App\Models\ImageModels\TFactory|null $use_factory
- * @method static \Database\Factories\ImageModels\ImageFactory factory($count = null, $state = [])
+ * @property-read TFactory|null $use_factory
+ * @method static ImageFactory factory($count = null, $state = [])
  * @mixin Eloquent
  */
 class Image extends Model
@@ -84,6 +86,9 @@ class Image extends Model
     use BoolDeleteColumn;
     use GenerateUUID;
     use HasFactory;
+    use WithData;
+
+    protected string $dataClass = ImageData::class;
 
 
     protected $fillable = [
@@ -94,6 +99,11 @@ class Image extends Model
         'is_locked',
         'is_dirty'
     ];
+
+    protected static function newFactory(): ImageFactory
+    {
+        return ImageFactory::new();
+    }
 
     public function meta(): HasOne
     {
@@ -115,10 +125,5 @@ class Image extends Model
         return [
             'uuid' => 'string'
         ];
-    }
-
-    protected static function newFactory(): ImageFactory
-    {
-        return ImageFactory::new();
     }
 }

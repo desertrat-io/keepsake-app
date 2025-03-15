@@ -106,6 +106,11 @@ class User extends Authenticatable
         'two_factor_confirmed_at'
     ];
 
+    protected static function newFactory(): Factory|UserFactory
+    {
+        return UserFactory::new();
+    }
+
     public function account(): HasOne
     {
         return $this->hasOne(Account::class);
@@ -113,12 +118,12 @@ class User extends Authenticatable
 
     public function images(): HasMany
     {
-        return $this->hasMany(Image::class, 'uploaded_by', 'id');
+        return $this->hasMany(Image::class, foreignKey: 'uploaded_by', localKey: 'id');
     }
 
     public function documents(): HasMany
     {
-        return $this->hasMany(Document::class);
+        return $this->hasMany(Document::class, foreignKey: 'uploaded_by', localKey: 'id');
     }
 
     protected function casts(): array
@@ -127,10 +132,5 @@ class User extends Authenticatable
             'uuid' => 'string',
             'email_verified_at' => 'datetime',
         ];
-    }
-
-    protected static function newFactory(): Factory|UserFactory
-    {
-        return UserFactory::new();
     }
 }

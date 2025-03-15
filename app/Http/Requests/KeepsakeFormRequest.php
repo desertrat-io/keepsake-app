@@ -28,6 +28,9 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Collection;
 
+/**\
+ * @codeCoverageIgnore
+ */
 abstract class KeepsakeFormRequest extends FormRequest
 {
     /**

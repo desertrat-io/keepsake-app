@@ -5,6 +5,9 @@ namespace App\Listeners;
 use App\Events\ImageViewed;
 use App\Models\EventModels\ImageViewedEvent;
 
+/**
+ * @codeCoverageIgnore
+ */
 class ImageViewedListener
 {
     /**

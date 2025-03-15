@@ -6,11 +6,18 @@ use Exception;
 use Grpc\ChannelCredentials;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
+use JetBrains\PhpStorm\Deprecated;
 use Keepsake\Lib\Protocols\PdfConverter\ConvertPdfToJpegRequest;
 use Keepsake\Lib\Protocols\PdfConverter\ConvertPdfToJpegResponse;
 use Keepsake\Lib\Protocols\PdfConverter\KeepsakePdfConverterClient;
 use Keepsake\Lib\Protocols\S3DataStore;
 
+/**
+ * This is just a helper command that will be removed at some point, no need to test
+ * @codeCoverageIgnore
+ * @deprecated
+ */
+#[Deprecated]
 class ConvertPdfToJpeg extends Command
 {
     public const string KAFKA_IP_VER = 'v4';

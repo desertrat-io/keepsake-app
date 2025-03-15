@@ -24,6 +24,9 @@ use App\Services\ServiceContracts\ImageServiceContract;
 use Illuminate\Support\ServiceProvider;
 use Intervention\Image\ImageManager;
 
+/**
+ * @codeCoverageIgnore
+ */
 class KeepsakeServiceProvider extends ServiceProvider
 {
     protected array $serviceContracts = [
@@ -56,7 +59,7 @@ class KeepsakeServiceProvider extends ServiceProvider
     {
         array_walk(
             $this->serviceContracts,
-            fn (string $concrete, string $abstract) => $this->app->bind($abstract, $concrete)
+            fn(string $concrete, string $abstract) => $this->app->bind($abstract, $concrete)
         );
     }
 
@@ -65,15 +68,15 @@ class KeepsakeServiceProvider extends ServiceProvider
         if (config('keepsake.model_mode') === 'eloquent') {
             array_walk(
                 $this->eloquentContracts,
-                fn (string $concrete, string $abstract) => $this->app->bind($abstract, $concrete)
+                fn(string $concrete, string $abstract) => $this->app->bind($abstract, $concrete)
             );
         }
     }
 
     protected function bindCustomFacades(): void
     {
-        $this->app->bind('image', fn (): ImageManager => new ImageManager(config('image.driver.imagick')));
-        $this->app->bind('keepsake', fn (): Keepsake => new Keepsake());
+        $this->app->bind('image', fn(): ImageManager => new ImageManager(config('image.driver.imagick')));
+        $this->app->bind('keepsake', fn(): Keepsake => new Keepsake());
     }
 
     /**

@@ -10,12 +10,12 @@ use App\Repositories\RepositoryContracts\UserRepositoryContract as UserRepositor
 use App\Services\KeepsakeService;
 use App\Services\ServiceContracts\DocumentServiceContract;
 use Auth;
+use Illuminate\Http\UploadedFile;
 use Keepsake;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class DocumentService implements DocumentServiceContract, KeepsakeService
 {
-
     public function __construct(private DocumentRepository $documentRepository, private UserRepository $userRepository)
     {
     }
@@ -36,9 +36,10 @@ class DocumentService implements DocumentServiceContract, KeepsakeService
      * @throws KeepsakeStorageException
      */
     public function createDocument(
-        TemporaryUploadedFile $temporaryUploadedFile,
-        ?string $customTitle = null
-    ): DocumentData {
+        UploadedFile $temporaryUploadedFile,
+        ?string      $customTitle = null
+    ): DocumentData
+    {
         $storagePath = Keepsake::getNewStoragePath();
         $documentFileName = explode('.', $customTitle ?? $temporaryUploadedFile->getClientOriginalName())[0];
         $storageId = $temporaryUploadedFile->storeAs(

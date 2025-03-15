@@ -10,6 +10,9 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
+/**
+ * @codeCoverageIgnore
+ */
 class ImageUploaded
 {
     use Dispatchable;
@@ -27,6 +30,7 @@ class ImageUploaded
     /**
      * Get the channels the event should broadcast on.
      *
+     * @codeCoverageIgnore
      * @return array<int, Channel>
      */
     public function broadcastOn(): array

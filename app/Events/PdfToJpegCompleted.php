@@ -11,6 +11,9 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
+/**
+ * @codeCoverageIgnore
+ */
 class PdfToJpegCompleted implements ShouldBroadcast
 {
     use Dispatchable;
