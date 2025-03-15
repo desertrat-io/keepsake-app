@@ -27,6 +27,9 @@ namespace App\Lib\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
+/**
+ * @codeCoverageIgnore
+ */
 class KeepsakeFacade extends Facade
 {
     protected static function getFacadeAccessor()

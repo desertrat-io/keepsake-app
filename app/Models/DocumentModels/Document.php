@@ -6,9 +6,12 @@ use App\Models\AccountModels\User;
 use App\Models\BoolDeleteColumn;
 use App\Models\GenerateUUID;
 use App\Models\ImageModels\Image;
+use Database\Factories\DocumentModels\DocumentFactory;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -54,6 +57,7 @@ class Document extends Model
     use GenerateUUID;
     use SoftDeletes;
     use BoolDeleteColumn;
+    use HasFactory;
 
     protected $fillable = [
         'uuid',
@@ -62,6 +66,11 @@ class Document extends Model
         'uploaded_by',
         'storage_id'
     ];
+
+    protected static function newFactory(): DocumentFactory|Factory
+    {
+        return DocumentFactory::new();
+    }
 
     public function pages(): HasMany
     {

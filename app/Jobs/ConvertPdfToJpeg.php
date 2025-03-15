@@ -25,6 +25,6 @@ class ConvertPdfToJpeg implements ShouldQueue
     public function handle(DocumentConverterService $documentConverterService): void
     {
 
-        $splitIMages = $documentConverterService->convertViaGrpcService($this->documentData);
+        $splitImages = $documentConverterService->convertViaGrpcService($this->documentData);
     }
 }

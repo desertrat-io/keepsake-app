@@ -6,6 +6,9 @@ use App\Events\PdfUploaded;
 use App\Jobs\ConvertPdfToJpeg;
 use App\Models\EventModels\PdfUploadedEvent as PdfUploadedEventModel;
 
+/**
+ * @codeCoverageIgnore
+ */
 class PdfUploadedListener
 {
     /**

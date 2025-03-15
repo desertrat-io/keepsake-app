@@ -26,8 +26,10 @@ declare(strict_types=1);
 namespace App\Models\ImageModels;
 
 use App\Models\BoolDeleteColumn;
+use Database\Factories\ImageModels\ImageMetaFactory;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -66,12 +68,15 @@ use Illuminate\Support\Carbon;
  * @method static Builder|ImageMeta withTrashed()
  * @method static Builder|ImageMeta withoutTrashed()
  * @property-read mixed $is_deleted
+ * @property-read \App\Models\ImageModels\TFactory|null $use_factory
+ * @method static \Database\Factories\ImageModels\ImageMetaFactory factory($count = null, $state = [])
  * @mixin Eloquent
  */
 class ImageMeta extends Model
 {
     use SoftDeletes;
     use BoolDeleteColumn;
+    use HasFactory;
 
     protected $table = 'image_meta';
 
@@ -88,5 +93,10 @@ class ImageMeta extends Model
     public function image(): BelongsTo
     {
         return $this->belongsTo(Image::class);
+    }
+
+    protected static function newFactory(): ImageMetaFactory
+    {
+        return ImageMetaFactory::new();
     }
 }

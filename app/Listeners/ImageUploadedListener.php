@@ -5,6 +5,9 @@ namespace App\Listeners;
 use App\Events\ImageUploaded;
 use App\Models\EventModels\ImageUploadedEvent;
 
+/**
+ * @codeCoverageIgnore
+ */
 class ImageUploadedListener
 {
     /**

@@ -32,6 +32,10 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
 
 
+/**
+ * There's not really anything here to test, but the feature test is there anyway but coverage won't kick in
+ * @codeCoverageIgnore
+ */
 class HomeController extends Controller
 {
 

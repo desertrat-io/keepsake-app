@@ -27,6 +27,9 @@ namespace App\Lib\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
+/**
+ * @codeCoverageIgnore
+ */
 class ImageFacade extends Facade
 {
     protected static function getFacadeAccessor()

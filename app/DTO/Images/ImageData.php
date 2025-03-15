@@ -62,7 +62,7 @@ class ImageData extends Data implements Wireable
             uuid: $image->uuid,
             storageId: $image->storage_id,
             storagePath: $image->storage_path,
-            uploadedBy: Lazy::create(fn() => UserData::fromModel($image->uploadedBy)),
+            uploadedBy: Lazy::create(fn () => UserData::fromModel($image->uploadedBy)),
             isLocked: $image->is_locked,
             isDirty: $image->is_dirty,
             createdAt: $image->created_at,

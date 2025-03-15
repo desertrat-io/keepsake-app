@@ -66,7 +66,7 @@ class UploadNewDocument extends Component
         if ($this->imageTitle !== '') {
             if ($this->image->getClientOriginalExtension() !== 'pdf') {
                 $imageData = $this->imageService->saveImage(
-                    temporaryUploadedFile: $this->image,
+                    uploadedFile: $this->image,
                     customTitle: $this->imageTitle
                 );
             } else {
@@ -78,7 +78,7 @@ class UploadNewDocument extends Component
             if ($this->image->getClientOriginalExtension() !== 'pdf') {
                 $imageData = $this->documentService->createDocument(temporaryUploadedFile: $this->image);
             } else {
-                $imageData = $this->imageService->saveImage(temporaryUploadedFile: $this->image);
+                $imageData = $this->imageService->saveImage(uploadedFile: $this->image);
             }
         }
         $this->image = null;

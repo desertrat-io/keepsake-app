@@ -3,9 +3,10 @@
 namespace App\Listeners;
 
 use App\Events\PdfUploaded;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 
+/**
+ * @codeCoverageIgnore
+ */
 class ConvertUploadedPdfListener
 {
     /**

@@ -30,12 +30,12 @@ use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 interface ImageServiceContract
 {
-    public function saveImage(TemporaryUploadedFile $temporaryUploadedFile, ?string $customTitle): ImageData;
+    public function saveImage(TemporaryUploadedFile $uploadedFile, ?string $customTitle): ImageData;
 
     public function getImages(
-        int $total = 100,
-        int $page = 1,
-        ?int $perPage = null,
+        int     $total = 100,
+        int     $page = 1,
+        int     $perPage = 0,
         ?Cursor $cursor = null
     ): CursorPaginator;
 }

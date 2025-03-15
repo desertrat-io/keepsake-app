@@ -37,19 +37,19 @@ use App\Services\KeepsakeService;
 use App\Services\ServiceContracts\ImageServiceContract;
 use Auth;
 use Illuminate\Contracts\Pagination\CursorPaginator;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\Cursor;
 use Image;
 use Keepsake;
-use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Override;
 use Storage;
 
-class ImageService implements ImageServiceContract, KeepsakeService
+readonly class ImageService implements ImageServiceContract, KeepsakeService
 {
     public function __construct(
-        private ImageRepositoryContract $imageRepository,
+        private ImageRepositoryContract     $imageRepository,
         private ImageMetaRepositoryContract $imageMetaRepository,
-        private UserRepositoryContract $userRepository
+        private UserRepositoryContract      $userRepository
     ) {
     }
 
@@ -57,28 +57,28 @@ class ImageService implements ImageServiceContract, KeepsakeService
      * @throws KeepsakeStorageException
      */
     #[Override]
-    public function saveImage(TemporaryUploadedFile $temporaryUploadedFile, ?string $customTitle = null): ImageData
+    public function saveImage(UploadedFile $uploadedFile, ?string $customTitle = null): ImageData
     {
-        $imageName = explode('.', $customTitle ?? $temporaryUploadedFile->getClientOriginalName())[0];
+        $imageName = explode('.', $customTitle ?? $uploadedFile->getClientOriginalName())[0];
         $storagePath = Keepsake::getNewStoragePath();
         // livewire doesn't decorate the file handler so that you can mutate it before storing...to my knowledge
 
-        $thumbNail = Image::read($temporaryUploadedFile);
+        $thumbNail = Image::read($uploadedFile);
         $thumbNail->scaleDown(width: 128, height: 128);
-        $storageId = Storage::disk('s3')->putFileAs(
+        $storageId = Storage::disk(Keepsake::getCurrentDiskName())->putFileAs(
             path: $storagePath,
             file: $thumbNail->toJpeg()->toDataUri(),
-            name: "$imageName.thumb.{$temporaryUploadedFile->getClientOriginalExtension()}"
+            name: "$imageName.thumb.{$uploadedFile->getClientOriginalExtension()}"
         );
         if (!$storageId) {
-            $exception = new KeepsakeStorageException('Image upload to S3 failed');
+            $exception = new KeepsakeStorageException('Image upload to ' . Keepsake::getCurrentDiskName() . ' failed');
             Keepsake::logException($exception);
             throw $exception;
         }
-        $temporaryUploadedFile->storeAs(
+        $uploadedFile->storeAs(
             path: $storagePath,
-            name: $imageName . '.' . $temporaryUploadedFile->getClientOriginalExtension(),
-            options: 's3'
+            name: $imageName . '.' . $uploadedFile->getClientOriginalExtension(),
+            options: Keepsake::getCurrentDiskName()
         );
         $imageData = $this->createImageData(
             $storageId,
@@ -88,12 +88,12 @@ class ImageService implements ImageServiceContract, KeepsakeService
                 asData: true
             )
         );
-        $imageData = $insertedImageData = $this->imageRepository->createImage($imageData);
-        $imageMetaData = $this->createImageMetaData($insertedImageData, $temporaryUploadedFile, $imageName);
+        $insertedImageData = $this->imageRepository->createImage($imageData);
+        $imageMetaData = $this->createImageMetaData($insertedImageData, $uploadedFile, $imageName);
         $this->imageMetaRepository->createImageMeta($imageMetaData);
-        event(new ImageUploaded($imageData, $imageMetaData));
+        event(new ImageUploaded($insertedImageData, $imageMetaData));
 
-        return $imageData;
+        return $insertedImageData;
     }
 
     private function createImageData(string|bool $storageId, string $storagePath, UserData $uploadedBy): ImageData
@@ -104,18 +104,18 @@ class ImageService implements ImageServiceContract, KeepsakeService
     }
 
     private function createImageMetaData(
-        ImageData $imageData,
-        TemporaryUploadedFile $temporaryUploadedFile,
-        string $imageName
+        ImageData    $imageData,
+        UploadedFile $uploadedFile,
+        string       $imageName
     ): ImageMetaData {
         return ImageMetaData::from(
             [
-                'originalImageName' => $temporaryUploadedFile->getClientOriginalName(),
+                'originalImageName' => $uploadedFile->getClientOriginalName(),
                 'currentImageName' => $imageName,
-                'originalImageMime' => $temporaryUploadedFile->getClientMimeType(),
-                'originalFilesize' => $temporaryUploadedFile->getSize(),
-                'currentFilesize' => $temporaryUploadedFile->getSize(),
-                'originalFileExt' => $temporaryUploadedFile->getClientOriginalExtension(),
+                'originalImageMime' => $uploadedFile->getClientMimeType(),
+                'originalFilesize' => $uploadedFile->getSize(),
+                'currentFilesize' => $uploadedFile->getSize(),
+                'originalFileExt' => $uploadedFile->getClientOriginalExtension(),
                 'image' => $imageData,
             ]
         );
@@ -123,18 +123,13 @@ class ImageService implements ImageServiceContract, KeepsakeService
 
     #[Override]
     public function getImages(
-        int $total = 100,
-        int $page = 1,
-        ?int $perPage = null,
+        int     $total = 100,
+        int     $page = 1,
+        int     $perPage = 0,
         ?Cursor $cursor = null
     ): CursorPaginator {
-        // TODO: make sure this is tenant specific
-        $per = $perPage;
-        if (is_null($per)) {
-            $per = 0;
-        }
 
-        return $this->imageRepository->getImages(cursor: $cursor, perPage: $per, limit: $total);
+        return $this->imageRepository->getImages(cursor: $cursor, perPage: $perPage, limit: $total);
     }
 
 

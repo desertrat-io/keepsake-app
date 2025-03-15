@@ -9,6 +9,9 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
+/**
+ * @codeCoverageIgnore
+ */
 class ImageViewed
 {
     use Dispatchable;
@@ -21,8 +24,9 @@ class ImageViewed
     public function __construct(
         public readonly string $userId,
         public readonly Carbon $eventTime,
-        public readonly int $imageId
-    ) {
+        public readonly int    $imageId
+    )
+    {
     }
 
     /**

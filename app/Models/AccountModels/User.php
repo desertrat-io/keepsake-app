@@ -8,9 +8,11 @@ use App\Models\BoolDeleteColumn;
 use App\Models\DocumentModels\Document;
 use App\Models\GenerateUUID;
 use App\Models\ImageModels\Image;
+use Database\Factories\AccountModels\UserFactory;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -64,6 +66,8 @@ use Illuminate\Support\Carbon;
  * @property-read int|null $images_count
  * @property-read mixed $is_deleted
  * @property-read int|null $documents_count
+ * @property-read TFactory|null $use_factory
+ * @method static UserFactory factory($count = null, $state = [])
  * @mixin Eloquent
  */
 class User extends Authenticatable
@@ -102,6 +106,11 @@ class User extends Authenticatable
         'two_factor_confirmed_at'
     ];
 
+    protected static function newFactory(): Factory|UserFactory
+    {
+        return UserFactory::new();
+    }
+
     public function account(): HasOne
     {
         return $this->hasOne(Account::class);
@@ -109,18 +118,19 @@ class User extends Authenticatable
 
     public function images(): HasMany
     {
-        return $this->hasMany(Image::class, 'uploaded_by', 'id');
+        return $this->hasMany(Image::class, foreignKey: 'uploaded_by', localKey: 'id');
     }
 
     public function documents(): HasMany
     {
-        return $this->hasMany(Document::class);
+        return $this->hasMany(Document::class, foreignKey: 'uploaded_by', localKey: 'id');
     }
 
     protected function casts(): array
     {
         return [
-            'uuid' => 'string'
+            'uuid' => 'string',
+            'email_verified_at' => 'datetime',
         ];
     }
 }

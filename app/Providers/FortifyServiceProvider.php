@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Fortify\Fortify;
 
+/**
+ * @codeCoverageIgnore 
+ */
 class FortifyServiceProvider extends ServiceProvider
 {
     /**

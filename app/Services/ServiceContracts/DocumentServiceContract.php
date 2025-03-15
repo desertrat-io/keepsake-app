@@ -3,14 +3,14 @@
 namespace App\Services\ServiceContracts;
 
 use App\DTO\Documents\DocumentData;
-use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use Illuminate\Http\UploadedFile;
 
 interface DocumentServiceContract
 {
     public function convertPdf(string $storageId): DocumentData;
 
     public function createDocument(
-        TemporaryUploadedFile $temporaryUploadedFile,
-        ?string $customTitle = null
+        UploadedFile $temporaryUploadedFile,
+        ?string      $customTitle = null
     ): DocumentData;
 }

@@ -25,7 +25,6 @@ declare(strict_types=1);
 
 namespace App\Repositories\ImageRepositories;
 
-use App\DTO\Accounts\UserData;
 use App\DTO\Images\ImageData;
 use App\Models\ImageModels\Image;
 use App\Repositories\KeepsakeEloquentRepository;
@@ -57,7 +56,7 @@ class ImageEloquentRepository implements ImageRepositoryContract, KeepsakeEloque
     #[Override] public function getImagePaths(array|int $ids): Collection|string
     {
         if (gettype($ids) === 'integer') {
-            return Image::whereId($ids)->orderByDesc('created_at')->storage_path;
+            return Image::whereId($ids)->orderByDesc('created_at')->first()['storage_path'];
         }
 
         return Image::whereIn('id', $ids)->orderByDesc('created_at')->get(['storage_path']);
