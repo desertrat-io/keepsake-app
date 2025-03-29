@@ -22,7 +22,7 @@
  */
 declare(strict_types=1);
 
-namespace Feature\Http\Controllers\Web\Private;
+namespace Tests\Feature\Http\Controllers\Web\Private;
 
 use App\Http\Controllers\Web\Private\IndexController;
 use App\Models\AccountModels\User;

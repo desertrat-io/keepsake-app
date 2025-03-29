@@ -23,7 +23,11 @@
  */
 declare(strict_types=1);
 
+use Grpc\ChannelCredentials;
+
 return [
+    'pdf_converter_url' => env('KEEPSAKE_PDF_CONVERTER', '127.0.0.1:50051'),
+    'pdf_converter_credentials' => ChannelCredentials::createInsecure(),
     'cloud_provider' => env('CLOUD_PROVIDER', 'AWS'),
     //'tenant_name' => env('TENANT_NAME')
     // in kb

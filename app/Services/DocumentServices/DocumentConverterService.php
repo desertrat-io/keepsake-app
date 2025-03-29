@@ -9,11 +9,12 @@ use App\Repositories\RepositoryContracts\DocumentRepositoryContract;
 use App\Services\KeepsakeService;
 use App\Services\ServiceContracts\DocumentConverterServiceContract;
 use Illuminate\Support\Collection;
+use Keepsake\Lib\Protocols\PdfConverter\KeepsakePdfConverterClient;
 use Log;
 
 class DocumentConverterService implements DocumentConverterServiceContract, KeepsakeService
 {
-    public function __construct(private DocumentRepositoryContract $documentRepository)
+    public function __construct(private DocumentRepositoryContract $documentRepository, private KeepsakePdfConverterClient $keepsakePdfConverterClient)
     {
     }
 

@@ -23,7 +23,7 @@
  */
 declare(strict_types=1);
 
-namespace Feature\Http\Livewire;
+namespace Tests\Feature\Http\Livewire;
 
 use App\Http\Livewire\MainTable;
 use App\Models\AccountModels\User;

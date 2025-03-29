@@ -23,6 +23,7 @@ use App\Services\ServiceContracts\DocumentServiceContract;
 use App\Services\ServiceContracts\ImageServiceContract;
 use Illuminate\Support\ServiceProvider;
 use Intervention\Image\ImageManager;
+use Keepsake\Lib\Protocols\PdfConverter\KeepsakePdfConverterClient;
 
 /**
  * @codeCoverageIgnore
@@ -52,6 +53,7 @@ class KeepsakeServiceProvider extends ServiceProvider
         $this->bindServiceContracts();
         $this->bindRepositoryContracts();
         $this->bindCustomFacades();
+        $this->composedProviders();
     }
 
     // TODO: fix this, it's crap right now. Organize it properly so that it works
@@ -77,6 +79,14 @@ class KeepsakeServiceProvider extends ServiceProvider
     {
         $this->app->bind('image', fn(): ImageManager => new ImageManager(config('image.driver.imagick')));
         $this->app->bind('keepsake', fn(): Keepsake => new Keepsake());
+    }
+
+    protected function composedProviders(): void
+    {
+        $this->app->bind(KeepsakePdfConverterClient::class, fn() => new KeepsakePdfConverterClient(
+            config('keepsake.pdf_converter_url'),
+            ['credentials' => config('keepsake.pdf_converter_credentials')]
+        ));
     }
 
     /**
