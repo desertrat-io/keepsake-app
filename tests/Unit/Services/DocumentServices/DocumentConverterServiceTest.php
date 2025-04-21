@@ -26,9 +26,16 @@ namespace Tests\Unit\Services\DocumentServices;
 
 use App\DTO\Documents\DocumentData;
 use App\Models\DocumentModels\Document;
-use App\Repositories\DocumentRepositories\DocumentEloquentRepository;
 use App\Services\DocumentServices\DocumentConverterService;
+use Event;
+use Google\Protobuf\Timestamp;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
+use Keepsake\Lib\Protocols\CommonResponseMeta;
+use Keepsake\Lib\Protocols\PdfConverter\ConvertPdfToJpegResponse;
+use Keepsake\Lib\Protocols\PdfConverter\FilePointers;
+use Keepsake\Lib\Protocols\PdfConverter\KeepsakePdfConverterClient;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
@@ -38,17 +45,42 @@ use Tests\TestCase;
 class DocumentConverterServiceTest extends TestCase
 {
 
+    use RefreshDatabase;
+
     #[Test]
     public function convertsViaGrpcService(): void
     {
-        // there really isn't much to test yet
-        // also this needs to be updated once the class is more fleshed out
-        $documentRepoMock = $this->partialMock(DocumentEloquentRepository::class, function (MockInterface $mock) {
-            $mock->shouldReceive('concreteEntityClass')->once()->andReturn(DocumentEloquentRepository::class);
-        });
-        $docConverterService = $this->app->makeWith(DocumentConverterService::class, ['documentRepository' => $documentRepoMock]);
+        $fakeFile = TemporaryUploadedFile::fake()->image('fake.jpeg');
         $docData = DocumentData::fromModel(Document::factory()->create());
+        $corrId = uniqid();
+        $response = new ConvertPdfToJpegResponse();
+        $filePointers = new FilePointers();
+        $filePointers->setFileName($fakeFile->getFileName())
+            ->setFileFinalLocation($fakeFile->getRealPath())
+            ->setFileMime($fakeFile->getMimeType())
+            ->setPageNum(2)
+            ->setPageFileSize($fakeFile->getSize());
+        $responseMeta = new CommonResponseMeta();
+        $responseMeta->setCorrelationId($corrId)
+            ->setServiceId(1)
+            ->setTimestamp(new Timestamp())
+            ->setMessage('all good');
+        $response->setFiles([$filePointers])
+            ->setMeta($responseMeta);
+        $grpcClientMock = $this->mock(KeepsakePdfConverterClient::class, function (MockInterface $mock) use ($response) {
+            $mock->shouldReceive('ConvertToPdf')->once()->andReturnSelf();
+
+            $mock->shouldReceive('wait')->once()->andReturn([$response, 1]);
+        });
+        $docConverterService = $this->app->makeWith(DocumentConverterService::class, ['keepsakePdfConverterClient' => $grpcClientMock]);
+        Event::fake();
         $results = $docConverterService->convertViaGrpcService($docData);
+
         $this->assertInstanceOf(Collection::class, $results);
+        $this->assertCount(1, $results);
+        $this->assertInstanceOf(FilePointers::class, $results->first());
+        $filePointerResult = $results->first();
+        $this->assertEquals($filePointerResult->getFileName(), $filePointers->getFileName());
+
     }
 }

@@ -29,6 +29,6 @@ class PdfUploadedListener
         $model->uploaded_id = $event->document->uploadedBy->id;
         $model->document_name = $event->document->title;
         $model->save();
-        ConvertPdfToJpeg::dispatch($event->document);
+        ConvertPdfToJpeg::dispatch($event->document)->onQueue('pdf_converter');
     }
 }

@@ -19,13 +19,13 @@
         "guzzlehttp/guzzle": "^7.2",
         "intervention/image": "*",
         "laravel/fortify": "^1.17",
-        "laravel/framework": "^v11.0",
+        "laravel/framework": "^v12.0",
         "laravel/horizon": "^5.30",
         "laravel/reverb": "^1.0",
         "laravel/tinker": "^2.8",
         "league/flysystem-aws-s3-v3": "^3.15",
         "livewire/livewire": "^3.1",
-        "mongodb/laravel-mongodb": "^5.1",
+        "mongodb/laravel-mongodb": "^5.2",
         "predis/predis": "^2.2",
         "spatie/laravel-data": "^4.5"
     },
@@ -36,7 +36,7 @@
         "laravel/telescope": "^5.0",
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^v8.1",
-        "phpunit/phpunit": "^10.0",
+        "phpunit/phpunit": "^11.0",
         "spatie/laravel-ignition": "^2.0"
     },
     "autoload": {

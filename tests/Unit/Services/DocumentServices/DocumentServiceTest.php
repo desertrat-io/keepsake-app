@@ -50,14 +50,6 @@ class DocumentServiceTest extends TestCase
     private $fakeDoc;
 
     #[Test]
-    public function canConvertDocumentToPdf(): void
-    {
-        // TODO: finish up
-        $docResult = $this->documentService->convertPdf('abc');
-        $this->assertInstanceOf(DocumentData::class, $docResult);
-    }
-
-    #[Test]
     public function canSaveDocument(): void
     {
         Event::fake();

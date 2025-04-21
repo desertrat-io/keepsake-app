@@ -8,4 +8,9 @@ export default defineConfig({
             refresh: true
         }),
     ],
+    server: {
+        cors: {
+            origin: /https?:\/\/([A-Za-z0-9-.]+)?(localhost|\.local)(?::\d+)?$/
+        }
+    }
 });
