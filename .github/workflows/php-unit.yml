@@ -63,4 +63,5 @@ jobs:
           file: coverage.xml
           flags: unittests
           name: codecov-umbrella
+          commit_parent: ${{ github.event.pull_request.base.sha }}
 

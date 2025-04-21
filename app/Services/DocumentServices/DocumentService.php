@@ -13,19 +13,12 @@ use Auth;
 use Illuminate\Http\UploadedFile;
 use Keepsake;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use Override;
 
 class DocumentService implements DocumentServiceContract, KeepsakeService
 {
-    public function __construct(private DocumentRepository $documentRepository, private UserRepository $userRepository)
+    public function __construct(private readonly DocumentRepository $documentRepository, private readonly UserRepository $userRepository)
     {
-    }
-
-    /**
-     * @throws KeepsakeStorageException
-     */
-    public function convertPdf(string $storageId): DocumentData
-    {
-        return DocumentData::from([]);
     }
 
     /**
@@ -35,6 +28,7 @@ class DocumentService implements DocumentServiceContract, KeepsakeService
      * @return DocumentData
      * @throws KeepsakeStorageException
      */
+    #[Override]
     public function createDocument(
         UploadedFile $temporaryUploadedFile,
         ?string      $customTitle = null
@@ -42,9 +36,10 @@ class DocumentService implements DocumentServiceContract, KeepsakeService
     {
         $storagePath = Keepsake::getNewStoragePath();
         $documentFileName = explode('.', $customTitle ?? $temporaryUploadedFile->getClientOriginalName())[0];
+        $documentFileNameWithExt = $documentFileName . '.' . $temporaryUploadedFile->getClientOriginalExtension();
         $storageId = $temporaryUploadedFile->storeAs(
             path: $storagePath,
-            name: $documentFileName,
+            name: $documentFileNameWithExt,
             options: 's3'
         );
         if (!$storageId) {

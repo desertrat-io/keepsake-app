@@ -5,11 +5,13 @@ namespace App\Providers;
 use App\Events\ImageUploaded;
 use App\Events\ImageViewed;
 use App\Events\KeepsakeExceptionThrown;
+use App\Events\PdfToJpegCompleted;
 use App\Events\PdfUploaded;
 use App\Listeners\ConvertUploadedPdfListener;
 use App\Listeners\ImageUploadedListener;
 use App\Listeners\ImageViewedListener;
 use App\Listeners\KeepsakeExceptionThrownListener;
+use App\Listeners\PdfToJpegCompletedListener;
 use App\Listeners\PdfUploadedListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -35,6 +37,9 @@ class EventServiceProvider extends ServiceProvider
         PdfUploaded::class => [
             PdfUploadedListener::class,
             ConvertUploadedPdfListener::class
+        ],
+        PdfToJpegCompleted::class => [
+            PdfToJpegCompletedListener::class,
         ],
         KeepsakeExceptionThrown::class => [
             KeepsakeExceptionThrownListener::class

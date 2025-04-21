@@ -41,20 +41,20 @@ class ConvertPdfToJpeg extends Command
     public function handle()
     {
         $client = new KeepsakePdfConverterClient(
-            '127.0.0.1:50051',
+            '127.0.0.1:50001',
             ['credentials' => ChannelCredentials::createInsecure()]
         );
         $converter = new ConvertPdfToJpegRequest();
         $converter->setCorrelationId(uniqid());
-        $converter->setFileLocator('media/images/dev/9dc58545-d64c-4b9a-bf9f-277f14c37169/017beslutsunderlag1020241104_241141517.pdf');
+        $converter->setFileLocator('media/images/dev/9eb4aacd-6c6e-4276-8fa7-387f98b3755e/017beslutsunderlag1020241104_241141517.pdf');
         $converter->setFileName('017beslutsunderlag1020241104_241141517.pdf');
         $converter->setOriginalMime('application/pdf');
         $dataStore = new S3DataStore();
         $dataStore->setRegion(env('AWS_DEFAULT_REGION', 'eu-north-1'));
         $dataStore->setBucketName(env('AWS_BUCKET'));
         $dataStore->setTenantName(env('DEFAULT_TENANT_NAME'));
-        $dataStore->setFileKey('media/images/dev/9dc58545-d64c-4b9a-bf9f-277f14c37169/017beslutsunderlag1020241104_241141517.pdf');
-        $dataStore->setFilePath('media/images/dev/9dc58545-d64c-4b9a-bf9f-277f14c37169');
+        $dataStore->setFileKey('media/images/dev/9eb4aacd-6c6e-4276-8fa7-387f98b3755e/017beslutsunderlag1020241104_241141517.pdf');
+        $dataStore->setFilePath('media/images/dev/9eb4aacd-6c6e-4276-8fa7-387f98b3755e');
         $dataStore->setFileName('017beslutsunderlag1020241104_241141517.pdf');
         $converter->setS3DataStore($dataStore);
         try {

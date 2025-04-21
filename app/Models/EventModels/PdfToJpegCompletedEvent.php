@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (c) 2022
+ * Copyright (c) 2025
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this
  * software and associated documentation files (the "Software"), to deal in the Software
  * without restriction, including without limitation the rights to use, copy, modify, merge,
@@ -20,11 +20,15 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+declare(strict_types=1);
 
-namespace App\Lib\Enum;
+namespace App\Models\EventModels;
 
-enum ErrorResponseCode: int
+use MongoDB\Laravel\Eloquent\Model;
+
+class PdfToJpegCompletedEvent extends Model
 {
-    case IMAGE_STORAGE_ERROR = 1;
-    case PDF_HANDLING_ERROR = 2;
+    protected $connection = 'mongodb';
+
+    protected $collection = 'pdf_to_jpeg_completed_events';
 }

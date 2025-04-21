@@ -22,7 +22,7 @@
  */
 declare(strict_types=1);
 
-namespace Feature\Http\Livewire;
+namespace Tests\Feature\Http\Livewire;
 
 use App\Http\Livewire\LeftMainAction;
 use App\Models\AccountModels\User;

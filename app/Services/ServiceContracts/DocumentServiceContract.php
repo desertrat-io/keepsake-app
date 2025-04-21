@@ -7,7 +7,6 @@ use Illuminate\Http\UploadedFile;
 
 interface DocumentServiceContract
 {
-    public function convertPdf(string $storageId): DocumentData;
 
     public function createDocument(
         UploadedFile $temporaryUploadedFile,

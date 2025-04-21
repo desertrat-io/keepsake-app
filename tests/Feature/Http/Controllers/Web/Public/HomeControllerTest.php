@@ -22,7 +22,7 @@
  */
 declare(strict_types=1);
 
-namespace Feature\Http\Controllers\Web\Public;
+namespace Tests\Feature\Http\Controllers\Web\Public;
 
 use App\Http\Controllers\Web\Public\HomeController;
 use PHPUnit\Framework\Attributes\CoversClass;
