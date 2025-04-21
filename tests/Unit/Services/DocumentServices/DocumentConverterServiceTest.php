@@ -52,7 +52,6 @@ class DocumentConverterServiceTest extends TestCase
     {
         $fakeFile = TemporaryUploadedFile::fake()->image('fake.jpeg');
         $docData = DocumentData::fromModel(Document::factory()->create());
-        $corrId = uniqid();
         $response = new ConvertPdfToJpegResponse();
         $filePointers = new FilePointers();
         $filePointers->setFileName($fakeFile->getFileName())
@@ -61,7 +60,7 @@ class DocumentConverterServiceTest extends TestCase
             ->setPageNum(2)
             ->setPageFileSize($fakeFile->getSize());
         $responseMeta = new CommonResponseMeta();
-        $responseMeta->setCorrelationId($corrId)
+        $responseMeta->setCorrelationId($docData->uuid)
             ->setServiceId(1)
             ->setTimestamp(new Timestamp())
             ->setMessage('all good');
