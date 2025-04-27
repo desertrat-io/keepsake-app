@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Listeners;
+namespace App\Listeners\Images;
 
-use App\Events\ImageUploaded;
+use App\Events\Images\ImageUploaded;
 use App\Models\EventModels\ImageUploadedEvent;
 
 /**

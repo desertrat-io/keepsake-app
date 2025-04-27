@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Events;
+namespace App\Events\Images;
 
-use App\DTO\Images\ImageData;
-use App\DTO\Images\ImageMetaData;
+use Carbon\Carbon;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -13,7 +12,7 @@ use Illuminate\Queue\SerializesModels;
 /**
  * @codeCoverageIgnore
  */
-class ImageUploaded
+class ImageViewed
 {
     use Dispatchable;
     use InteractsWithSockets;
@@ -22,15 +21,17 @@ class ImageUploaded
     /**
      * Create a new event instance.
      */
-    public function __construct(public ImageData $imageData, public ImageMetaData $imageMetaData)
+    public function __construct(
+        public readonly string $userId,
+        public readonly Carbon $eventTime,
+        public readonly int    $imageId
+    )
     {
-        //
     }
 
     /**
      * Get the channels the event should broadcast on.
      *
-     * @codeCoverageIgnore
      * @return array<int, Channel>
      */
     public function broadcastOn(): array

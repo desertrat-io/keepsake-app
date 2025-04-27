@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Listeners;
+namespace App\Listeners\Processing;
 
-use App\Events\PdfUploaded;
+use App\Events\Images\PdfUploaded;
+use App\Jobs\ConvertPdfToJpeg;
 
 /**
  * @codeCoverageIgnore
@@ -22,6 +23,6 @@ class ConvertUploadedPdfListener
      */
     public function handle(PdfUploaded $event): void
     {
-        //
+        ConvertPdfToJpeg::dispatch($event->document)->onQueue('pdf_converter');
     }
 }

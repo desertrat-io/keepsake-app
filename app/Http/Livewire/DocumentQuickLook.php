@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire;
 
-use App\Events\ImageViewed;
+use App\Events\Images\ImageViewed;
 use App\Models\ImageModels\Image;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Lazy;

@@ -27,7 +27,7 @@ namespace Tests\Unit\Services\DocumentServices;
 
 use App\DTO\Accounts\UserData;
 use App\DTO\Documents\DocumentData;
-use App\Events\PdfUploaded;
+use App\Events\Images\PdfUploaded;
 use App\Models\AccountModels\User;
 use App\Repositories\RepositoryContracts\DocumentRepositoryContract;
 use App\Repositories\RepositoryContracts\UserRepositoryContract;

@@ -1,25 +1,22 @@
 <?php
 
-namespace App\Events;
+namespace App\Events\Images;
 
 use App\DTO\Documents\DocumentData;
 use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\InteractsWithBroadcasting;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
 /**
  * @codeCoverageIgnore
  */
-class PdfToJpegCompleted implements ShouldBroadcast
+class PdfUploaded
 {
     use Dispatchable;
     use InteractsWithSockets;
     use SerializesModels;
-    use InteractsWithBroadcasting;
 
     /**
      * Create a new event instance.
@@ -37,7 +34,7 @@ class PdfToJpegCompleted implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('convert-pdf-to-jpeg')
+            new PrivateChannel('channel-name'),
         ];
     }
 }

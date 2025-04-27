@@ -2,17 +2,21 @@
 
 namespace App\Providers;
 
-use App\Events\ImageUploaded;
-use App\Events\ImageViewed;
-use App\Events\KeepsakeExceptionThrown;
-use App\Events\PdfToJpegCompleted;
-use App\Events\PdfUploaded;
-use App\Listeners\ConvertUploadedPdfListener;
-use App\Listeners\ImageUploadedListener;
-use App\Listeners\ImageViewedListener;
-use App\Listeners\KeepsakeExceptionThrownListener;
-use App\Listeners\PdfToJpegCompletedListener;
-use App\Listeners\PdfUploadedListener;
+use App\Events\Errors\KeepsakeExceptionThrown;
+use App\Events\Images\ImageUploaded;
+use App\Events\Images\ImageViewed;
+use App\Events\Images\PdfUploaded;
+use App\Events\Processing\PdfToJpegCompleted;
+use App\Listeners\Audit\UserLoginListener;
+use App\Listeners\Audit\UserLogoutListener;
+use App\Listeners\Errors\KeepsakeExceptionThrownListener;
+use App\Listeners\Images\ImageUploadedListener;
+use App\Listeners\Images\ImageViewedListener;
+use App\Listeners\Processing\ConvertUploadedPdfListener;
+use App\Listeners\Processing\PdfToJpegCompletedListener;
+use App\Listeners\Processing\PdfUploadedListener;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Auth\Events\Logout;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -46,6 +50,12 @@ class EventServiceProvider extends ServiceProvider
         ],
         ImageViewed::class => [
             ImageViewedListener::class
+        ],
+        Login::class => [
+            UserLoginListener::class
+        ],
+        Logout::class => [
+            UserLogoutListener::class
         ]
     ];
 

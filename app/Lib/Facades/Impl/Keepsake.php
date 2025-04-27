@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace App\Lib\Facades\Impl;
 
-use App\Events\KeepsakeExceptionThrown;
+use App\Events\Errors\KeepsakeExceptionThrown;
 use App\Exceptions\KeepsakeExceptions\KeepsakeException;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
