@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Listeners;
+namespace App\Listeners\Images;
 
-use App\Events\ImageViewed;
+use App\Events\Images\ImageViewed;
 use App\Models\EventModels\ImageViewedEvent;
 
 /**

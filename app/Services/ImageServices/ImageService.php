@@ -28,7 +28,7 @@ namespace App\Services\ImageServices;
 use App\DTO\Accounts\UserData;
 use App\DTO\Images\ImageData;
 use App\DTO\Images\ImageMetaData;
-use App\Events\ImageUploaded;
+use App\Events\Images\ImageUploaded;
 use App\Exceptions\KeepsakeExceptions\KeepsakeStorageException;
 use App\Repositories\RepositoryContracts\ImageMetaRepositoryContract;
 use App\Repositories\RepositoryContracts\ImageRepositoryContract;
@@ -50,7 +50,8 @@ readonly class ImageService implements ImageServiceContract, KeepsakeService
         private ImageRepositoryContract     $imageRepository,
         private ImageMetaRepositoryContract $imageMetaRepository,
         private UserRepositoryContract      $userRepository
-    ) {
+    )
+    {
     }
 
     /**
@@ -107,7 +108,8 @@ readonly class ImageService implements ImageServiceContract, KeepsakeService
         ImageData    $imageData,
         UploadedFile $uploadedFile,
         string       $imageName
-    ): ImageMetaData {
+    ): ImageMetaData
+    {
         return ImageMetaData::from(
             [
                 'originalImageName' => $uploadedFile->getClientOriginalName(),
@@ -127,7 +129,8 @@ readonly class ImageService implements ImageServiceContract, KeepsakeService
         int     $page = 1,
         int     $perPage = 0,
         ?Cursor $cursor = null
-    ): CursorPaginator {
+    ): CursorPaginator
+    {
 
         return $this->imageRepository->getImages(cursor: $cursor, perPage: $perPage, limit: $total);
     }

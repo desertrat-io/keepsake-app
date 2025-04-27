@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Events;
+namespace App\Events\Errors;
 
 use App\Exceptions\KeepsakeExceptions\KeepsakeException;
 use Illuminate\Broadcasting\Channel;

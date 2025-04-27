@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Listeners;
+namespace App\Listeners\Processing;
 
-use App\Events\PdfToJpegCompleted;
+use App\Events\Processing\PdfToJpegCompleted;
 use App\Repositories\RepositoryContracts\ImageMetaRepositoryContract;
 use App\Repositories\RepositoryContracts\ImageRepositoryContract;
 

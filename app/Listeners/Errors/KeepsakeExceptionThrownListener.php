@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Listeners;
+namespace App\Listeners\Errors;
 
-use App\Events\KeepsakeExceptionThrown;
+use App\Events\Errors\KeepsakeExceptionThrown;
 use App\Models\EventModels\KeepsakeExceptionEvent as Model;
 
 /**

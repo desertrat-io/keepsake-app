@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Listeners;
+namespace App\Listeners\Processing;
 
-use App\Events\PdfUploaded;
-use App\Jobs\ConvertPdfToJpeg;
+use App\Events\Images\PdfUploaded;
 use App\Models\EventModels\PdfUploadedEvent as PdfUploadedEventModel;
 
 /**
@@ -29,6 +28,5 @@ class PdfUploadedListener
         $model->uploaded_id = $event->document->uploadedBy->id;
         $model->document_name = $event->document->title;
         $model->save();
-        ConvertPdfToJpeg::dispatch($event->document)->onQueue('pdf_converter');
     }
 }

@@ -4,7 +4,7 @@ namespace Tests\Unit\Services\ImageServices;
 
 use App\DTO\Accounts\UserData;
 use App\DTO\Images\ImageData;
-use App\Events\ImageUploaded;
+use App\Events\Images\ImageUploaded;
 use App\Models\AccountModels\User;
 use App\Models\ImageModels\Image;
 use App\Repositories\RepositoryContracts\ImageMetaRepositoryContract;

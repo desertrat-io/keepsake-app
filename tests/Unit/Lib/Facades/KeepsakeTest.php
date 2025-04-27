@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Lib\Facades;
 
-use App\Events\KeepsakeExceptionThrown;
+use App\Events\Errors\KeepsakeExceptionThrown;
 use App\Exceptions\KeepsakeExceptions\KeepsakeStorageException;
 use App\Lib\Facades\Impl\Keepsake as KeepsakeImpl;
 use Event;

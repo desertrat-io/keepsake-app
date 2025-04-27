@@ -3,7 +3,7 @@
 namespace App\Services\DocumentServices;
 
 use App\DTO\Documents\DocumentData;
-use App\Events\PdfUploaded;
+use App\Events\Images\PdfUploaded;
 use App\Exceptions\KeepsakeExceptions\KeepsakeStorageException;
 use App\Repositories\RepositoryContracts\DocumentRepositoryContract as DocumentRepository;
 use App\Repositories\RepositoryContracts\UserRepositoryContract as UserRepository;
