@@ -4,11 +4,9 @@ namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 
-/**
- * @codeCoverageIgnore 
- */
-class AuthServiceProvider extends ServiceProvider
+#[CodeCoverageIgnore] class AuthServiceProvider extends ServiceProvider
 {
     /**
      * The model to policy mappings for the application.

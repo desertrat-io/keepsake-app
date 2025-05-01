@@ -4,11 +4,9 @@ namespace App\Actions\Fortify;
 
 use Illuminate\Contracts\Validation\Rule;
 use Laravel\Fortify\Rules\Password;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 
-/**
- * @codeCoverageIgnore
- */
-trait PasswordValidationRules
+#[CodeCoverageIgnore] trait PasswordValidationRules
 {
     /**
      * Get the validation rules used to validate passwords.

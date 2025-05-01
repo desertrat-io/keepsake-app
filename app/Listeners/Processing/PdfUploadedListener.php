@@ -4,11 +4,9 @@ namespace App\Listeners\Processing;
 
 use App\Events\Images\PdfUploaded;
 use App\Models\EventModels\PdfUploadedEvent as PdfUploadedEventModel;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 
-/**
- * @codeCoverageIgnore
- */
-class PdfUploadedListener
+#[CodeCoverageIgnore] class PdfUploadedListener
 {
     /**
      * Create the event listener.

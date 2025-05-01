@@ -4,11 +4,9 @@ namespace App\Listeners\Errors;
 
 use App\Events\Errors\KeepsakeExceptionThrown;
 use App\Models\EventModels\KeepsakeExceptionEvent as Model;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 
-/**
- * @codeCoverageIgnore
- */
-class KeepsakeExceptionThrownListener
+#[CodeCoverageIgnore] class KeepsakeExceptionThrownListener
 {
     /**
      * Create the event listener.

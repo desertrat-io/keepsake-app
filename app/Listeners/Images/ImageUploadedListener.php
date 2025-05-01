@@ -4,11 +4,9 @@ namespace App\Listeners\Images;
 
 use App\Events\Images\ImageUploaded;
 use App\Models\EventModels\ImageUploadedEvent;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 
-/**
- * @codeCoverageIgnore
- */
-class ImageUploadedListener
+#[CodeCoverageIgnore] class ImageUploadedListener
 {
     /**
      * Create the event listener.

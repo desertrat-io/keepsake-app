@@ -8,11 +8,9 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 
-/**
- * @codeCoverageIgnore
- */
-class PdfUploaded
+#[CodeCoverageIgnore] class PdfUploaded
 {
     use Dispatchable;
     use InteractsWithSockets;

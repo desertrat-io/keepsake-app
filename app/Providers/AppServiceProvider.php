@@ -5,11 +5,9 @@ namespace App\Providers;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Telescope\TelescopeServiceProvider;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 
-/**
- * @codeCoverageIgnore
- */
-class AppServiceProvider extends ServiceProvider
+#[CodeCoverageIgnore] class AppServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.

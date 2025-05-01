@@ -6,12 +6,10 @@ use App\Providers\RouteServiceProvider;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * @codeCoverageIgnore
- */
-class RedirectIfAuthenticated
+#[CodeCoverageIgnore] class RedirectIfAuthenticated
 {
     /**
      * Handle an incoming request.

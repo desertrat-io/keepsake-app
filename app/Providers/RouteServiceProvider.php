@@ -7,11 +7,9 @@ use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvi
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 
-/**
- * @codeCoverageIgnore 
- */
-class RouteServiceProvider extends ServiceProvider
+#[CodeCoverageIgnore] class RouteServiceProvider extends ServiceProvider
 {
     /**
      * The path to the "home" route for your application.

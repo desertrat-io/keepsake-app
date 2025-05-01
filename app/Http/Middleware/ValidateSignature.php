@@ -3,11 +3,9 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Routing\Middleware\ValidateSignature as Middleware;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 
-/**
- * @codeCoverageIgnore 
- */
-class ValidateSignature extends Middleware
+#[CodeCoverageIgnore] class ValidateSignature extends Middleware
 {
     /**
      * The names of the query string parameters that should be ignored.

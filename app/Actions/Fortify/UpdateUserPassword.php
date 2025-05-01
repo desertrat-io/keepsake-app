@@ -6,11 +6,9 @@ use App\Models\AccountModels\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\UpdatesUserPasswords;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 
-/**
- * @codeCoverageIgnore 
- */
-class UpdateUserPassword implements UpdatesUserPasswords
+#[CodeCoverageIgnore] class UpdateUserPassword implements UpdatesUserPasswords
 {
     use PasswordValidationRules;
 

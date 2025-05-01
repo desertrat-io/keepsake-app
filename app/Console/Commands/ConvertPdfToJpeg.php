@@ -11,13 +11,12 @@ use Keepsake\Lib\Protocols\PdfConverter\ConvertPdfToJpegRequest;
 use Keepsake\Lib\Protocols\PdfConverter\ConvertPdfToJpegResponse;
 use Keepsake\Lib\Protocols\PdfConverter\KeepsakePdfConverterClient;
 use Keepsake\Lib\Protocols\S3DataStore;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 
 /**
  * This is just a helper command that will be removed at some point, no need to test
- * @codeCoverageIgnore
- * @deprecated
  */
-#[Deprecated]
+#[CodeCoverageIgnore] #[Deprecated]
 class ConvertPdfToJpeg extends Command
 {
     public const string KAFKA_IP_VER = 'v4';

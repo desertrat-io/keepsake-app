@@ -8,11 +8,9 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 
-/**
- * @codeCoverageIgnore 
- */
-class CreateNewUser implements CreatesNewUsers
+#[CodeCoverageIgnore] class CreateNewUser implements CreatesNewUsers
 {
     use PasswordValidationRules;
 

@@ -27,12 +27,12 @@ namespace Tests\Unit\Models;
 use App\Models\AccountModels\User;
 use App\Models\GenerateUUID;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversTrait;
 use PHPUnit\Framework\Attributes\Test;
 use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
 
-#[CoversClass(GenerateUUID::class)]
+#[CoversTrait(GenerateUUID::class)]
 class GenerateUUIDTest extends TestCase
 {
 

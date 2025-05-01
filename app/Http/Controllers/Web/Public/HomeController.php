@@ -30,13 +30,13 @@ use Auth;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 
 
 /**
  * There's not really anything here to test, but the feature test is there anyway but coverage won't kick in
- * @codeCoverageIgnore
  */
-class HomeController extends Controller
+#[CodeCoverageIgnore] class HomeController extends Controller
 {
 
     public function index(): \Illuminate\Foundation\Application|Redirector|string|RedirectResponse|Application

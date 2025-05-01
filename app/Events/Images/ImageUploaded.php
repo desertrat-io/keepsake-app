@@ -9,11 +9,9 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 
-/**
- * @codeCoverageIgnore
- */
-class ImageUploaded
+#[CodeCoverageIgnore] class ImageUploaded
 {
     use Dispatchable;
     use InteractsWithSockets;
@@ -30,10 +28,9 @@ class ImageUploaded
     /**
      * Get the channels the event should broadcast on.
      *
-     * @codeCoverageIgnore
      * @return array<int, Channel>
      */
-    public function broadcastOn(): array
+    #[CodeCoverageIgnore] public function broadcastOn(): array
     {
         return [
             new PrivateChannel('channel-name'),

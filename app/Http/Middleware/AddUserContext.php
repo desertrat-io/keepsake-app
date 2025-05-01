@@ -7,12 +7,10 @@ use Auth;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Context;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * @codeCoverageIgnore 
- */
-class AddUserContext
+#[CodeCoverageIgnore] class AddUserContext
 {
     /**
      * Handle an incoming request.

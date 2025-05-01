@@ -27,11 +27,9 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Collection;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 
-/**\
- * @codeCoverageIgnore
- */
-abstract class KeepsakeFormRequest extends FormRequest
+#[CodeCoverageIgnore] abstract class KeepsakeFormRequest extends FormRequest
 {
     /**
      * Allows form the form request to return only the keys needed for intended purposes

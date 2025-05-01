@@ -4,11 +4,9 @@ namespace App\Listeners\Processing;
 
 use App\Events\Images\PdfUploaded;
 use App\Jobs\ConvertPdfToJpeg;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 
-/**
- * @codeCoverageIgnore
- */
-class ConvertUploadedPdfListener
+#[CodeCoverageIgnore] class ConvertUploadedPdfListener
 {
     /**
      * Create the event listener.
