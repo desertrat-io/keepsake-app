@@ -4,8 +4,10 @@ namespace App\Listeners\Audit;
 
 use App\Models\EventModels\UserLogoutEvent;
 use Illuminate\Auth\Events\Logout;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 use Request;
 
+#[CodeCoverageIgnore]
 class UserLogoutListener
 {
     /**

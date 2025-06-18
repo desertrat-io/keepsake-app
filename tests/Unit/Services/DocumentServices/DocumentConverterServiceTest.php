@@ -29,6 +29,7 @@ use App\Models\DocumentModels\Document;
 use App\Services\DocumentServices\DocumentConverterService;
 use Event;
 use Google\Protobuf\Timestamp;
+use Grpc\Status;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 use Keepsake\Lib\Protocols\CommonResponseMeta;
@@ -36,6 +37,7 @@ use Keepsake\Lib\Protocols\PdfConverter\ConvertPdfToJpegResponse;
 use Keepsake\Lib\Protocols\PdfConverter\FilePointers;
 use Keepsake\Lib\Protocols\PdfConverter\KeepsakePdfConverterClient;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use Mockery;
 use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
@@ -60,26 +62,30 @@ class DocumentConverterServiceTest extends TestCase
             ->setPageNum(2)
             ->setPageFileSize($fakeFile->getSize());
         $responseMeta = new CommonResponseMeta();
-        $responseMeta->setCorrelationId($docData->uuid)
+        $responseMeta->setCorrelationId('document-' . $docData->uploadedBy->id)
             ->setServiceId(1)
             ->setTimestamp(new Timestamp())
             ->setMessage('all good');
         $response->setFiles([$filePointers])
             ->setMeta($responseMeta);
-        $grpcClientMock = $this->mock(KeepsakePdfConverterClient::class, function (MockInterface $mock) use ($response) {
-            $mock->shouldReceive('ConvertToPdf')->once()->andReturnSelf();
+        $grpcClientMock = $this->mock(KeepsakePdfConverterClient::class, function (MockInterface $mock) use ($response, $docData) {
+            $mock->shouldReceive('ConvertToPdf')
+                ->once()
+                ->andReturn(Mockery::mock()
+                    ->shouldReceive('wait')
+                    ->andReturn([$response, $this->mock(Status::class)])
+                    ->getMock());
 
-            $mock->shouldReceive('wait')->once()->andReturn([$response, 1]);
         });
         $docConverterService = $this->app->makeWith(DocumentConverterService::class, ['keepsakePdfConverterClient' => $grpcClientMock]);
         Event::fake();
         $results = $docConverterService->convertViaGrpcService($docData);
 
-        $this->assertInstanceOf(Collection::class, $results);
-        $this->assertCount(1, $results);
-        $this->assertInstanceOf(FilePointers::class, $results->first());
-        $filePointerResult = $results->first();
-        $this->assertEquals($filePointerResult->getFileName(), $filePointers->getFileName());
+        $this->assertInstanceOf(ConvertPdfToJpegResponse::class, $results);
+        /** @var Collection<FilePointers> $resultPointer */
+        $resultPointer = collect($results->getFiles());
+        $this->assertInstanceOf(FilePointers::class, $resultPointer->first());
+        $this->assertEquals($resultPointer->first()->getFileName(), $filePointers->getFileName());
 
     }
 }

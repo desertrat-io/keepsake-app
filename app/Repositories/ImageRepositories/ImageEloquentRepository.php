@@ -47,7 +47,8 @@ class ImageEloquentRepository implements ImageRepositoryContract, KeepsakeEloque
             'storage_path' => $imageData->storagePath,
             'is_locked' => false,
             'is_dirty' => true,
-            'uploaded_by' => $imageData->uploadedBy->id
+            'uploaded_by' => $imageData->uploadedBy->id,
+            'document_id' => $imageData->documentId
         ])->load('uploadedBy');
         // some kind of weird quirk with spatie data, you end up having to create the model, then query it
         return ImageData::fromModel($image);

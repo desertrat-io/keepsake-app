@@ -75,7 +75,7 @@ class KeepsakeTest extends TestCase
     #[Test]
     public function generatesCorrectDiskNameForTesting(): void
     {
-        $this->assertEquals('local', Keepsake::getCurrentDiskName());
+        $this->assertEquals(config('keepsake.test_disk_name'), Keepsake::getCurrentDiskName());
     }
 
 }

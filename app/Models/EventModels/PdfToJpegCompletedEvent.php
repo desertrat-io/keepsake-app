@@ -26,6 +26,23 @@ namespace App\Models\EventModels;
 
 use MongoDB\Laravel\Eloquent\Model;
 
+/**
+ * 
+ *
+ * @property-read mixed $id
+ * @method static \MongoDB\Laravel\Eloquent\Builder<static>|PdfToJpegCompletedEvent addHybridHas(\Illuminate\Database\Eloquent\Relations\Relation $relation, string $operator = '>=', string $count = 1, string $boolean = 'and', ?\Closure $callback = null)
+ * @method static \MongoDB\Laravel\Eloquent\Builder<static>|PdfToJpegCompletedEvent aggregate($function = null, $columns = [])
+ * @method static \MongoDB\Laravel\Eloquent\Builder<static>|PdfToJpegCompletedEvent getConnection()
+ * @method static \MongoDB\Laravel\Eloquent\Builder<static>|PdfToJpegCompletedEvent insert(array $values)
+ * @method static \MongoDB\Laravel\Eloquent\Builder<static>|PdfToJpegCompletedEvent insertGetId(array $values, $sequence = null)
+ * @method static \MongoDB\Laravel\Eloquent\Builder<static>|PdfToJpegCompletedEvent newModelQuery()
+ * @method static \MongoDB\Laravel\Eloquent\Builder<static>|PdfToJpegCompletedEvent newQuery()
+ * @method static \MongoDB\Laravel\Eloquent\Builder<static>|PdfToJpegCompletedEvent query()
+ * @method static \MongoDB\Laravel\Eloquent\Builder<static>|PdfToJpegCompletedEvent raw($value = null)
+ * @method static \MongoDB\Laravel\Eloquent\Builder<static>|PdfToJpegCompletedEvent search(\MongoDB\Builder\Type\SearchOperatorInterface|array $operator, ?string $index = null, ?array $highlight = null, ?bool $concurrent = null, ?string $count = null, ?string $searchAfter = null, ?string $searchBefore = null, ?bool $scoreDetails = null, ?array $sort = null, ?bool $returnStoredSource = null, ?array $tracking = null)
+ * @method static \MongoDB\Laravel\Eloquent\Builder<static>|PdfToJpegCompletedEvent vectorSearch(string $index, string $path, array $queryVector, int $limit, bool $exact = false, \MongoDB\Builder\Type\QueryInterface|array $filter = [], ?int $numCandidates = null)
+ * @mixin \Eloquent
+ */
 class PdfToJpegCompletedEvent extends Model
 {
     protected $connection = 'mongodb';

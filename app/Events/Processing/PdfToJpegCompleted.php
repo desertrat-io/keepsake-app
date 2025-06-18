@@ -2,7 +2,6 @@
 
 namespace App\Events\Processing;
 
-use App\DTO\Documents\DocumentData;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithBroadcasting;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -10,6 +9,7 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Keepsake\Lib\Protocols\PdfConverter\ConvertPdfToJpegResponse;
 use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 
 #[CodeCoverageIgnore] class PdfToJpegCompleted implements ShouldBroadcast
@@ -22,7 +22,7 @@ use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
     /**
      * Create a new event instance.
      */
-    public function __construct(public readonly DocumentData $document)
+    public function __construct(protected readonly ConvertPdfToJpegResponse $convertPdfToJpegResponse)
     {
         //
     }
@@ -37,5 +37,10 @@ use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
         return [
             new PrivateChannel('convert-pdf-to-jpeg')
         ];
+    }
+
+    public function getPdfToJpegResponse(): ConvertPdfToJpegResponse
+    {
+        return $this->convertPdfToJpegResponse;
     }
 }

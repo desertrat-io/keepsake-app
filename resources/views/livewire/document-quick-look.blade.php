@@ -3,7 +3,7 @@
 
         <div class="shrink-0 mr-4">
             <img class="max-w-[50%] max-h-[50%] absolute left-5 top-5"
-                 src="{{ Storage::disk('s3')->url($image->storage_path . '/' . $image->meta->current_image_name . '.' . $image->meta->original_file_ext) }}"/>
+                 src="{{ Storage::disk(Keepsake::getCurrentDiskName())->url($image->storage_path . '/' . $image->meta->current_image_name . '.' . $image->meta->original_file_ext) }}"/>
             <div class="absolute right-[30%] mt-10">
                 <strong>{{ __('keepsake.image_detail.current_title') }}:</strong>
                 <p>{{ $image->meta->current_image_name }}</p>

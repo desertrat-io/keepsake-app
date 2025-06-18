@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
 /**
- *
+ * 
  *
  * @property int $id
  * @property string $uuid
@@ -49,6 +49,7 @@ use Illuminate\Support\Carbon;
  * @property string|null $storage_id
  * @property-read User|null $uploadedBy
  * @method static Builder<static>|Document whereStorageId($value)
+ * @method static \Database\Factories\DocumentModels\DocumentFactory factory($count = null, $state = [])
  * @mixin Eloquent
  */
 class Document extends Model

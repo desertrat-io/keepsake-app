@@ -3,15 +3,15 @@
 namespace App\Listeners\Processing;
 
 use App\Events\Processing\PdfToJpegCompleted;
-use App\Repositories\RepositoryContracts\ImageMetaRepositoryContract;
-use App\Repositories\RepositoryContracts\ImageRepositoryContract;
+use App\Jobs\SavePagesAsImage;
+use App\Models\EventModels\PdfToJpegCompletedEvent;
 
 class PdfToJpegCompletedListener
 {
     /**
      * Create the event listener.
      */
-    public function __construct(private readonly ImageRepositoryContract $imageRepository, private readonly ImageMetaRepositoryContract $imageMetaRepository)
+    public function __construct()
     {
     }
 
@@ -20,6 +20,10 @@ class PdfToJpegCompletedListener
      */
     public function handle(PdfToJpegCompleted $event): void
     {
-
+        $eventModel = new PdfToJpegCompletedEvent();
+        $eventModel->meta = $event->getPdfToJpegResponse()->getMeta()->serializeToJsonString();
+        $eventModel->processing_finished_at = $event->getPdfToJpegResponse()->getMeta()->getTimestamp()->getSeconds();
+        $eventModel->save();
+        SavePagesAsImage::dispatch($event->getPdfToJpegResponse())->onQueue('save_pages_as_image');
     }
 }

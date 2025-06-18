@@ -63,8 +63,22 @@ class Keepsake
     {
         $diskName = 's3';
         if (app()->environment('testing')) {
-            $diskName = 'local';
+            $diskName = $this->getTestDiskName();
         }
         return $diskName;
+    }
+
+    public function getTestDiskName(): string
+    {
+        $diskName = $this->getLocalDiskName();
+        if (!app()->environment('local')) {
+            $diskName = config('keepsake.test_disk_name');
+        }
+        return $diskName;
+    }
+
+    public function getLocalDiskName(): string
+    {
+        return config('keepsake.local_disk_name');
     }
 }

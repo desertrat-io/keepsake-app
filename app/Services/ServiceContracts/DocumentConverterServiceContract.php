@@ -3,15 +3,14 @@
 namespace App\Services\ServiceContracts;
 
 use App\DTO\Documents\DocumentData;
-use App\DTO\Images\ImageData;
-use Illuminate\Support\Collection;
+use Keepsake\Lib\Protocols\PdfConverter\ConvertPdfToJpegResponse;
 
 interface DocumentConverterServiceContract
 {
 
     /**
      * @param DocumentData $documentData
-     * @return Collection<ImageData>
+     * @return ConvertPdfToJpegResponse
      */
-    public function convertViaGrpcService(DocumentData $documentData): Collection;
+    public function convertViaGrpcService(DocumentData $documentData): ConvertPdfToJpegResponse;
 }

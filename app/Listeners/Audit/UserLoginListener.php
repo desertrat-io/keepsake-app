@@ -4,8 +4,10 @@ namespace App\Listeners\Audit;
 
 use App\Models\EventModels\UserLoginEvent;
 use Illuminate\Auth\Events\Login;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 use Request;
 
+#[CodeCoverageIgnore]
 class UserLoginListener
 {
     /**
