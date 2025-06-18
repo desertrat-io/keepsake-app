@@ -27,11 +27,9 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 
-/**
- * @codeCoverageIgnore 
- */
-class Kernel extends HttpKernel
+#[CodeCoverageIgnore] class Kernel extends HttpKernel
 {
     /**
      * The application's global HTTP middleware stack.

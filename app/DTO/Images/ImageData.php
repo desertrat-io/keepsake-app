@@ -41,17 +41,18 @@ class ImageData extends Data implements Wireable
     use WireableData;
 
     public function __construct(
-        public readonly ?int $id,
-        public readonly ?string $uuid,
-        public readonly ?string $storageId,
-        public readonly ?string $storagePath,
+        public readonly ?int          $id,
+        public readonly ?string       $uuid,
+        public readonly ?string       $storageId,
+        public readonly ?string       $storagePath,
         public readonly UserData|Lazy $uploadedBy,
-        public readonly ?bool $isLocked,
-        public readonly ?bool $isDirty,
-        public readonly ?Carbon $createdAt,
-        public readonly ?Carbon $updatedAt,
-        public readonly ?Carbon $deletedAt,
-        public readonly ?bool $isDeleted
+        public readonly ?bool         $isLocked,
+        public readonly ?bool         $isDirty,
+        public readonly ?Carbon       $createdAt,
+        public readonly ?Carbon       $updatedAt,
+        public readonly ?Carbon       $deletedAt,
+        public readonly ?bool         $isDeleted,
+        public readonly ?int          $documentId
     ) {
     }
 
@@ -69,6 +70,7 @@ class ImageData extends Data implements Wireable
             updatedAt: $image->updated_at,
             deletedAt: $image->deleted_at,
             isDeleted: $image->is_deleted,
+            documentId: $image->document_id
         );
     }
 }

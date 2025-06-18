@@ -94,4 +94,10 @@ class ImageServiceTest extends TestCase
         );
 
     }
+
+    protected function tearDown(): void
+    {
+        Storage::fake('testing')->deleteDirectory($this->storagePath);
+        parent::tearDown();
+    }
 }

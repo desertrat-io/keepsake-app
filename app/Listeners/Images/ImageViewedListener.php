@@ -4,11 +4,9 @@ namespace App\Listeners\Images;
 
 use App\Events\Images\ImageViewed;
 use App\Models\EventModels\ImageViewedEvent;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 
-/**
- * @codeCoverageIgnore
- */
-class ImageViewedListener
+#[CodeCoverageIgnore] class ImageViewedListener
 {
     /**
      * Create the event listener.

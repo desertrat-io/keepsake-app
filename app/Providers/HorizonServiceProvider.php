@@ -4,11 +4,9 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Gate;
 use Laravel\Horizon\HorizonApplicationServiceProvider;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 
-/**
- * @codeCoverageIgnore
- */
-class HorizonServiceProvider extends HorizonApplicationServiceProvider
+#[CodeCoverageIgnore] class HorizonServiceProvider extends HorizonApplicationServiceProvider
 {
     /**
      * Bootstrap any application services.

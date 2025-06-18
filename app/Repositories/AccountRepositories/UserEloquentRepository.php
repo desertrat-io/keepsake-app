@@ -60,9 +60,14 @@ class UserEloquentRepository implements KeepsakeEloquentRepository, UserReposito
         return UserData::fromModel($user);
     }
 
-    public function getUserById(int $userId, bool $includeAccount = false, bool $asData = false): User|UserData
+    public function getUserById(int|string $userId, bool $includeAccount = false, bool $asData = false): User|UserData
     {
-        $user = User::find($userId);
+        $user = null;
+        if (gettype($userId) === 'integer') {
+            $user = User::find($userId);
+        } else {
+            $user = User::whereUuid($userId)->first();
+        }
         if ($includeAccount) {
             $user->load('account');
         }
@@ -71,4 +76,6 @@ class UserEloquentRepository implements KeepsakeEloquentRepository, UserReposito
         }
         return $user;
     }
+
+
 }

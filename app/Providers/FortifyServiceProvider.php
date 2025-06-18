@@ -11,11 +11,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Fortify\Fortify;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 
-/**
- * @codeCoverageIgnore 
- */
-class FortifyServiceProvider extends ServiceProvider
+#[CodeCoverageIgnore] class FortifyServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.

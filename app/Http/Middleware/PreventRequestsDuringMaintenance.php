@@ -3,11 +3,9 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance as Middleware;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 
-/**
- * @codeCoverageIgnore 
- */
-class PreventRequestsDuringMaintenance extends Middleware
+#[CodeCoverageIgnore] class PreventRequestsDuringMaintenance extends Middleware
 {
     /**
      * The URIs that should be reachable while maintenance mode is enabled.

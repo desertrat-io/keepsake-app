@@ -14,7 +14,7 @@ class DocumentFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => $this->faker->word(),
+            'title' => $this->faker->word,
             'num_pages' => $this->faker->randomDigit(),
             'uploaded_by' => User::factory()->create()->id,
             'storage_id' => $this->faker->uuid

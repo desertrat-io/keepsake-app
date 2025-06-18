@@ -8,11 +8,9 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 
-/**
- * @codeCoverageIgnore
- */
-class KeepsakeExceptionThrown
+#[CodeCoverageIgnore] class KeepsakeExceptionThrown
 {
     use Dispatchable;
     use InteractsWithSockets;

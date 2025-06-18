@@ -23,14 +23,18 @@
 
 namespace App\Services\ServiceContracts;
 
+use App\DTO\Accounts\UserData;
 use App\DTO\Images\ImageData;
+use App\DTO\Images\ImageMetaData;
 use Illuminate\Contracts\Pagination\CursorPaginator;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\Cursor;
-use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 interface ImageServiceContract
 {
-    public function saveImage(TemporaryUploadedFile $uploadedFile, ?string $customTitle): ImageData;
+    public function saveImage(UploadedFile $uploadedFile, ?string $customTitle = null, ?string $customPath = null, int|string|null $customUploader = null, ?int $documentId = null): ImageData;
+
+    public function saveThumbnail(UploadedFile $uploadedFile, string $imageName, string $storagePath): string|bool;
 
     public function getImages(
         int     $total = 100,
@@ -38,4 +42,12 @@ interface ImageServiceContract
         int     $perPage = 0,
         ?Cursor $cursor = null
     ): CursorPaginator;
+
+    public function createImageData(string|bool $storageId, string $storagePath, UserData $uploadedBy): ImageData;
+
+    public function createImageMetaData(
+        ImageData    $imageData,
+        UploadedFile $uploadedFile,
+        string       $imageName
+    ): ImageMetaData;
 }

@@ -3,11 +3,9 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Cookie\Middleware\EncryptCookies as Middleware;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 
-/**
- * @codeCoverageIgnore 
- */
-class EncryptCookies extends Middleware
+#[CodeCoverageIgnore] class EncryptCookies extends Middleware
 {
     /**
      * The names of the cookies that should not be encrypted.

@@ -20,11 +20,9 @@ use Illuminate\Auth\Events\Logout;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 
-/**
- * @codeCoverageIgnore
- */
-class EventServiceProvider extends ServiceProvider
+#[CodeCoverageIgnore] class EventServiceProvider extends ServiceProvider
 {
     /**
      * The event to listener mappings for the application.

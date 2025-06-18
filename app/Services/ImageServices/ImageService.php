@@ -44,7 +44,7 @@ use Keepsake;
 use Override;
 use Storage;
 
-readonly class ImageService implements ImageServiceContract, KeepsakeService
+class ImageService implements ImageServiceContract, KeepsakeService
 {
     public function __construct(
         private ImageRepositoryContract     $imageRepository,
@@ -58,19 +58,17 @@ readonly class ImageService implements ImageServiceContract, KeepsakeService
      * @throws KeepsakeStorageException
      */
     #[Override]
-    public function saveImage(UploadedFile $uploadedFile, ?string $customTitle = null): ImageData
+    public function saveImage(UploadedFile $uploadedFile, ?string $customTitle = null, ?string $customPath = null, int|string|null $customUploader = null, ?int $documentId = null): ImageData
     {
         $imageName = explode('.', $customTitle ?? $uploadedFile->getClientOriginalName())[0];
-        $storagePath = Keepsake::getNewStoragePath();
+        // this should never ever be null. if it is there are shenanigans
+        $uploader = $customUploader ?? Auth::id();
+        $storagePath = $customPath ?? Keepsake::getNewStoragePath();
         // livewire doesn't decorate the file handler so that you can mutate it before storing...to my knowledge
+        // also as a result, we get back the storageId parameter after saving to disk explicitly, so we
+        // need to capture that
+        $storageId = $this->saveThumbnail(uploadedFile: $uploadedFile, imageName: $imageName, storagePath: $storagePath);
 
-        $thumbNail = Image::read($uploadedFile);
-        $thumbNail->scaleDown(width: 128, height: 128);
-        $storageId = Storage::disk(Keepsake::getCurrentDiskName())->putFileAs(
-            path: $storagePath,
-            file: $thumbNail->toJpeg()->toDataUri(),
-            name: "$imageName.thumb.{$uploadedFile->getClientOriginalExtension()}"
-        );
         if (!$storageId) {
             $exception = new KeepsakeStorageException('Image upload to ' . Keepsake::getCurrentDiskName() . ' failed');
             Keepsake::logException($exception);
@@ -85,9 +83,10 @@ readonly class ImageService implements ImageServiceContract, KeepsakeService
             $storageId,
             $storagePath,
             uploadedBy: $this->userRepository->getUserById(
-                Auth::id(),
+                $uploader,
                 asData: true
-            )
+            ),
+            documentId: $documentId
         );
         $insertedImageData = $this->imageRepository->createImage($imageData);
         $imageMetaData = $this->createImageMetaData($insertedImageData, $uploadedFile, $imageName);
@@ -97,14 +96,31 @@ readonly class ImageService implements ImageServiceContract, KeepsakeService
         return $insertedImageData;
     }
 
-    private function createImageData(string|bool $storageId, string $storagePath, UserData $uploadedBy): ImageData
+    #[Override]
+    public function saveThumbnail(UploadedFile $uploadedFile, string $imageName, string $storagePath): string|bool
     {
-        return ImageData::from(
-            ['storageId' => $storageId, 'storagePath' => $storagePath, 'uploadedBy' => $uploadedBy]
+        $thumbNail = Image::read($uploadedFile);
+        $thumbNail->scaleDown(width: 128, height: 128);
+        return Storage::disk(Keepsake::getCurrentDiskName())->putFileAs(
+            path: $storagePath,
+            file: $thumbNail->toJpeg()->toDataUri(),
+            name: "$imageName.thumb.{$uploadedFile->getClientOriginalExtension()}"
         );
     }
 
-    private function createImageMetaData(
+
+    #[Override]
+    public function createImageData(string|bool $storageId, string $storagePath, UserData $uploadedBy, ?int $documentId = null): ImageData
+    {
+        $baseData = ['storageId' => $storageId, 'storagePath' => $storagePath, 'uploadedBy' => $uploadedBy];
+        if ($documentId !== null) {
+            $baseData['documentId'] = $documentId;
+        }
+        return ImageData::from($baseData);
+    }
+
+    #[Override]
+    public function createImageMetaData(
         ImageData    $imageData,
         UploadedFile $uploadedFile,
         string       $imageName

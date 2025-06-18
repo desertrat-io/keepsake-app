@@ -24,11 +24,9 @@ use App\Services\ServiceContracts\ImageServiceContract;
 use Illuminate\Support\ServiceProvider;
 use Intervention\Image\ImageManager;
 use Keepsake\Lib\Protocols\PdfConverter\KeepsakePdfConverterClient;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 
-/**
- * @codeCoverageIgnore
- */
-class KeepsakeServiceProvider extends ServiceProvider
+#[CodeCoverageIgnore] class KeepsakeServiceProvider extends ServiceProvider
 {
     protected array $serviceContracts = [
         AccountServiceContract::class => AccountService::class,
@@ -61,7 +59,7 @@ class KeepsakeServiceProvider extends ServiceProvider
     {
         array_walk(
             $this->serviceContracts,
-            fn (string $concrete, string $abstract) => $this->app->bind($abstract, $concrete)
+            fn(string $concrete, string $abstract) => $this->app->bind($abstract, $concrete)
         );
     }
 
@@ -70,20 +68,20 @@ class KeepsakeServiceProvider extends ServiceProvider
         if (config('keepsake.model_mode') === 'eloquent') {
             array_walk(
                 $this->eloquentContracts,
-                fn (string $concrete, string $abstract) => $this->app->bind($abstract, $concrete)
+                fn(string $concrete, string $abstract) => $this->app->bind($abstract, $concrete)
             );
         }
     }
 
     protected function bindCustomFacades(): void
     {
-        $this->app->singleton('image', fn (): ImageManager => new ImageManager(config('image.driver.imagick')));
-        $this->app->singleton('keepsake', fn (): Keepsake => new Keepsake());
+        $this->app->singleton('image', fn(): ImageManager => new ImageManager(config('image.driver.imagick')));
+        $this->app->singleton('keepsake', fn(): Keepsake => new Keepsake());
     }
 
     protected function composedProviders(): void
     {
-        $this->app->bind(KeepsakePdfConverterClient::class, fn () => new KeepsakePdfConverterClient(
+        $this->app->bind(KeepsakePdfConverterClient::class, fn() => new KeepsakePdfConverterClient(
             config('keepsake.pdf_converter_url'),
             ['credentials' => config('keepsake.pdf_converter_credentials')]
         ));

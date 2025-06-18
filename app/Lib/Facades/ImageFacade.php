@@ -26,11 +26,9 @@ declare(strict_types=1);
 namespace App\Lib\Facades;
 
 use Illuminate\Support\Facades\Facade;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 
-/**
- * @codeCoverageIgnore
- */
-class ImageFacade extends Facade
+#[CodeCoverageIgnore] class ImageFacade extends Facade
 {
     protected static function getFacadeAccessor()
     {

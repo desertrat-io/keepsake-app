@@ -3,13 +3,12 @@
 namespace App\Services\DocumentServices;
 
 use App\DTO\Documents\DocumentData;
-use App\DTO\Images\ImageData;
+use App\Events\Processing\PdfToJpegCompleted;
 use App\Exceptions\KeepsakeExceptions\KeepsakePdfException;
 use App\Services\KeepsakeService;
 use App\Services\ServiceContracts\DocumentConverterServiceContract;
 use Arr;
 use Exception;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Keepsake;
 use Keepsake\Lib\Protocols\PdfConverter\ConvertPdfToJpegRequest;
@@ -28,9 +27,9 @@ class DocumentConverterService implements DocumentConverterServiceContract, Keep
 
     /**
      * @param DocumentData $documentData
-     * @return Collection<ImageData>
+     * @return ConvertPdfToJpegResponse
      */
-    public function convertViaGrpcService(DocumentData $documentData): Collection
+    public function convertViaGrpcService(DocumentData $documentData): ConvertPdfToJpegResponse
     {
         $storagePath = $documentData->storageId;
         $storageBasePathSegs = explode(separator: '/', string: $documentData->storageId);
@@ -39,9 +38,10 @@ class DocumentConverterService implements DocumentConverterServiceContract, Keep
         $storageBasePath = Arr::join($storageBasePathSegs, '/');
         Log::info('Sending for conversion: ' . $storagePath);
         $this->request
-            ->setCorrelationId(uniqid())
+            ->setCorrelationId('document-' . $documentData->id)
             ->setFileLocator($storagePath)
             ->setFileName($fileName)
+            ->setUserUuid($documentData->uploadedBy->uuid)
             ->setOriginalMime('application/pdf');
         $this->s3DataStore
             ->setRegion(env('AWS_DEFAULT_REGION', 'eu-north-1'))
@@ -56,17 +56,14 @@ class DocumentConverterService implements DocumentConverterServiceContract, Keep
             Log::info('request made');
             if ($result instanceof ConvertPdfToJpegResponse) {
                 Log::info('Response received!');
-                Log::info(json_encode($result->serializeToJsonString()));
-                foreach ($result->getFiles() as $file) {
-                    Log::info($file->getFileFinalLocation());
-                    Log::info($file->getFileName());
-                }
-                return collect($result->getFiles());
+                event(new PdfToJpegCompleted($result));
+                return $result;
             }
         } catch (Exception $exception) {
             Keepsake::logException(new KeepsakePdfException($exception->getMessage()));
+            var_dump($exception->getMessage());
         }
 
-        return collect();
+        return new ConvertPdfToJpegResponse();
     }
 }

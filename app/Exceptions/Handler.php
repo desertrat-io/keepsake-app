@@ -4,13 +4,11 @@ namespace App\Exceptions;
 
 use App\Exceptions\KeepsakeExceptions\KeepsakeException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 use Psr\Log\LogLevel;
 use Throwable;
 
-/**
- * @codeCoverageIgnore
- */
-class Handler extends ExceptionHandler
+#[CodeCoverageIgnore] class Handler extends ExceptionHandler
 {
     /**
      * A list of exception types with their corresponding custom log levels.

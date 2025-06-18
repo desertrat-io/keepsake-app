@@ -97,7 +97,8 @@ class Image extends Model
         'storage_path',
         'uploaded_by',
         'is_locked',
-        'is_dirty'
+        'is_dirty',
+        'document_id'
     ];
 
     protected static function newFactory(): ImageFactory
