@@ -1,6 +1,9 @@
 name: Keepsake App
 run-name: ${{ github.actor }} currently running Keepsake feature/unit tests
-on: [ pull_request ]
+on:
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
