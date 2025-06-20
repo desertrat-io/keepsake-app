@@ -27,8 +27,7 @@
         "livewire/livewire": "^3.1",
         "mongodb/laravel-mongodb": "^5.2",
         "predis/predis": "^2.2",
-        "spatie/laravel-data": "^4.5",
-        "ext-grpc": "*"
+        "spatie/laravel-data": "^4.5"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.0",
