@@ -10,6 +10,12 @@
         "pdfa",
         "adobe"
     ],
+    "authors": [
+        {
+            "name": "Mike Lawson",
+            "email": "mike@desertrat.io"
+        }
+    ],
     "license": "MIT",
     "require": {
         "php": "^8.3",
