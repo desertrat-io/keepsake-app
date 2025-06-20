@@ -29,6 +29,8 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
+          # For some reason the mongo extension version has to be pinned. I need to find the root error
+          extensions: mongodb-1.21.1,grpc
 
       - name: Install deps
         run: composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
