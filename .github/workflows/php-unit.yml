@@ -8,7 +8,13 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        php-versions: [ '8.3' ]
+    name: 'Main php test and build for version(s): ${{ matrix.php-versions }}'
+    env:
+      extensions: mongodb-1.21.1,grpc
+      key: extension-cache-main
     services:
       postgres:
         image: postgres:17
@@ -26,14 +32,29 @@ jobs:
 
     steps:
       - name: Grab current
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - name: Setup PHP, currently 8.3
+      - name: Setup cache environment
+        id: extcache
+        uses: shivammathur/cache-extensions@v1
+        with:
+          php-version: ${{ matrix.php-versions }}
+          extensions: ${{ env.extensions }}
+          key: ${{ env.key }}
+
+      - name: Cache extensions
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.extcache.outputs.dir }}
+          key: ${{ steps.extcache.outputs.key }}
+          restore-keys: ${{ steps.extcache.outputs.key }}
+
+      - name: Setup PHP, as the action says. Current versions ${{ matrix.php-versions }} with extensions ${{ env.extensions }}
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: ${{ matrix.php-versions }}
           # For some reason the mongo extension version has to be pinned. I need to find the root error
-          extensions: mongodb-1.21.1,grpc
+          extensions: ${{ env.extensions }}
 
       - name: Install deps
         run: composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
