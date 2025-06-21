@@ -35,25 +35,26 @@ use Spatie\LaravelData\Lazy;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
 #[MapName(SnakeCaseMapper::class)]
-class ImageMetaData extends Data implements Wireable
+final class ImageMetaData extends Data implements Wireable
 {
     use WireableData;
 
     public function __construct(
-        public readonly ?int $id,
-        public readonly ?int $imageId,
-        public readonly ?string $originalImageName,
-        public readonly ?string $currentImageName,
-        public readonly ?string $originalImageMime,
-        public readonly ?int $originalFilesize,
-        public readonly ?int $currentFilesize,
-        public readonly ?string $originalFileExt,
-        public readonly ?Carbon $createdAt,
-        public readonly ?Carbon $updatedAt,
-        public readonly ?Carbon $deletedAt,
-        public readonly ?bool $isDeleted,
+        public readonly ?int           $id,
+        public readonly ?int           $imageId,
+        public readonly ?string        $originalImageName,
+        public readonly ?string        $currentImageName,
+        public readonly ?string        $originalImageMime,
+        public readonly ?int           $originalFilesize,
+        public readonly ?int           $currentFilesize,
+        public readonly ?string        $originalFileExt,
+        public readonly ?Carbon        $createdAt,
+        public readonly ?Carbon        $updatedAt,
+        public readonly ?Carbon        $deletedAt,
+        public readonly ?bool          $isDeleted,
         public readonly ImageData|Lazy $image
-    ) {
+    )
+    {
     }
 
     public static function fromModel(ImageMeta $imageMeta): self
@@ -71,7 +72,7 @@ class ImageMetaData extends Data implements Wireable
             updatedAt: $imageMeta->updated_at,
             deletedAt: $imageMeta->deleted_at,
             isDeleted: $imageMeta->is_deleted,
-            image: Lazy::create(fn () => ImageData::fromModel($imageMeta->image))
+            image: Lazy::create(fn() => ImageData::fromModel($imageMeta->image))
         );
     }
 
