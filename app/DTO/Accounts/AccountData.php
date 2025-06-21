@@ -32,20 +32,20 @@ use Spatie\LaravelData\Concerns\WireableData;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Lazy;
 
-final class AccountData extends Data implements Wireable
+class AccountData extends Data implements Wireable
 {
     use WireableData;
 
     public function __construct(
-        public readonly ?int          $id,
-        public readonly ?string       $uuid,
-        public readonly ?int          $userId,
-        public readonly ?bool         $isLocked,
-        public readonly ?bool         $isMfaEnabled,
-        public readonly ?Carbon       $createdAt,
-        public readonly ?Carbon       $updatedAt,
-        public readonly ?Carbon       $deletedAt,
-        public readonly ?bool         $isDeleted,
+        public readonly ?int $id,
+        public readonly ?string $uuid,
+        public readonly ?int $userId,
+        public readonly ?bool $isLocked,
+        public readonly ?bool $isMfaEnabled,
+        public readonly ?Carbon $createdAt,
+        public readonly ?Carbon $updatedAt,
+        public readonly ?Carbon $deletedAt,
+        public readonly ?bool $isDeleted,
         public readonly Lazy|UserData $user
     ) {
     }
@@ -62,7 +62,7 @@ final class AccountData extends Data implements Wireable
             updatedAt: $account->updated_at,
             deletedAt: $account->deleted_at,
             isDeleted: $account->is_deleted,
-            user: Lazy::create(fn () => UserData::fromModel($account->user))
+            user: Lazy::create(fn() => UserData::fromModel($account->user))
         );
     }
 }

@@ -38,25 +38,25 @@ use Spatie\LaravelData\Lazy;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
 #[MapName(SnakeCaseMapper::class)]
-final class UserData extends Data implements Wireable
+class UserData extends Data implements Wireable
 {
     use WireableData;
 
     public function __construct(
-        public readonly ?int                  $id,
-        public readonly ?string               $uuid,
-        public readonly ?string               $name,
-        public readonly ?string               $email,
-        public readonly ?Carbon               $emailVerifiedAt,
-        public readonly ?string               $rememberToken,
-        public readonly ?Carbon               $createdAt,
-        public readonly ?Carbon               $updatedAt,
-        public readonly ?Carbon               $deletedAt,
-        public readonly ?bool                 $isDeleted,
+        public readonly ?int $id,
+        public readonly ?string $uuid,
+        public readonly ?string $name,
+        public readonly ?string $email,
+        public readonly ?Carbon $emailVerifiedAt,
+        public readonly ?string $rememberToken,
+        public readonly ?Carbon $createdAt,
+        public readonly ?Carbon $updatedAt,
+        public readonly ?Carbon $deletedAt,
+        public readonly ?bool $isDeleted,
         /** @var Collection<ImageData> */
-        public readonly null|Collection|Lazy  $images,
+        public readonly null|Collection|Lazy $images,
         /** @var Collection<DocumentData> */
-        public readonly null|Collection|Lazy  $documents,
+        public readonly null|Collection|Lazy $documents,
         public readonly null|Lazy|AccountData $account
     ) {
     }
