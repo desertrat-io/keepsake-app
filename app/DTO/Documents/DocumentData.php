@@ -13,22 +13,23 @@ use Spatie\LaravelData\Lazy;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
 #[MapName(SnakeCaseMapper::class)]
-class DocumentData extends Data implements Wireable
+final class DocumentData extends Data implements Wireable
 {
     use WireableData;
 
     public function __construct(
-        public readonly ?int $id,
-        public readonly ?string $uuid,
-        public readonly ?string $title,
-        public readonly ?int $numPages,
-        public readonly ?string $storageId,
+        public readonly ?int               $id,
+        public readonly ?string            $uuid,
+        public readonly ?string            $title,
+        public readonly ?int               $numPages,
+        public readonly ?string            $storageId,
         public readonly null|UserData|Lazy $uploadedBy,
-        public readonly ?Carbon $createdAt,
-        public readonly ?Carbon $updatedAt,
-        public readonly ?Carbon $deletedAt,
-        public readonly bool $isDeleted = false
-    ) {
+        public readonly ?Carbon            $createdAt,
+        public readonly ?Carbon            $updatedAt,
+        public readonly ?Carbon            $deletedAt,
+        public readonly bool               $isDeleted = false
+    )
+    {
     }
 
     public static function fromModel(Document $document): self
@@ -39,7 +40,7 @@ class DocumentData extends Data implements Wireable
             title: $document->title,
             numPages: $document->num_pages,
             storageId: $document->storage_id,
-            uploadedBy: Lazy::create(fn () => UserData::fromModel($document->uploadedBy)),
+            uploadedBy: Lazy::create(fn() => UserData::fromModel($document->uploadedBy)),
             createdAt: $document->created_at,
             updatedAt: $document->updated_at,
             deletedAt: $document->deleted_at,
