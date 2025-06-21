@@ -36,7 +36,7 @@ use Spatie\LaravelData\Lazy;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
 #[MapName(SnakeCaseMapper::class)]
-final class ImageData extends Data implements Wireable
+class ImageData extends Data implements Wireable
 {
     use WireableData;
 
@@ -53,8 +53,7 @@ final class ImageData extends Data implements Wireable
         public readonly ?Carbon       $deletedAt,
         public readonly ?bool         $isDeleted,
         public readonly ?int          $documentId
-    )
-    {
+    ) {
     }
 
     public static function fromModel(Image $image): ImageData
@@ -64,7 +63,7 @@ final class ImageData extends Data implements Wireable
             uuid: $image->uuid,
             storageId: $image->storage_id,
             storagePath: $image->storage_path,
-            uploadedBy: Lazy::create(fn() => UserData::fromModel($image->uploadedBy)),
+            uploadedBy: Lazy::create(fn () => UserData::fromModel($image->uploadedBy)),
             isLocked: $image->is_locked,
             isDirty: $image->is_dirty,
             createdAt: $image->created_at,
