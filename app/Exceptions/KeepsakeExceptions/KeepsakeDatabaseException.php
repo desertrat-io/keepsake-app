@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (c) 2023
+ * Copyright (c) 2025
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this
  * software and associated documentation files (the "Software"), to deal in the Software
  * without restriction, including without limitation the rights to use, copy, modify, merge,
@@ -20,21 +20,24 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+declare(strict_types=1);
 
-namespace App\Repositories\RepositoryContracts;
+namespace App\Exceptions\KeepsakeExceptions;
 
-use App\DTO\Images\ImageData;
-use Illuminate\Contracts\Pagination\CursorPaginator;
-use Illuminate\Contracts\Pagination\Paginator;
-use Illuminate\Support\Collection;
+use App\Lib\Enum\ErrorResponseCode;
+use App\Lib\Enum\HttpCode;
 
-interface ImageRepositoryContract
+class KeepsakeDatabaseException extends KeepsakeException
 {
-    public function createImage(ImageData $imageData): ImageData;
+    public function httpCode(): HttpCode
+    {
+        return HttpCode::SERVER_ERROR;
+    }
 
-    public function getImagePaths(array|int $ids): Collection|string;
+    public function errorResponseCode(): ErrorResponseCode
+    {
+        return ErrorResponseCode::DATABASE_ERROR;
+    }
 
-    public function getImages(int $perPage = 10, int $limit = 100, string $pageName = 'page', bool $useCursor = false, ?string $cursor = null): Paginator|CursorPaginator;
 
-    public function markProcessed(string $storageId): void;
 }

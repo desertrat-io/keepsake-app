@@ -27,8 +27,10 @@ namespace Tests\Unit\Services\DocumentServices;
 
 use App\DTO\Accounts\UserData;
 use App\DTO\Documents\DocumentData;
+use App\DTO\Images\ImageData;
 use App\Events\Images\PdfUploaded;
 use App\Models\AccountModels\User;
+use App\Models\ImageModels\Image;
 use App\Repositories\RepositoryContracts\DocumentRepositoryContract;
 use App\Repositories\RepositoryContracts\UserRepositoryContract;
 use App\Services\DocumentServices\DocumentService;
@@ -52,9 +54,10 @@ class DocumentServiceTest extends TestCase
     #[Test]
     public function canSaveDocument(): void
     {
+        $fakeImage = ImageData::fromModel(Image::factory()->create());
         Event::fake();
         Storage::fake('s3');
-        $docData = $this->documentService->createDocument($this->fakeDoc);
+        $docData = $this->documentService->createDocument(uploadedFile: $this->fakeDoc, imageData: $fakeImage);
         Event::assertDispatched(function (PdfUploaded $event) use ($docData) {
             return $event->document->id === $docData->id;
         });
@@ -64,6 +67,7 @@ class DocumentServiceTest extends TestCase
     {
         parent::setUp();
         $this->fakeDoc = TemporaryUploadedFile::fake()->create('test.pdf');
+
         $user = User::factory()->create();
         $this->actingAs($user);
         $userRepoMock = $this->mock(UserRepositoryContract::class, function (MockInterface $mock) use ($user) {

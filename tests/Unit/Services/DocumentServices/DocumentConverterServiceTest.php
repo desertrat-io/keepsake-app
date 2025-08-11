@@ -26,6 +26,7 @@ namespace Tests\Unit\Services\DocumentServices;
 
 use App\DTO\Documents\DocumentData;
 use App\Models\DocumentModels\Document;
+use App\Models\ImageModels\Image;
 use App\Services\DocumentServices\DocumentConverterService;
 use Event;
 use Google\Protobuf\Timestamp;
@@ -53,7 +54,9 @@ class DocumentConverterServiceTest extends TestCase
     public function convertsViaGrpcService(): void
     {
         $fakeFile = TemporaryUploadedFile::fake()->image('fake.jpeg');
-        $docData = DocumentData::fromModel(Document::factory()->create());
+        $fakeDoc = Document::factory()->create();
+        Image::factory()->create(['storage_id' => $fakeDoc->storage_id]);
+        $docData = DocumentData::fromModel($fakeDoc);
         $response = new ConvertPdfToJpegResponse();
         $filePointers = new FilePointers();
         $filePointers->setFileName($fakeFile->getFileName())

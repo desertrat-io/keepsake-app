@@ -44,7 +44,8 @@ class ImageRepositoryTest extends TestCase
         $imageData = ImageData::from([
             'storageId' => fake()->shuffleString,
             'storagePath' => fake()->filePath(),
-            'uploadedBy' => $user
+            'uploadedBy' => $user,
+            'isDirty' => false
         ]);
         $image = $this->imageRepository->createImage($imageData);
         $this->assertInstanceOf(ImageData::class, $image);

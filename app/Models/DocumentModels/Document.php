@@ -17,10 +17,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
+use Spatie\LaravelData\WithData;
 
 /**
- * 
- *
  * @property int $id
  * @property string $uuid
  * @property string $title
@@ -49,7 +48,10 @@ use Illuminate\Support\Carbon;
  * @property string|null $storage_id
  * @property-read User|null $uploadedBy
  * @method static Builder<static>|Document whereStorageId($value)
- * @method static \Database\Factories\DocumentModels\DocumentFactory factory($count = null, $state = [])
+ * @method static DocumentFactory factory($count = null, $state = [])
+ * @property-read Image|null $image
+ * @property int $image_id
+ * @method static Builder<static>|Document whereImageId($value)
  * @mixin Eloquent
  */
 class Document extends Model
@@ -59,13 +61,15 @@ class Document extends Model
     use SoftDeletes;
     use BoolDeleteColumn;
     use HasFactory;
+    use WithData;
 
     protected $fillable = [
         'uuid',
         'title',
         'num_pages',
         'uploaded_by',
-        'storage_id'
+        'storage_id',
+        'image_id'
     ];
 
     protected static function newFactory(): DocumentFactory|Factory
@@ -76,6 +80,11 @@ class Document extends Model
     public function pages(): HasMany
     {
         return $this->hasMany(related: Image::class, foreignKey: 'document_id', localKey: 'id');
+    }
+
+    public function image(): BelongsTo
+    {
+        return $this->belongsTo(related: Image::class);
     }
 
     public function uploadedBy(): BelongsTo

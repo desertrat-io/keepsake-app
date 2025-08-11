@@ -27,12 +27,13 @@ use App\DTO\Accounts\UserData;
 use App\DTO\Images\ImageData;
 use App\DTO\Images\ImageMetaData;
 use Illuminate\Contracts\Pagination\CursorPaginator;
+use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\Cursor;
 
 interface ImageServiceContract
 {
-    public function saveImage(UploadedFile $uploadedFile, ?string $customTitle = null, ?string $customPath = null, int|string|null $customUploader = null, ?int $documentId = null): ImageData;
+    public function saveImage(UploadedFile $uploadedFile, ?string $customTitle = null, ?string $customPath = null, int|string|null $customUploader = null, ?int $documentId = null, ?int $parentImageId = null): ImageData;
 
     public function saveThumbnail(UploadedFile $uploadedFile, string $imageName, string $storagePath): string|bool;
 
@@ -40,14 +41,19 @@ interface ImageServiceContract
         int     $total = 100,
         int     $page = 1,
         int     $perPage = 0,
+        string  $pageName = 'page',
+        bool    $useCursor = false,
         ?Cursor $cursor = null
-    ): CursorPaginator;
+    ): CursorPaginator|Paginator;
 
-    public function createImageData(string|bool $storageId, string $storagePath, UserData $uploadedBy): ImageData;
+    public function createImageData(string|bool $storageId, string $storagePath, UserData $uploadedBy, UploadedFile $uploadedFile, ?int $documentId = null, ?int $parentImageId = null): ImageData;
 
     public function createImageMetaData(
         ImageData    $imageData,
         UploadedFile $uploadedFile,
         string       $imageName
     ): ImageMetaData;
+
+    public function imageProcessed(string $storageId): void;
+
 }

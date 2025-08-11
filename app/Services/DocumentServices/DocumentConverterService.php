@@ -16,12 +16,13 @@ use Keepsake\Lib\Protocols\PdfConverter\ConvertPdfToJpegResponse;
 use Keepsake\Lib\Protocols\PdfConverter\KeepsakePdfConverterClient;
 use Keepsake\Lib\Protocols\S3DataStore;
 
-class DocumentConverterService implements DocumentConverterServiceContract, KeepsakeService
+readonly class DocumentConverterService implements DocumentConverterServiceContract, KeepsakeService
 {
     public function __construct(
         private KeepsakePdfConverterClient $keepsakePdfConverterClient,
         private ConvertPdfToJpegRequest    $request = new ConvertPdfToJpegRequest(),
-        private S3DataStore                $s3DataStore = new S3DataStore())
+        private S3DataStore                $s3DataStore = new S3DataStore()
+    )
     {
     }
 
@@ -42,6 +43,9 @@ class DocumentConverterService implements DocumentConverterServiceContract, Keep
             ->setFileLocator($storagePath)
             ->setFileName($fileName)
             ->setUserUuid($documentData->uploadedBy->uuid)
+            ->setImageUuid($documentData->image->uuid)
+            ->setImageId($documentData->image->id)
+            ->setStorageId($documentData->storageId)
             ->setOriginalMime('application/pdf');
         $this->s3DataStore
             ->setRegion(env('AWS_DEFAULT_REGION', 'eu-north-1'))

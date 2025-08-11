@@ -4,6 +4,7 @@ namespace Database\Factories\DocumentModels;
 
 use App\Models\AccountModels\User;
 use App\Models\DocumentModels\Document;
+use App\Models\ImageModels\Image;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class DocumentFactory extends Factory
@@ -17,7 +18,8 @@ class DocumentFactory extends Factory
             'title' => $this->faker->word,
             'num_pages' => $this->faker->randomDigit(),
             'uploaded_by' => User::factory()->create()->id,
-            'storage_id' => $this->faker->uuid
+            'storage_id' => $this->faker->uuid,
+            'image_id' => Image::factory()->create()->id,
         ];
     }
 

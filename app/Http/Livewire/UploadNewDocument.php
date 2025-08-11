@@ -25,7 +25,7 @@ class UploadNewDocument extends Component
     public bool $isUploaded = false;
 
     #[Validate('required')]
-    public string $imageTitle = '';
+    public ?string $imageTitle = '';
 
     private ImageServiceContract $imageService;
 
@@ -63,24 +63,19 @@ class UploadNewDocument extends Component
                     ->min(config('keepsake.min_image_size'))
             ]
         ]);
-        if ($this->imageTitle !== '') {
-            if ($this->image->getClientOriginalExtension() !== 'pdf') {
-                $imageData = $this->imageService->saveImage(
-                    uploadedFile: $this->image,
-                    customTitle: $this->imageTitle
-                );
-            } else {
-                $imageData = $this->documentService->createDocument(temporaryUploadedFile: $this->image, customTitle: $this->imageTitle);
-            }
-            $this->dispatch('doc-uploaded-custom-title');
-        } else {
-            // TODO: refactor the custom title handler
-            if ($this->image->getClientOriginalExtension() !== 'pdf') {
-                $imageData = $this->documentService->createDocument(temporaryUploadedFile: $this->image);
-            } else {
-                $imageData = $this->imageService->saveImage(uploadedFile: $this->image);
-            }
+
+        if ($this->imageTitle === '') {
+            $this->imageTitle = null;
         }
+        $imageData = $this->imageService->saveImage(uploadedFile: $this->image, customTitle: $this->imageTitle);
+        // it's technically possible for someone to completely remove the title
+        // so passing the title as empty will just let it default
+        if ($this->image->getClientOriginalExtension() === 'pdf') {
+            $this->documentService
+                ->createDocument(uploadedFile: $this->image, customTitle: $this->imageTitle, imageData: $imageData);
+        }
+
+
         $this->image = null;
         $this->isUploaded = true;
         $this->dispatch('doc-uploaded', imageData: $imageData);

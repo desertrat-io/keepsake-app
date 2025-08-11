@@ -28,8 +28,6 @@ namespace App\Models\EventModels;
 use MongoDB\Laravel\Eloquent\Model;
 
 /**
- * 
- *
  * @property string $_id 4 occurrences
  * @property \Illuminate\Support\Carbon|null $created_at 4 occurrences
  * @property string|null $meta 4 occurrences

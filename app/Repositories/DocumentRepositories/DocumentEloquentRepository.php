@@ -21,7 +21,8 @@ class DocumentEloquentRepository implements DocumentRepositoryContract, Keepsake
         return DocumentData::fromModel(Document::create([
             'title' => $documentData->title,
             'uploaded_by' => $documentData->uploadedBy->id,
-            'storage_id' => $documentData->storageId
-        ]));
+            'storage_id' => $documentData->storageId,
+            'image_id' => $documentData->imageId,
+        ])->load('image'));
     }
 }

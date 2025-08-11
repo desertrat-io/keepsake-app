@@ -26,35 +26,42 @@ declare(strict_types=1);
 namespace App\Repositories\ImageRepositories;
 
 use App\DTO\Images\ImageData;
+use App\Exceptions\KeepsakeExceptions\KeepsakeDatabaseException;
 use App\Models\ImageModels\Image;
 use App\Repositories\KeepsakeEloquentRepository;
 use App\Repositories\RepositoryContracts\ImageRepositoryContract;
 use Illuminate\Contracts\Pagination\CursorPaginator;
+use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Support\Collection;
+use Keepsake;
+use Log;
 use Override;
 
 class ImageEloquentRepository implements ImageRepositoryContract, KeepsakeEloquentRepository
 {
-    #[Override] public function concreteEntityClass(): string
+    #[Override]
+    public function concreteEntityClass(): string
     {
         return Image::class;
     }
 
-    #[Override] public function createImage(ImageData $imageData): ImageData
+    #[Override]
+    public function createImage(ImageData $imageData): ImageData
     {
         $image = Image::create([
             'storage_id' => $imageData->storageId,
             'storage_path' => $imageData->storagePath,
             'is_locked' => false,
-            'is_dirty' => true,
-            'uploaded_by' => $imageData->uploadedBy->id,
-            'document_id' => $imageData->documentId
+            'is_dirty' => $imageData->isDirty,
+            'parent_image_id' => $imageData->parentImageId,
+            'uploaded_by' => $imageData->uploadedBy->id
         ])->load('uploadedBy');
         // some kind of weird quirk with spatie data, you end up having to create the model, then query it
         return ImageData::fromModel($image);
     }
 
-    #[Override] public function getImagePaths(array|int $ids): Collection|string
+    #[Override]
+    public function getImagePaths(array|int $ids): Collection|string
     {
         if (gettype($ids) === 'integer') {
             return Image::whereId($ids)->orderByDesc('created_at')->first()['storage_path'];
@@ -64,25 +71,48 @@ class ImageEloquentRepository implements ImageRepositoryContract, KeepsakeEloque
     }
 
     /**
-     * @param string|null $cursor
      * @param int $perPage
      * @param int $limit
-     * @return CursorPaginator
+     * @param $pageName
+     * @param string|null $cursor
+     * @return Paginator|CursorPaginator
      */
-    #[Override] public function getImages(?string $cursor = null, int $perPage = 10, int $limit = 100): CursorPaginator
+    #[Override]
+    public function getImages(int $perPage = 10, int $limit = 100, $pageName = 'page', bool $useCursor = false, ?string $cursor = null): Paginator|CursorPaginator
     {
-        return
-            Image::with(['meta', 'uploadedBy'])->limit($limit)->orderByDesc(
-                'created_at'
-            )->cursorPaginate(perPage: $perPage, columns: [
-                'id',
-                'uuid',
-                'storage_id',
-                'storage_path',
-                'created_at',
-                'uploaded_by',
-                'is_dirty'
-            ], cursor: $cursor);
+        $imageColumns = [
+            'id',
+            'uuid',
+            'storage_id',
+            'storage_path',
+            'created_at',
+            'uploaded_by',
+            'is_dirty'];
+        $images = Image::with(['meta', 'uploadedBy'])->orderByDesc(
+            'created_at'
+        );
+        if ($useCursor === false) {
+            return $images->paginate(perPage: $perPage, columns: $imageColumns, pageName: $pageName);
+        }
+        return $images->cursorPaginate(perPage: $perPage, columns: $imageColumns, cursor: $cursor);
+    }
+
+
+    /**
+     * @param string $storageId
+     * @return void
+     * @throws KeepsakeDatabaseException
+     */
+    public function markProcessed(string $storageId): void
+    {
+        Log::info($storageId);
+        $imageToMark = Image::where('storage_id', $storageId)->first();
+        if ($imageToMark === null) {
+            $exception = new KeepsakeDatabaseException('Unknown storage ID, image may be missing or not done processing');
+            Keepsake::logException($exception);
+            throw $exception;
+        }
+        $imageToMark->update(['is_dirty' => false]);
     }
 
 

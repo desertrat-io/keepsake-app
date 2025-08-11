@@ -32,6 +32,7 @@ use App\Models\DocumentModels\Document;
 use App\Models\GenerateUUID;
 use Database\Factories\ImageModels\ImageFactory;
 use Eloquent;
+use Faker\Factory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -78,6 +79,9 @@ use Spatie\LaravelData\WithData;
  * @property-read Document|null $pageOf
  * @property-read TFactory|null $use_factory
  * @method static ImageFactory factory($count = null, $state = [])
+ * @property int|null $parent_image_id
+ * @method static Builder<static>|Image whereParentImageId($value)
+ * @property-read Image|null $parent
  * @mixin Eloquent
  */
 class Image extends Model
@@ -93,6 +97,7 @@ class Image extends Model
 
     protected $fillable = [
         'uuid',
+        'parent_image_id',
         'storage_id',
         'storage_path',
         'uploaded_by',
@@ -101,7 +106,7 @@ class Image extends Model
         'document_id'
     ];
 
-    protected static function newFactory(): ImageFactory
+    protected static function newFactory(): ImageFactory|Factory
     {
         return ImageFactory::new();
     }
@@ -116,9 +121,14 @@ class Image extends Model
         return $this->belongsTo(related: User::class, foreignKey: 'uploaded_by');
     }
 
-    public function pageOf(): BelongsTo
+    public function pageOf(): HasOne
     {
-        return $this->belongsTo(related: Document::class, foreignKey: 'document_id');
+        return $this->hasOne(Document::class);
+    }
+
+    public function parent(): HasOne
+    {
+        return $this->hasOne(Image::class, 'parent_image_id');
     }
 
     protected function casts(): array
