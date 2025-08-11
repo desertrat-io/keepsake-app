@@ -12,9 +12,12 @@ use Illuminate\Http\UploadedFile;
 use Keepsake;
 use Keepsake\Lib\Protocols\PdfConverter\ConvertPdfToJpegResponse;
 use Keepsake\Lib\Protocols\PdfConverter\FilePointers;
+use Log;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 use Storage;
 use Str;
 
+#[CodeCoverageIgnore]
 class SavePagesAsImage implements ShouldQueue, ShouldBeEncrypted
 {
     use Queueable;
@@ -37,15 +40,18 @@ class SavePagesAsImage implements ShouldQueue, ShouldBeEncrypted
                     ->get($file->getFileFinalLocation());
 
                 Storage::disk(Keepsake::getLocalDiskName())->put($file->getFileFinalLocation(), $localFileStream);
-
-                $uploadedFile = new UploadedFile(path: storage_path($file->getFileFinalLocation()), originalName: $file->getFileName());
+                $finalPath = Storage::disk(Keepsake::getLocalDiskName())->path($file->getFileFinalLocation());
+                $uploadedFile = new UploadedFile(path: $finalPath, originalName: $file->getFileName());
+                Log::info($file->serializeToString());
                 $imageData = $imageService->saveImage(
                     uploadedFile: $uploadedFile,
                     customTitle: $file->getFileName(),
                     customPath: Str::beforeLast($file->getFileFinalLocation(), '/'),
                     customUploader: $this->convertPdfToJpegResponse->getMeta()->getUserUuid(),
-                    documentId: (int)Str::replaceFirst('document-', '', $this->convertPdfToJpegResponse->getMeta()->getCorrelationId())
+                    documentId: (int)Str::replaceFirst('document-', '', $this->convertPdfToJpegResponse->getMeta()->getCorrelationId()),
+                    parentImageId: $file->getParentImageId(),
                 );
             });
+        $imageService->imageProcessed(storageId: $this->convertPdfToJpegResponse->getStorageId());
     }
 }

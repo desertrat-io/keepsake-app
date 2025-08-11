@@ -22,7 +22,6 @@ use App\Services\ServiceContracts\DocumentConverterServiceContract;
 use App\Services\ServiceContracts\DocumentServiceContract;
 use App\Services\ServiceContracts\ImageServiceContract;
 use Illuminate\Support\ServiceProvider;
-use Intervention\Image\ImageManager;
 use Keepsake\Lib\Protocols\PdfConverter\KeepsakePdfConverterClient;
 use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 
@@ -75,7 +74,6 @@ use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 
     protected function bindCustomFacades(): void
     {
-        $this->app->singleton('image', fn(): ImageManager => new ImageManager(config('image.driver.imagick')));
         $this->app->singleton('keepsake', fn(): Keepsake => new Keepsake());
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Services\ServiceContracts\DocumentServiceContract;
 use App\Services\ServiceContracts\ImageServiceContract;
 use Illuminate\Contracts\Pagination\CursorPaginator;
 use Illuminate\Support\Collection;
@@ -17,22 +18,31 @@ class MainTable extends Component
 
     // livewire really doesn't like pagination
     public int $perPage = 10;
-    protected $listeners = ['pdfConverted'];
+    protected $listeners = ['pdf-converted'];
     /**
      * @var CursorPaginator
      */
     private $images;
     private ImageServiceContract $imageService;
 
-    public function boot(ImageServiceContract $imageService): void
+    private DocumentServiceContract $documentService;
+
+    public function boot(ImageServiceContract $imageService, DocumentServiceContract $documentService): void
     {
         $this->imageService = $imageService;
+        $this->documentService = $documentService;
     }
 
     #[On('doc-uploaded')]
     public function updateImageList($imageData): void
     {
         $this->images = $this->imageService->getImages(perPage: $this->perPage);
+    }
+
+    #[On('pdf-uploaded')]
+    public function updateProcessingList($documentData): void
+    {
+
     }
 
     public function pdfConverted(Collection $images): void
@@ -42,7 +52,7 @@ class MainTable extends Component
 
     public function render()
     {
-        $this->images = $this->imageService->getImages(perPage: $this->perPage);
+        $this->images = $this->imageService->getImages(perPage: $this->perPage, pageName: 'main_table_page');
 
         return view(
             'livewire.main-table',

@@ -3,9 +3,11 @@
 namespace App\Services\DocumentServices;
 
 use App\DTO\Documents\DocumentData;
+use App\DTO\Images\ImageData;
 use App\Events\Images\PdfUploaded;
 use App\Exceptions\KeepsakeExceptions\KeepsakeStorageException;
 use App\Repositories\RepositoryContracts\DocumentRepositoryContract as DocumentRepository;
+use App\Repositories\RepositoryContracts\ImageRepositoryContract as ImageRepository;
 use App\Repositories\RepositoryContracts\UserRepositoryContract as UserRepository;
 use App\Services\KeepsakeService;
 use App\Services\ServiceContracts\DocumentServiceContract;
@@ -15,43 +17,59 @@ use Keepsake;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Override;
 
-class DocumentService implements DocumentServiceContract, KeepsakeService
+readonly class DocumentService implements DocumentServiceContract, KeepsakeService
 {
-    public function __construct(private readonly DocumentRepository $documentRepository, private readonly UserRepository $userRepository)
+    public function __construct(
+        private DocumentRepository $documentRepository,
+        private UserRepository     $userRepository,
+        private ImageRepository    $imageRepository
+    )
     {
     }
 
     /**
      * Makes the document ready for conversion but doesn't actually do the conversion
-     * @param TemporaryUploadedFile $temporaryUploadedFile
+     * @param TemporaryUploadedFile $uploadedFile
      * @param string|null $customTitle
      * @return DocumentData
      * @throws KeepsakeStorageException
      */
     #[Override]
     public function createDocument(
-        UploadedFile $temporaryUploadedFile,
-        ?string      $customTitle = null
+        UploadedFile $uploadedFile,
+        ?string      $customTitle = null,
+        ?ImageData   $imageData = null,
     ): DocumentData
     {
         $storagePath = Keepsake::getNewStoragePath();
-        $documentFileName = explode('.', $customTitle ?? $temporaryUploadedFile->getClientOriginalName())[0];
-        $documentFileNameWithExt = $documentFileName . '.' . $temporaryUploadedFile->getClientOriginalExtension();
-        $storageId = $temporaryUploadedFile->storeAs(
+        $documentFileName = explode('.', $customTitle ?? $uploadedFile->getClientOriginalName())[0];
+        $documentFileNameWithExt = $documentFileName . '.' . $uploadedFile->getClientOriginalExtension();
+        $isUploaded = $uploadedFile->storeAs(
             path: $storagePath,
             name: $documentFileNameWithExt,
             options: 's3'
         );
-        if (!$storageId) {
+        if (!$isUploaded) {
             $exception = new KeepsakeStorageException('Document upload to S3 failed');
             Keepsake::logException($exception);
             throw $exception;
         }
+
+        // make sure to update the image immediately after creating, don't access the lazy property else
+        // it'll resolve to nothing
+        // also the storage_id of the base PDF and the initial image entry have to match
+        $uploadedBy = $this->userRepository->getUserById(Auth::id(), asData: true);
         $documentData = $this->documentRepository->createDocument(DocumentData::from([
-            'storage_id' => $storageId,
+            'storage_id' => $imageData->storageId,
             'title' => $documentFileName,
-            'uploadedBy' => $this->userRepository->getUserById(Auth::id(), asData: true)
+            'uploadedBy' => $uploadedBy,
+            'image_id' => $imageData->id,
         ]));
+        $newData = $documentData->toArray();
+        $newData['image'] = $imageData;
+        $newData['uploadedBy'] = $uploadedBy;
+        // free up some memory by overwriting the original document data
+        $documentData = DocumentData::from($newData);
         event(new PdfUploaded($documentData));
         return $documentData;
     }

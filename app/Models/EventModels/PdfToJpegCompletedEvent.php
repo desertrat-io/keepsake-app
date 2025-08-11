@@ -27,8 +27,6 @@ namespace App\Models\EventModels;
 use MongoDB\Laravel\Eloquent\Model;
 
 /**
- * 
- *
  * @property-read mixed $id
  * @method static \MongoDB\Laravel\Eloquent\Builder<static>|PdfToJpegCompletedEvent addHybridHas(\Illuminate\Database\Eloquent\Relations\Relation $relation, string $operator = '>=', string $count = 1, string $boolean = 'and', ?\Closure $callback = null)
  * @method static \MongoDB\Laravel\Eloquent\Builder<static>|PdfToJpegCompletedEvent aggregate($function = null, $columns = [])
@@ -41,6 +39,17 @@ use MongoDB\Laravel\Eloquent\Model;
  * @method static \MongoDB\Laravel\Eloquent\Builder<static>|PdfToJpegCompletedEvent raw($value = null)
  * @method static \MongoDB\Laravel\Eloquent\Builder<static>|PdfToJpegCompletedEvent search(\MongoDB\Builder\Type\SearchOperatorInterface|array $operator, ?string $index = null, ?array $highlight = null, ?bool $concurrent = null, ?string $count = null, ?string $searchAfter = null, ?string $searchBefore = null, ?bool $scoreDetails = null, ?array $sort = null, ?bool $returnStoredSource = null, ?array $tracking = null)
  * @method static \MongoDB\Laravel\Eloquent\Builder<static>|PdfToJpegCompletedEvent vectorSearch(string $index, string $path, array $queryVector, int $limit, bool $exact = false, \MongoDB\Builder\Type\QueryInterface|array $filter = [], ?int $numCandidates = null)
+ * @property \Illuminate\Support\Carbon|null $created_at 66 occurrences
+ * @property string|null $meta 66 occurrences
+ * @property int|null $processing_finished_at 66 occurrences
+ * @property \Illuminate\Support\Carbon|null $updated_at 66 occurrences
+ * @method static \MongoDB\Laravel\Eloquent\Builder<static>|PdfToJpegCompletedEvent whereCreatedAt($value)
+ * @method static \MongoDB\Laravel\Eloquent\Builder<static>|PdfToJpegCompletedEvent whereId($value)
+ * @method static \MongoDB\Laravel\Eloquent\Builder<static>|PdfToJpegCompletedEvent whereMeta($value)
+ * @method static \MongoDB\Laravel\Eloquent\Builder<static>|PdfToJpegCompletedEvent whereProcessingFinishedAt($value)
+ * @method static \MongoDB\Laravel\Eloquent\Builder<static>|PdfToJpegCompletedEvent whereUpdatedAt($value)
+ * @property string|null $storage_id 18 occurrences
+ * @method static \MongoDB\Laravel\Eloquent\Builder<static>|PdfToJpegCompletedEvent whereStorageId($value)
  * @mixin \Eloquent
  */
 class PdfToJpegCompletedEvent extends Model

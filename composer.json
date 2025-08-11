@@ -17,7 +17,7 @@
         "google/protobuf": "^4.28",
         "grpc/grpc": "^1.57",
         "guzzlehttp/guzzle": "^7.2",
-        "intervention/image": "*",
+        "intervention/image-laravel": "^1.5",
         "laravel/fortify": "^1.17",
         "laravel/framework": "^v12.0",
         "laravel/horizon": "^5.30",

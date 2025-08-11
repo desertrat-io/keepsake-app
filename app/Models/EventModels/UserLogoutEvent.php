@@ -27,8 +27,6 @@ namespace App\Models\EventModels;
 use MongoDB\Laravel\Eloquent\Model;
 
 /**
- * 
- *
  * @property mixed $id 1 occurrences
  * @property \Illuminate\Support\Carbon|null $created_at 1 occurrences
  * @property string|null $from_ip 1 occurrences

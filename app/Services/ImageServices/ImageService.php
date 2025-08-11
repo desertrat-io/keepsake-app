@@ -37,14 +37,15 @@ use App\Services\KeepsakeService;
 use App\Services\ServiceContracts\ImageServiceContract;
 use Auth;
 use Illuminate\Contracts\Pagination\CursorPaginator;
+use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\Cursor;
-use Image;
+use Intervention\Image\Laravel\Facades\Image;
 use Keepsake;
 use Override;
 use Storage;
 
-class ImageService implements ImageServiceContract, KeepsakeService
+readonly class ImageService implements ImageServiceContract, KeepsakeService
 {
     public function __construct(
         private ImageRepositoryContract     $imageRepository,
@@ -58,15 +59,16 @@ class ImageService implements ImageServiceContract, KeepsakeService
      * @throws KeepsakeStorageException
      */
     #[Override]
-    public function saveImage(UploadedFile $uploadedFile, ?string $customTitle = null, ?string $customPath = null, int|string|null $customUploader = null, ?int $documentId = null): ImageData
+    public function saveImage(UploadedFile $uploadedFile, ?string $customTitle = null, ?string $customPath = null, int|string|null $customUploader = null, ?int $documentId = null, ?int $parentImageId = null): ImageData
     {
         $imageName = explode('.', $customTitle ?? $uploadedFile->getClientOriginalName())[0];
-        // this should never ever be null. if it is there are shenanigans
+        // this should never ever be null. if it is, there are shenanigans
         $uploader = $customUploader ?? Auth::id();
         $storagePath = $customPath ?? Keepsake::getNewStoragePath();
         // livewire doesn't decorate the file handler so that you can mutate it before storing...to my knowledge
         // also as a result, we get back the storageId parameter after saving to disk explicitly, so we
         // need to capture that
+
         $storageId = $this->saveThumbnail(uploadedFile: $uploadedFile, imageName: $imageName, storagePath: $storagePath);
 
         if (!$storageId) {
@@ -74,6 +76,8 @@ class ImageService implements ImageServiceContract, KeepsakeService
             Keepsake::logException($exception);
             throw $exception;
         }
+
+        // TODO: the pdf is going to get uploaded twice if this happens when the image is uploaded as pdf
         $uploadedFile->storeAs(
             path: $storagePath,
             name: $imageName . '.' . $uploadedFile->getClientOriginalExtension(),
@@ -86,7 +90,9 @@ class ImageService implements ImageServiceContract, KeepsakeService
                 $uploader,
                 asData: true
             ),
-            documentId: $documentId
+            uploadedFile: $uploadedFile,
+            documentId: $documentId,
+            parentImageId: $parentImageId
         );
         $insertedImageData = $this->imageRepository->createImage($imageData);
         $imageMetaData = $this->createImageMetaData($insertedImageData, $uploadedFile, $imageName);
@@ -99,6 +105,15 @@ class ImageService implements ImageServiceContract, KeepsakeService
     #[Override]
     public function saveThumbnail(UploadedFile $uploadedFile, string $imageName, string $storagePath): string|bool
     {
+        // skip creation of a thumbnail and just save
+        // TODO: refactor, duplicate code
+        if ($uploadedFile->getClientOriginalExtension() === 'pdf') {
+            return Storage::disk(Keepsake::getCurrentDiskName())->putFileAs(
+                path: $storagePath,
+                file: $uploadedFile,
+                name: $imageName . '.' . $uploadedFile->getClientOriginalExtension()
+            );
+        }
         $thumbNail = Image::read($uploadedFile);
         $thumbNail->scaleDown(width: 128, height: 128);
         return Storage::disk(Keepsake::getCurrentDiskName())->putFileAs(
@@ -110,12 +125,24 @@ class ImageService implements ImageServiceContract, KeepsakeService
 
 
     #[Override]
-    public function createImageData(string|bool $storageId, string $storagePath, UserData $uploadedBy, ?int $documentId = null): ImageData
+    public function createImageData(
+        string|bool  $storageId,
+        string       $storagePath,
+        UserData     $uploadedBy,
+        UploadedFile $uploadedFile,
+        ?int         $documentId = null,
+        ?int         $parentImageId = null
+    ): ImageData
     {
         $baseData = ['storageId' => $storageId, 'storagePath' => $storagePath, 'uploadedBy' => $uploadedBy];
         if ($documentId !== null) {
             $baseData['documentId'] = $documentId;
         }
+        // dirty since the pdf has to be processed by the image converter service
+        $baseData['isDirty'] = $uploadedFile->getClientOriginalExtension() === 'pdf';
+        // no need to check anything, it's nullable across the whole data pipeline
+        $baseData['parentImageId'] = $parentImageId;
+
         return ImageData::from($baseData);
     }
 
@@ -139,17 +166,30 @@ class ImageService implements ImageServiceContract, KeepsakeService
         );
     }
 
+    /**
+     * @param int $total
+     * @param int $page
+     * @param int $perPage
+     * @param string $pageName
+     * @param Cursor|null $cursor
+     * @return CursorPaginator|Paginator
+     */
     #[Override]
     public function getImages(
         int     $total = 100,
         int     $page = 1,
         int     $perPage = 0,
+        string  $pageName = 'page',
+        bool    $useCursor = false,
         ?Cursor $cursor = null
-    ): CursorPaginator
+    ): CursorPaginator|Paginator
     {
 
-        return $this->imageRepository->getImages(cursor: $cursor, perPage: $perPage, limit: $total);
+        return $this->imageRepository->getImages(perPage: $perPage, limit: $total, pageName: $pageName, useCursor: $useCursor, cursor: $cursor);
     }
 
-
+    public function imageProcessed(string $storageId): void
+    {
+        $this->imageRepository->markProcessed(storageId: $storageId);
+    }
 }

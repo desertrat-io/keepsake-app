@@ -30,6 +30,8 @@ enum HttpCode: int
 
     case FORBIDDEN = 403;
 
+    case NOT_FOUND = 404;
+
     case UNPROCESSABLE_ENTITY = 422;
     case SERVER_ERROR = 500;
 }

@@ -41,19 +41,21 @@ class ImageData extends Data implements Wireable
     use WireableData;
 
     public function __construct(
-        public readonly ?int          $id,
-        public readonly ?string       $uuid,
-        public readonly ?string       $storageId,
-        public readonly ?string       $storagePath,
-        public readonly UserData|Lazy $uploadedBy,
-        public readonly ?bool         $isLocked,
-        public readonly ?bool         $isDirty,
-        public readonly ?Carbon       $createdAt,
-        public readonly ?Carbon       $updatedAt,
-        public readonly ?Carbon       $deletedAt,
-        public readonly ?bool         $isDeleted,
-        public readonly ?int          $documentId
-    ) {
+        public readonly ?int                $id,
+        public readonly ?string             $uuid,
+        public readonly ?int                $parentImageId,
+        public readonly ?string             $storageId,
+        public readonly ?string             $storagePath,
+        public readonly UserData|Lazy       $uploadedBy,
+        public readonly null|ImageData|Lazy $parent,
+        public readonly ?bool               $isLocked,
+        public readonly ?bool               $isDirty,
+        public readonly ?Carbon             $createdAt,
+        public readonly ?Carbon             $updatedAt,
+        public readonly ?Carbon             $deletedAt,
+        public readonly ?bool               $isDeleted
+    )
+    {
     }
 
     public static function fromModel(Image $image): ImageData
@@ -61,16 +63,17 @@ class ImageData extends Data implements Wireable
         return new self(
             id: $image->id,
             uuid: $image->uuid,
+            parentImageId: $image->parent_image_id,
             storageId: $image->storage_id,
             storagePath: $image->storage_path,
-            uploadedBy: Lazy::create(fn () => UserData::fromModel($image->uploadedBy)),
+            uploadedBy: Lazy::create(fn() => UserData::fromModel($image->uploadedBy)),
+            parent: Lazy::create(fn() => ImageData::fromModel($image->parent)),
             isLocked: $image->is_locked,
             isDirty: $image->is_dirty,
             createdAt: $image->created_at,
             updatedAt: $image->updated_at,
             deletedAt: $image->deleted_at,
-            isDeleted: $image->is_deleted,
-            documentId: $image->document_id
+            isDeleted: $image->is_deleted
         );
     }
 }

@@ -27,4 +27,6 @@ enum ErrorResponseCode: int
 {
     case IMAGE_STORAGE_ERROR = 1;
     case PDF_HANDLING_ERROR = 2;
+
+    case DATABASE_ERROR = 3;
 }

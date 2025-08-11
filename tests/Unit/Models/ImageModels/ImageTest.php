@@ -48,8 +48,8 @@ class ImageTest extends TestCase
     #[Test]
     public function canBeAPage(): void
     {
-        $document = Document::factory()->create();
-        $image = Image::factory()->create(['document_id' => $document->id]);
+        $image = Image::factory()->create();
+        $document = Document::factory()->create(['image_id' => $image->id]);
         $this->assertInstanceOf(Document::class, $image->pageOf);
         $this->assertEquals($document->id, $image->pageOf->id);
     }
