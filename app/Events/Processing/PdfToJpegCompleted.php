@@ -3,21 +3,15 @@
 namespace App\Events\Processing;
 
 use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\InteractsWithBroadcasting;
-use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
-use Illuminate\Queue\SerializesModels;
 use Keepsake\Lib\Protocols\PdfConverter\ConvertPdfToJpegResponse;
 use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 
-#[CodeCoverageIgnore] class PdfToJpegCompleted implements ShouldBroadcast
+#[CodeCoverageIgnore]
+class PdfToJpegCompleted
 {
     use Dispatchable;
-    use InteractsWithSockets;
-    use SerializesModels;
-    use InteractsWithBroadcasting;
 
     /**
      * Create a new event instance.

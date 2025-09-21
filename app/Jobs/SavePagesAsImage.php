@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
+use App\Events\Processing\JpegProcessingComplete;
 use App\Services\ServiceContracts\ImageServiceContract;
 use Illuminate\Contracts\Queue\ShouldBeEncrypted;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -17,7 +18,6 @@ use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 use Storage;
 use Str;
 
-#[CodeCoverageIgnore]
 class SavePagesAsImage implements ShouldQueue, ShouldBeEncrypted
 {
     use Queueable;
@@ -52,6 +52,8 @@ class SavePagesAsImage implements ShouldQueue, ShouldBeEncrypted
                     parentImageId: $file->getParentImageId(),
                 );
             });
+        Log::info('getting ready to dispatch');
+        JpegProcessingComplete::dispatch($this->convertPdfToJpegResponse->getMeta()->getUserUuid());
         $imageService->imageProcessed(storageId: $this->convertPdfToJpegResponse->getStorageId());
     }
 }

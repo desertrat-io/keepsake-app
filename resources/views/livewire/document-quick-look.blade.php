@@ -12,7 +12,7 @@
                 </svg>
 
             @else
-                <img class="max-w-[50%] max-h-[50%] absolute left-5 top-5"
+                <img class="max-w-[90%] max-h-[90%] absolute left-5 top-5"
                      src="{{ Storage::disk(Keepsake::getCurrentDiskName())->url($image->storage_path . '/' . $image->meta->current_image_name . '.' . $image->meta->original_file_ext) }}"/>
             @endif
             <div class="absolute right-[30%] mt-10">

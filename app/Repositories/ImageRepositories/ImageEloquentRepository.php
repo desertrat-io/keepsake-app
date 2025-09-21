@@ -34,7 +34,6 @@ use Illuminate\Contracts\Pagination\CursorPaginator;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Support\Collection;
 use Keepsake;
-use Log;
 use Override;
 
 class ImageEloquentRepository implements ImageRepositoryContract, KeepsakeEloquentRepository
@@ -87,7 +86,8 @@ class ImageEloquentRepository implements ImageRepositoryContract, KeepsakeEloque
             'storage_path',
             'created_at',
             'uploaded_by',
-            'is_dirty'];
+            'is_dirty'
+        ];
         $images = Image::with(['meta', 'uploadedBy'])->orderByDesc(
             'created_at'
         );
@@ -105,7 +105,6 @@ class ImageEloquentRepository implements ImageRepositoryContract, KeepsakeEloque
      */
     public function markProcessed(string $storageId): void
     {
-        Log::info($storageId);
         $imageToMark = Image::where('storage_id', $storageId)->first();
         if ($imageToMark === null) {
             $exception = new KeepsakeDatabaseException('Unknown storage ID, image may be missing or not done processing');

@@ -7,15 +7,20 @@ use Illuminate\Support\ServiceProvider;
 use Laravel\Telescope\TelescopeServiceProvider;
 use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 
-#[CodeCoverageIgnore] class AppServiceProvider extends ServiceProvider
+#[CodeCoverageIgnore]
+class AppServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
      */
     public function register(): void
     {
-        if ($this->app->environment('local')) {
+        if ($this->app->environment('local') && class_exists(TelescopeServiceProvider::class)) {
+
             $this->app->register(TelescopeServiceProvider::class);
+
+            $this->app->register(TelescopeServiceProvider::class);
+
         }
     }
 
