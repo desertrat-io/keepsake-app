@@ -6,19 +6,19 @@ use App\Services\ServiceContracts\DocumentServiceContract;
 use App\Services\ServiceContracts\ImageServiceContract;
 use Illuminate\Contracts\Pagination\CursorPaginator;
 use Illuminate\Support\Collection;
-use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Log;
 
 class MainTable extends Component
 {
     use WithPagination;
 
+    public const string PAGE_NAME = 'main_table_page';
     public $cursor;
 
     // livewire really doesn't like pagination
     public int $perPage = 10;
-    protected $listeners = ['pdf-converted'];
     /**
      * @var CursorPaginator
      */
@@ -33,26 +33,26 @@ class MainTable extends Component
         $this->documentService = $documentService;
     }
 
-    #[On('doc-uploaded')]
-    public function updateImageList($imageData): void
+    public function updateImageList(): void
     {
-        $this->images = $this->imageService->getImages(perPage: $this->perPage);
+        $this->images = $this->imageService->getImages(perPage: $this->perPage, pageName: static::PAGE_NAME);
+        Log::info('updating image list');
+        $this->setPage(page: 1, pageName: static::PAGE_NAME);
     }
 
-    #[On('pdf-uploaded')]
     public function updateProcessingList($documentData): void
     {
-
+        Log::info('updating processing list');
     }
 
     public function pdfConverted(Collection $images): void
     {
-
+        Log::info('pdf converted');
     }
 
     public function render()
     {
-        $this->images = $this->imageService->getImages(perPage: $this->perPage, pageName: 'main_table_page');
+        $this->images = $this->imageService->getImages(perPage: $this->perPage, pageName: static::PAGE_NAME);
 
         return view(
             'livewire.main-table',

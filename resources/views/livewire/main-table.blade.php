@@ -2,7 +2,13 @@
     @if(count($images) > 0)
         <div class="w-[40%] mr-10 mt-5">
             <div class="overflow-auto h-[500px]">
-                <table class="w-full">
+                <table class="w-full" x-init="
+                Echo.channel('keepsake-{{Auth::user()->uuid}}-jpeg-complete')
+                .listen('.App.Events.Processing.JpegProcessingComplete',(e) => {
+                    $wire.updateImageList();
+                    console.log(e);
+                })
+                ">
                     <thead class="justify-between">
                     <tr class="sticky top-0 bg-white">
                         <th>{{ __('keepsake.pages.main.document_list_thumb') }}</th>
