@@ -82,6 +82,9 @@ use Spatie\LaravelData\WithData;
  * @property int|null $parent_image_id
  * @method static Builder<static>|Image whereParentImageId($value)
  * @property-read Image|null $parent
+ * @property int|null $page_number
+ * @method static Builder<static>|Image wherePageNumber($value)
+ * @property-read Bookmark|null $bookmark
  * @mixin Eloquent
  */
 class Image extends Model
@@ -92,8 +95,8 @@ class Image extends Model
     use HasFactory;
     use WithData;
 
-    protected string $dataClass = ImageData::class;
 
+    protected string $dataClass = ImageData::class;
 
     protected $fillable = [
         'uuid',
@@ -103,7 +106,8 @@ class Image extends Model
         'uploaded_by',
         'is_locked',
         'is_dirty',
-        'document_id'
+        'document_id',
+        'page_number'
     ];
 
     protected static function newFactory(): ImageFactory|Factory
@@ -118,17 +122,23 @@ class Image extends Model
 
     public function uploadedBy(): BelongsTo
     {
+
         return $this->belongsTo(related: User::class, foreignKey: 'uploaded_by');
     }
 
     public function pageOf(): HasOne
     {
-        return $this->hasOne(Document::class);
+        return $this->hasOne(related: Document::class, foreignKey: 'image_id', localKey: 'parent_image_id');
     }
 
-    public function parent(): HasOne
+    public function parent(): BelongsTo
     {
-        return $this->hasOne(Image::class, 'parent_image_id');
+        return $this->belongsTo(related: static::class, foreignKey: 'parent_image_id');
+    }
+
+    public function bookmark(): HasOne
+    {
+        return $this->hasOne(related: Bookmark::class, foreignKey: 'image_id');
     }
 
     protected function casts(): array

@@ -27,6 +27,6 @@
     @endauth
 </div>
 @livewireScriptConfig
-
+@yield('extra_scripts')
 </body>
 </html>

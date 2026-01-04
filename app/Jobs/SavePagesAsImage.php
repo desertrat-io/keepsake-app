@@ -18,6 +18,7 @@ use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 use Storage;
 use Str;
 
+#[CodeCoverageIgnore]
 class SavePagesAsImage implements ShouldQueue, ShouldBeEncrypted
 {
     use Queueable;
@@ -35,7 +36,7 @@ class SavePagesAsImage implements ShouldQueue, ShouldBeEncrypted
     public function handle(ImageServiceContract $imageService): void
     {
         collect($this->convertPdfToJpegResponse->getFiles())
-            ->each(function (FilePointers $file) use ($imageService) {
+            ->each(function (FilePointers $file, $fileIndex) use ($imageService) {
                 $localFileStream = Storage::disk(Keepsake::getCurrentDiskName())
                     ->get($file->getFileFinalLocation());
 
@@ -50,6 +51,7 @@ class SavePagesAsImage implements ShouldQueue, ShouldBeEncrypted
                     customUploader: $this->convertPdfToJpegResponse->getMeta()->getUserUuid(),
                     documentId: (int)Str::replaceFirst('document-', '', $this->convertPdfToJpegResponse->getMeta()->getCorrelationId()),
                     parentImageId: $file->getParentImageId(),
+                    pageNumber: $fileIndex + 1, // loop is in order of pages processed, this will always match the page number
                 );
             });
         Log::info('getting ready to dispatch');

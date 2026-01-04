@@ -23,6 +23,7 @@
  */
 declare(strict_types=1);
 
+
 use Grpc\ChannelCredentials;
 
 return [
@@ -32,6 +33,7 @@ return [
     //'tenant_name' => env('TENANT_NAME')
     // in kb
     'min_image_size' => 128,
+    'thumbnail_scale_size' => 500, // in pixels
     'model_mode' => env('MODEL_MODE', 'eloquent'),
     'local_disk_name' => env('KEEPSAKE_LOCAL_DISK_NAME', 'keepsake_local'),
     'test_disk_name' => env('KEEPSAKE_TEST_DISK_NAME', 'keepsake_test'),

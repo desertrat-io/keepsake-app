@@ -28,7 +28,10 @@ namespace Tests\Unit\Lib\Facades;
 use App\Events\Errors\KeepsakeExceptionThrown;
 use App\Exceptions\KeepsakeExceptions\KeepsakeStorageException;
 use App\Lib\Facades\Impl\Keepsake as KeepsakeImpl;
+use App\Models\ImageModels\Image;
+use App\Models\ImageModels\ImageMeta;
 use Event;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Keepsake;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
@@ -39,6 +42,9 @@ use Tests\TestCase;
 #[CoversClass(KeepsakeImpl::class)]
 class KeepsakeTest extends TestCase
 {
+
+    use RefreshDatabase;
+
     #[Test]
     public function doesIdFromKeyWork(): void
     {
@@ -78,4 +84,26 @@ class KeepsakeTest extends TestCase
         $this->assertEquals(config('keepsake.test_disk_name'), Keepsake::getCurrentDiskName());
     }
 
+    #[Test]
+    public function returnsLocalDiskName(): void
+    {
+        $this->assertEquals(config('keepsake.local_disk_name'), Keepsake::getLocalDiskName());
+    }
+
+    #[Test]
+    public function canResolveFullPathFromimage(): void
+    {
+        $image = Image::factory()->create([
+            'storage_path' => 'media/test'
+        ]);
+
+        ImageMeta::factory()->create([
+            'image_id' => $image->id,
+            'current_image_name' => 'test_file',
+            'original_file_ext' => 'jpg'
+        ]);
+
+        $expected = 'media/test/test_file.jpg';
+        $this->assertEquals($expected, Keepsake::getPathToImage($image));
+    }
 }

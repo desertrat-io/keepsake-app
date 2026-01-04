@@ -79,7 +79,7 @@ class Document extends Model
 
     public function pages(): HasMany
     {
-        return $this->hasMany(related: Image::class, foreignKey: 'document_id', localKey: 'id');
+        return $this->hasMany(related: Image::class, foreignKey: 'parent_image_id', localKey: 'image_id');
     }
 
     public function image(): BelongsTo

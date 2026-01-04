@@ -30,6 +30,7 @@ use App\DTO\Images\ImageData;
 use App\DTO\Images\ImageMetaData;
 use App\Events\Images\ImageUploaded;
 use App\Exceptions\KeepsakeExceptions\KeepsakeStorageException;
+use App\Repositories\RepositoryContracts\BookmarkRepositoryContract;
 use App\Repositories\RepositoryContracts\ImageMetaRepositoryContract;
 use App\Repositories\RepositoryContracts\ImageRepositoryContract;
 use App\Repositories\RepositoryContracts\UserRepositoryContract;
@@ -50,7 +51,8 @@ readonly class ImageService implements ImageServiceContract, KeepsakeService
     public function __construct(
         private ImageRepositoryContract     $imageRepository,
         private ImageMetaRepositoryContract $imageMetaRepository,
-        private UserRepositoryContract      $userRepository
+        private UserRepositoryContract      $userRepository,
+        private BookmarkRepositoryContract  $bookmarkRepository
     )
     {
     }
@@ -59,7 +61,7 @@ readonly class ImageService implements ImageServiceContract, KeepsakeService
      * @throws KeepsakeStorageException
      */
     #[Override]
-    public function saveImage(UploadedFile $uploadedFile, ?string $customTitle = null, ?string $customPath = null, int|string|null $customUploader = null, ?int $documentId = null, ?int $parentImageId = null): ImageData
+    public function saveImage(UploadedFile $uploadedFile, ?string $customTitle = null, ?string $customPath = null, int|string|null $customUploader = null, ?int $documentId = null, ?int $parentImageId = null, ?int $pageNumber = null): ImageData
     {
         $imageName = explode('.', $customTitle ?? $uploadedFile->getClientOriginalName())[0];
         // this should never ever be null. if it is, there are shenanigans
@@ -92,7 +94,8 @@ readonly class ImageService implements ImageServiceContract, KeepsakeService
             ),
             uploadedFile: $uploadedFile,
             documentId: $documentId,
-            parentImageId: $parentImageId
+            parentImageId: $parentImageId,
+            pageNumber: $pageNumber
         );
         $insertedImageData = $this->imageRepository->createImage($imageData);
         $imageMetaData = $this->createImageMetaData($insertedImageData, $uploadedFile, $imageName);
@@ -115,7 +118,7 @@ readonly class ImageService implements ImageServiceContract, KeepsakeService
             );
         }
         $thumbNail = Image::read($uploadedFile);
-        $thumbNail->scaleDown(width: 128, height: 128);
+        $thumbNail->scaleDown(width: config('keepsake.thumbnail_scale_size'), height: config('keepsake.thumbnail_scale_size'));
         return Storage::disk(Keepsake::getCurrentDiskName())->putFileAs(
             path: $storagePath,
             file: $thumbNail->toJpeg()->toDataUri(),
@@ -131,7 +134,8 @@ readonly class ImageService implements ImageServiceContract, KeepsakeService
         UserData     $uploadedBy,
         UploadedFile $uploadedFile,
         ?int         $documentId = null,
-        ?int         $parentImageId = null
+        ?int         $parentImageId = null,
+        ?int         $pageNumber = null
     ): ImageData
     {
         $baseData = ['storageId' => $storageId, 'storagePath' => $storagePath, 'uploadedBy' => $uploadedBy];
@@ -142,6 +146,7 @@ readonly class ImageService implements ImageServiceContract, KeepsakeService
         $baseData['isDirty'] = $uploadedFile->getClientOriginalExtension() === 'pdf';
         // no need to check anything, it's nullable across the whole data pipeline
         $baseData['parentImageId'] = $parentImageId;
+        $baseData['pageNumber'] = $pageNumber;
 
         return ImageData::from($baseData);
     }
@@ -192,4 +197,21 @@ readonly class ImageService implements ImageServiceContract, KeepsakeService
     {
         $this->imageRepository->markProcessed(storageId: $storageId);
     }
+
+    public function getBookmarkLabel(int $imageId): string
+    {
+        $imageData = $this->imageRepository->getImageByID($imageId);
+        if ($imageData->bookmark->bookmarkLabel === null) {
+            return '';
+        }
+        return $imageData->bookmark->bookmarkLabel;
+    }
+
+    public function upsertBookmarkForImage(string $bookmarkLabel, string $imageId): void
+    {
+        // TODO: convert imageUUID to regular ID before inserting
+        $this->bookmarkRepository->upsertBookmark($bookmarkLabel, $imageId);
+    }
+
+
 }

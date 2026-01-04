@@ -63,3 +63,7 @@ button {
 .keepsake__table-row-highlight {
     @apply hover:bg-[#99B99D]
 }
+
+.keepsake__modal-default {
+    @apply fixed inset-0 flex items-center justify-center z-50
+}

@@ -33,7 +33,7 @@ use Illuminate\Pagination\Cursor;
 
 interface ImageServiceContract
 {
-    public function saveImage(UploadedFile $uploadedFile, ?string $customTitle = null, ?string $customPath = null, int|string|null $customUploader = null, ?int $documentId = null, ?int $parentImageId = null): ImageData;
+    public function saveImage(UploadedFile $uploadedFile, ?string $customTitle = null, ?string $customPath = null, int|string|null $customUploader = null, ?int $documentId = null, ?int $parentImageId = null, ?int $pageNumber): ImageData;
 
     public function saveThumbnail(UploadedFile $uploadedFile, string $imageName, string $storagePath): string|bool;
 
@@ -46,7 +46,7 @@ interface ImageServiceContract
         ?Cursor $cursor = null
     ): CursorPaginator|Paginator;
 
-    public function createImageData(string|bool $storageId, string $storagePath, UserData $uploadedBy, UploadedFile $uploadedFile, ?int $documentId = null, ?int $parentImageId = null): ImageData;
+    public function createImageData(string|bool $storageId, string $storagePath, UserData $uploadedBy, UploadedFile $uploadedFile, ?int $documentId = null, ?int $parentImageId = null, ?int $pageNumber = null): ImageData;
 
     public function createImageMetaData(
         ImageData    $imageData,
@@ -55,5 +55,9 @@ interface ImageServiceContract
     ): ImageMetaData;
 
     public function imageProcessed(string $storageId): void;
+
+    public function getBookmarkLabel(int $imageId): string;
+
+    public function upsertBookmarkForImage(string $bookmarkLabel, string $imageId): void;
 
 }

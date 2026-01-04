@@ -17,7 +17,6 @@ class DocumentEloquentRepository implements DocumentRepositoryContract, Keepsake
 
     public function createDocument(DocumentData $documentData): DocumentData
     {
-        // TODO: finish this
         return DocumentData::fromModel(Document::create([
             'title' => $documentData->title,
             'uploaded_by' => $documentData->uploadedBy->id,
@@ -25,4 +24,11 @@ class DocumentEloquentRepository implements DocumentRepositoryContract, Keepsake
             'image_id' => $documentData->imageId,
         ])->load('image'));
     }
+
+    public function getDocumentThumbnails(string $documentUUID): DocumentData
+    {
+        return DocumentData::fromModel(Document::whereUuid($documentUUID)->first()->load('pages'));
+    }
+
+
 }

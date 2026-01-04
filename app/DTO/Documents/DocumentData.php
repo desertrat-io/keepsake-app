@@ -10,6 +10,7 @@ use Livewire\Wireable;
 use Spatie\LaravelData\Attributes\MapName;
 use Spatie\LaravelData\Concerns\WireableData;
 use Spatie\LaravelData\Data;
+use Spatie\LaravelData\DataCollection;
 use Spatie\LaravelData\Lazy;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
@@ -19,18 +20,20 @@ class DocumentData extends Data implements Wireable
     use WireableData;
 
     public function __construct(
-        public readonly ?int                $id,
-        public readonly ?string             $uuid,
-        public readonly ?string             $title,
-        public readonly ?int                $numPages,
-        public readonly ?string             $storageId,
-        public readonly ?int                $imageId,
-        public readonly null|UserData|Lazy  $uploadedBy,
-        public readonly ?Carbon             $createdAt,
-        public readonly ?Carbon             $updatedAt,
-        public readonly ?Carbon             $deletedAt,
-        public readonly ?bool               $isDeleted = false,
-        public readonly null|ImageData|Lazy $image,
+        public readonly ?int                     $id,
+        public readonly ?string                  $uuid,
+        public readonly ?string                  $title,
+        public readonly ?int                     $numPages,
+        public readonly ?string                  $storageId,
+        public readonly ?int                     $imageId,
+        public readonly null|UserData|Lazy       $uploadedBy,
+        public readonly ?Carbon                  $createdAt,
+        public readonly ?Carbon                  $updatedAt,
+        public readonly ?Carbon                  $deletedAt,
+        public readonly ?bool                    $isDeleted = false,
+        public readonly null|ImageData|Lazy      $image,
+        /** DataCollection<ImageData> */
+        public readonly null|Lazy|DataCollection $pages,
     )
     {
     }
@@ -49,7 +52,8 @@ class DocumentData extends Data implements Wireable
             updatedAt: $document->updated_at,
             deletedAt: $document->deleted_at,
             isDeleted: $document->is_deleted,
-            image: Lazy::create(fn() => ImageData::fromModel($document->image))
+            image: Lazy::create(fn() => ImageData::fromModel($document->image)),
+            pages: Lazy::create(fn() => ImageData::collect($document->pages))
         );
     }
 }

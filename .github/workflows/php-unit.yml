@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-versions: [ '8.3' ]
+        php-versions: [ '8.4' ]
     name: 'Main php test and build for version(s): ${{ matrix.php-versions }}'
     env:
       extensions: mongodb-1.21.1,grpc

@@ -27,7 +27,8 @@ class ImageFactory extends Factory
             'storage_path' => fake()->filePath(),
             'is_locked' => false,
             'is_dirty' => true,
-            'uploaded_by' => User::factory()->create()->id
+            'uploaded_by' => User::factory()->create()->id,
+            'page_number' => fake()->numberBetween(1, 100)
         ];
     }
 }
