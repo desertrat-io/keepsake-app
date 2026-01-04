@@ -27,6 +27,7 @@ namespace App\Repositories\ImageRepositories;
 
 use App\DTO\Images\ImageData;
 use App\Exceptions\KeepsakeExceptions\KeepsakeDatabaseException;
+use App\Exceptions\KeepsakeExceptions\KeepsakeMissingFileException;
 use App\Models\ImageModels\Image;
 use App\Repositories\KeepsakeEloquentRepository;
 use App\Repositories\RepositoryContracts\ImageRepositoryContract;
@@ -35,6 +36,8 @@ use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Support\Collection;
 use Keepsake;
 use Override;
+use Ramsey\Uuid\Uuid;
+use Throwable;
 
 class ImageEloquentRepository implements ImageRepositoryContract, KeepsakeEloquentRepository
 {
@@ -53,8 +56,9 @@ class ImageEloquentRepository implements ImageRepositoryContract, KeepsakeEloque
             'is_locked' => false,
             'is_dirty' => $imageData->isDirty,
             'parent_image_id' => $imageData->parentImageId,
-            'uploaded_by' => $imageData->uploadedBy->id
-        ])->load('uploadedBy');
+            'uploaded_by' => $imageData->uploadedBy->id,
+            'page_number' => $imageData->pageNumber,
+        ])->load(['uploadedBy']);
         // some kind of weird quirk with spatie data, you end up having to create the model, then query it
         return ImageData::fromModel($image);
     }
@@ -86,9 +90,11 @@ class ImageEloquentRepository implements ImageRepositoryContract, KeepsakeEloque
             'storage_path',
             'created_at',
             'uploaded_by',
-            'is_dirty'
+            'is_dirty',
+            'parent_image_id',
+            'page_number',
         ];
-        $images = Image::with(['meta', 'uploadedBy'])->orderByDesc(
+        $images = Image::with(['meta', 'uploadedBy', 'parent', 'pageOf'])->orderByDesc(
             'created_at'
         );
         if ($useCursor === false) {
@@ -112,6 +118,30 @@ class ImageEloquentRepository implements ImageRepositoryContract, KeepsakeEloque
             throw $exception;
         }
         $imageToMark->update(['is_dirty' => false]);
+    }
+
+    /**
+     * @throws KeepsakeMissingFileException|Throwable
+     */
+    public function getImageByUUID(string|Uuid $imageUUID): ImageData
+    {
+        if ($imageUUID === '') {
+            return ImageData::from([]);
+        }
+        $imageModel = Image::whereUuid($imageUUID)->first();
+        throw_if($imageModel === null, KeepsakeMissingFileException::class, 'Image with UUID not found');
+        return ImageData::fromModel($imageModel);
+
+    }
+
+    /**
+     * @throws KeepsakeMissingFileException|Throwable
+     */
+    public function getImageByID(int $imageID): ImageData
+    {
+        $imageModel = Image::whereId($imageID)->first();
+        throw_if($imageModel === null, KeepsakeMissingFileException::class, 'Image with ID not found');
+        return ImageData::fromModel($imageModel);
     }
 
 

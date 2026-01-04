@@ -6,9 +6,11 @@ use App\Lib\Facades\Impl\Keepsake;
 use App\Repositories\AccountRepositories\AccountEloquentRepository;
 use App\Repositories\AccountRepositories\UserEloquentRepository;
 use App\Repositories\DocumentRepositories\DocumentEloquentRepository;
+use App\Repositories\ImageRepositories\BookmarkEloquentRepository;
 use App\Repositories\ImageRepositories\ImageEloquentRepository;
 use App\Repositories\ImageRepositories\ImageMetaEloquentRepository;
 use App\Repositories\RepositoryContracts\AccountRepositoryContract;
+use App\Repositories\RepositoryContracts\BookmarkRepositoryContract;
 use App\Repositories\RepositoryContracts\DocumentRepositoryContract;
 use App\Repositories\RepositoryContracts\ImageMetaRepositoryContract;
 use App\Repositories\RepositoryContracts\ImageRepositoryContract;
@@ -25,7 +27,8 @@ use Illuminate\Support\ServiceProvider;
 use Keepsake\Lib\Protocols\PdfConverter\KeepsakePdfConverterClient;
 use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 
-#[CodeCoverageIgnore] class KeepsakeServiceProvider extends ServiceProvider
+#[CodeCoverageIgnore]
+class KeepsakeServiceProvider extends ServiceProvider
 {
     protected array $serviceContracts = [
         AccountServiceContract::class => AccountService::class,
@@ -40,6 +43,7 @@ use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
         ImageRepositoryContract::class => ImageEloquentRepository::class,
         ImageMetaRepositoryContract::class => ImageMetaEloquentRepository::class,
         DocumentRepositoryContract::class => DocumentEloquentRepository::class,
+        BookmarkRepositoryContract::class => BookmarkEloquentRepository::class,
     ];
 
     /**

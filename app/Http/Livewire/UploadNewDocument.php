@@ -67,7 +67,7 @@ class UploadNewDocument extends Component
         if ($this->imageTitle === '') {
             $this->imageTitle = null;
         }
-        $imageData = $this->imageService->saveImage(uploadedFile: $this->image, customTitle: $this->imageTitle);
+        $imageData = $this->imageService->saveImage(uploadedFile: $this->image, customTitle: $this->imageTitle, pageNumber: 1);
         // it's technically possible for someone to completely remove the title
         // so passing the title as empty will just let it default
         if ($this->image->getClientOriginalExtension() === 'pdf') {

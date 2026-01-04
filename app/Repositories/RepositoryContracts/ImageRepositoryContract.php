@@ -27,6 +27,7 @@ use App\DTO\Images\ImageData;
 use Illuminate\Contracts\Pagination\CursorPaginator;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Support\Collection;
+use Ramsey\Uuid\Uuid;
 
 interface ImageRepositoryContract
 {
@@ -35,6 +36,10 @@ interface ImageRepositoryContract
     public function getImagePaths(array|int $ids): Collection|string;
 
     public function getImages(int $perPage = 10, int $limit = 100, string $pageName = 'page', bool $useCursor = false, ?string $cursor = null): Paginator|CursorPaginator;
+
+    public function getImageByUUID(Uuid|string $imageUUID): ImageData;
+
+    public function getImageByID(int $imageID): ImageData;
 
     public function markProcessed(string $storageId): void;
 }

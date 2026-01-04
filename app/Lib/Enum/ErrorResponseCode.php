@@ -29,4 +29,6 @@ enum ErrorResponseCode: int
     case PDF_HANDLING_ERROR = 2;
 
     case DATABASE_ERROR = 3;
+
+    case DATA_RETRIEVAL_ERROR = 4;
 }

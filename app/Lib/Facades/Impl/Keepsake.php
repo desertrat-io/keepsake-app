@@ -25,8 +25,10 @@ declare(strict_types=1);
 
 namespace App\Lib\Facades\Impl;
 
+use App\DTO\Images\ImageData;
 use App\Events\Errors\KeepsakeExceptionThrown;
 use App\Exceptions\KeepsakeExceptions\KeepsakeException;
+use App\Models\ImageModels\Image;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Str;
@@ -53,10 +55,7 @@ class Keepsake
 
     public function getNewStoragePath(): string
     {
-        return 'media/images/' . config(
-                'keepsake.tenant_name',
-                env('DEFAULT_TENANT_NAME')
-            ) . '/' . Str::orderedUuid();
+        return 'media/images/' . config('keepsake.tenant_name', env('DEFAULT_TENANT_NAME')) . '/' . Str::orderedUuid();
     }
 
     public function getCurrentDiskName(): string
@@ -80,5 +79,18 @@ class Keepsake
     public function getLocalDiskName(): string
     {
         return config('keepsake.local_disk_name');
+    }
+
+    /**
+     * We're taking both to support eloquent models and data transfer objects.
+     */
+    public function getPathToImage(ImageData|Image $image): string
+    {
+        $imageData = $image;
+        if ($image instanceof Image) {
+            $imageData = ImageData::fromModel($image);
+        }
+
+        return $image->storage_path . '/' . $image->meta->current_image_name . '.' . $image->meta->original_file_ext;
     }
 }

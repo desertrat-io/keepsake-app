@@ -27,6 +27,7 @@ return [
     'button' => [
         'add_document' => 'Add Document',
         'close' => 'Close',
+        'save' => 'Save',
         'quick_look' => 'Quick Look',
         'full_record' => 'Full Record'
     ],
@@ -38,7 +39,8 @@ return [
         'modal_add_document' => 'Attach PDF or Image File',
         'modal_save_uploaded' => 'Add File',
         'modal_add_loading' => 'Loading Preview',
-        'modal_doc_title' => 'Document Title'
+        'modal_doc_title' => 'Document Title',
+        'modal_bookmark_label' => 'Bookmark label'
     ],
     'pages' => [
         'main' => [

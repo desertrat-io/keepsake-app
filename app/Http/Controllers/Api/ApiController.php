@@ -34,15 +34,15 @@ use Illuminate\Support\Collection;
 class ApiController extends Controller
 {
     final protected function apiResponse(
-        string $message,
-        Collection $payload,
-        HttpCode $httpCode,
+        string       $message,
+        Collection   $payload,
+        HttpCode     $httpCode,
         ResponseCode $responseCode
     ): JsonResponse {
         return response()->json([
             'message' => $message,
             'data' => $payload,
-            'response_code' => $responseCode
-        ], $httpCode);
+            'response_code' => $responseCode->value
+        ], $httpCode->value);
     }
 }

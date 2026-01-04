@@ -16,4 +16,5 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['namespace' => 'App\Http\Controllers\Web\Private', 'middleware' => ['auth', 'user.context']], function () {
     Route::get('/', ['as' => 'private.home', 'uses' => 'IndexController@index']);
+    Route::get('/full-view/{documentId}', ['as' => 'private.full-view', 'uses' => 'FullViewController@index']);
 });

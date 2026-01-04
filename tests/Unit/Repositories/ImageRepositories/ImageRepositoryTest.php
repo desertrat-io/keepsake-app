@@ -4,6 +4,8 @@ namespace Tests\Unit\Repositories\ImageRepositories;
 
 use App\DTO\Accounts\UserData;
 use App\DTO\Images\ImageData;
+use App\Exceptions\KeepsakeExceptions\KeepsakeDatabaseException;
+use App\Exceptions\KeepsakeExceptions\KeepsakeMissingFileException;
 use App\Models\AccountModels\User;
 use App\Models\ImageModels\Image;
 use App\Repositories\ImageRepositories\ImageEloquentRepository;
@@ -11,6 +13,7 @@ use App\Repositories\RepositoryContracts\ImageRepositoryContract;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
 
 #[CoversClass(ImageEloquentRepository::class)]
@@ -108,5 +111,66 @@ class ImageRepositoryTest extends TestCase
     public function canGetMultipleImagesPagedCursor(): void
     {
         $this->markTestSkipped('Not ready for this yet');
+    }
+
+    #[Test]
+    public function canMarkImageAsProcessed(): void
+    {
+        $image = Image::factory()->create(['is_dirty' => true]);
+        $this->imageRepository->markProcessed($image->storage_id);
+        $this->assertDatabaseHas('images', [
+            'id' => $image->id,
+            'is_dirty' => false,
+        ]);
+    }
+
+    #[Test]
+    public function checkIfImageMissing(): void
+    {
+        $this->expectException(KeepsakeDatabaseException::class);
+        $this->imageRepository->markProcessed('non-existent-storage-id');
+    }
+
+    #[Test]
+    public function canGetImageByUUID(): void
+    {
+        $image = Image::factory()->create();
+        $result = $this->imageRepository->getImageByUUID($image->uuid);
+        $this->assertInstanceOf(ImageData::class, $result);
+        $this->assertEquals($image->uuid, $result->uuid);
+    }
+
+    #[Test]
+    public function getImageByUUIDAndCheckDTO(): void
+    {
+        $result = $this->imageRepository->getImageByUUID('');
+        $this->assertInstanceOf(ImageData::class, $result);
+        $this->assertNull($result->uuid);
+    }
+
+    #[Test]
+    public function notFoundExceptionWorks(): void
+    {
+        $this->expectException(KeepsakeMissingFileException::class);
+        $this->imageRepository->getImageByUUID(Uuid::uuid4()->toString());
+    }
+
+    #[Test]
+    public function getsImageByID(): void
+    {
+        $image = Image::factory()->create();
+        $result = $this->imageRepository->getImageByID($image->id);
+        // remember we don't return the actual model, just the DTO representation
+        // since this is an eloquent based repository we want to avoid returning
+        // model instances, however this may change
+        $this->assertInstanceOf(ImageData::class, $result);
+        $this->assertEquals($image->id, $result->id);
+    }
+
+    #[Test]
+    public function imageNotFound(): void
+    {
+        $this->expectException(KeepsakeMissingFileException::class);
+        $this->imageRepository->getImageByID(-1);
     }
 }

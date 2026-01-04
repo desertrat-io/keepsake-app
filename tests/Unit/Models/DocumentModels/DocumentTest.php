@@ -60,11 +60,29 @@ class DocumentTest extends TestCase
     #[Test]
     public function doesDocumentHavePages(): void
     {
-        $this->markTestSkipped('Needs to be fixed for new relationship');
-        Image::truncate();
-        $document = Document::factory()->create();
-        Image::factory()->count(3)->create(['document_id' => $document->id]);
-        $this->assertCount(3, $document->pages);
+        $rootImage = Image::factory()->create();
+        $document = Document::factory()->create([
+            'image_id' => $rootImage->id
+        ]);
+        Image::factory()->count(3)->create([
+            'parent_image_id' => $rootImage->id
+        ]);
 
+        $this->assertCount(3, $document->pages);
+        $this->assertInstanceOf(Image::class, $document->pages->first());
+        $this->assertEquals($rootImage->id, $document->pages->first()->parent_image_id);
+
+    }
+
+    #[Test]
+    public function doesDocumentRelateToARootImage(): void
+    {
+        $image = Image::factory()->create();
+        $document = Document::factory()->create([
+            'image_id' => $image->id
+        ]);
+
+        $this->assertInstanceOf(Image::class, $document->image);
+        $this->assertEquals($image->id, $document->image->id);
     }
 }

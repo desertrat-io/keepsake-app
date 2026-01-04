@@ -8,4 +8,6 @@ interface DocumentRepositoryContract
 {
 
     public function createDocument(DocumentData $documentData): DocumentData;
+
+    public function getDocumentThumbnails(string $documentUUID): DocumentData;
 }

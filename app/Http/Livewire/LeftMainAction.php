@@ -8,6 +8,6 @@ class LeftMainAction extends Component
 {
     public function render()
     {
-        return view('livewire.left-main-action');
+        return view('livewire.left-main-action', ['documentId' => 'placeholder']);
     }
 }

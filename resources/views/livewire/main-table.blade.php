@@ -58,7 +58,8 @@
                                         </button>
                                     </div>
                                 </div>
-                                <div tabindex=0 class="text-xs">{{ __('keepsake.button.full_record') }}
+                                <div tabindex=0 class="text-xs"><a
+                                        href="{{ route('private.full-view', $image->pageOf?->uuid ?? '#') }}">{{ __('keepsake.button.full_record') }}</a>
                                     <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-4 h-4"
                                          viewBox="0 0 576 512">
                                         <path

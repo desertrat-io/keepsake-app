@@ -5,7 +5,9 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\Rules\Password;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 
+#[CodeCoverageRequest]
 class CreateUserRequest extends KeepsakeFormRequest
 {
     /**
@@ -18,7 +20,7 @@ class CreateUserRequest extends KeepsakeFormRequest
 
     public function getUsefulKeys(): Collection
     {
-        return collect($this->rules())->reduce(fn (string $rule) => $rule != 'password_confirm');
+        return collect($this->rules())->reduce(fn(string $rule) => $rule !== 'password_confirm');
     }
 
     /**

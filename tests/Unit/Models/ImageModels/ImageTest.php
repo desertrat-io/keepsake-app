@@ -26,6 +26,7 @@ namespace Tests\Unit\Models\ImageModels;
 
 use App\Models\AccountModels\User;
 use App\Models\DocumentModels\Document;
+use App\Models\ImageModels\Bookmark;
 use App\Models\ImageModels\Image;
 use App\Models\ImageModels\ImageMeta;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -48,8 +49,9 @@ class ImageTest extends TestCase
     #[Test]
     public function canBeAPage(): void
     {
-        $image = Image::factory()->create();
-        $document = Document::factory()->create(['image_id' => $image->id]);
+        $seedImage = Image::factory()->create(); // seed with a single image
+        $image = Image::factory()->create(['parent_image_id' => $seedImage->id]);
+        $document = Document::factory()->create(['image_id' => $image->parent_image_id]);
         $this->assertInstanceOf(Document::class, $image->pageOf);
         $this->assertEquals($document->id, $image->pageOf->id);
     }
@@ -70,5 +72,23 @@ class ImageTest extends TestCase
         $image = Image::factory()->create(['uploaded_by' => $user->id]);
         $this->assertInstanceOf(User::class, $image->uploadedBy);
         $this->assertEquals($user->id, $image->uploadedBy->id);
+    }
+
+    #[Test]
+    public function canModelHaveAParent(): void
+    {
+        $parent = Image::factory()->create();
+        $image = Image::factory()->create(['parent_image_id' => $parent->id]);
+        $this->assertInstanceOf(Image::class, $image->parent);
+        $this->assertEquals($parent->id, $image->parent->id);
+    }
+
+    #[Test]
+    public function canHaveABookmark(): void
+    {
+        $image = Image::factory()->create();
+        $bookmark = Bookmark::factory()->create(['image_id' => $image->id]);
+        $this->assertInstanceOf(Bookmark::class, $image->bookmark);
+        $this->assertEquals($bookmark->id, $image->bookmark->id);
     }
 }
