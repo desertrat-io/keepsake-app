@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Repositories\ImageRepositories;
 
 use App\DTO\Images\BookmarkData;
+use App\Models\ImageModels\Bookmark;
 use App\Repositories\ImageRepositories\BookmarkEloquentRepository;
 use App\Repositories\RepositoryContracts\BookmarkRepositoryContract;
 use Mockery;
@@ -64,6 +65,13 @@ class BookmarkRepositoryTest extends TestCase
         $bookmarks = $this->bookmarkRepository->getBookmarksForImage(1);
         $this->assertInstanceOf(BookmarkData::class, $bookmarks);
         $this->assertEquals(null, $bookmarks->id);
+    }
+
+    #[Test]
+    public function baseModelMatchesRepository(): void
+    {
+        $baseModelClass = $this->bookmarkRepository->concreteEntityClass();
+        $this->assertEquals(Bookmark::class, $baseModelClass);
     }
 
     protected function tearDown(): void

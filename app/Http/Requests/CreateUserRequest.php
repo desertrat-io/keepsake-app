@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Validation\Rules\Password;
 use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 
-#[CodeCoverageRequest]
+#[CodeCoverageIgnore] // not used yet
 class CreateUserRequest extends KeepsakeFormRequest
 {
     /**
