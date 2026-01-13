@@ -6,11 +6,9 @@ use App\DTO\Images\ImageData;
 use App\Services\ServiceContracts\DocumentServiceContract;
 use App\Services\ServiceContracts\ImageServiceContract;
 use Crypt;
-use Livewire\Attributes\Lazy;
 use Livewire\Component;
 use Spatie\LaravelData\DataCollection;
 
-#[Lazy]
 class PagePreviewScroller extends Component
 {
     public $imageId;
@@ -30,6 +28,10 @@ class PagePreviewScroller extends Component
     {
         $this->imageService = $imageService;
         $this->documentService = $documentService;
+    }
+
+    public function mount(): void
+    {
         $this->loadThumbnails();
     }
 
@@ -38,6 +40,11 @@ class PagePreviewScroller extends Component
      */
     public function loadThumbnails(): DataCollection|array
     {
+        if (!$this->documentId) {
+            // i don't like doing things this way but I'm going to chance the AI here
+            // sets the value of thumbnails and returns it at the same time
+            return $this->thumbnails = [];
+        }
         $this->thumbnails = ImageData::collect(
             $this->documentService->getDocumentThumbnails($this->documentId)->toArray(),
         );
@@ -54,6 +61,6 @@ class PagePreviewScroller extends Component
     {
         // need to pre-seed to force an update I believe, unless Liveware has changed something?
         $thumbnails = $this->thumbnails ?? $this->loadThumbnails();
-        return view('livewire.page-preview-scroller', ['thumbnails' => $this->thumbnails]);
+        return view('livewire.page-preview-scroller', ['thumbnails' => $thumbnails]);
     }
 }

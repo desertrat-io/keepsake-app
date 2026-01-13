@@ -1,7 +1,6 @@
 <?php
-
 /*
- * Copyright (c) 2022
+ * Copyright (c) 2026
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this
  * software and associated documentation files (the "Software"), to deal in the Software
  * without restriction, including without limitation the rights to use, copy, modify, merge,
@@ -23,28 +22,31 @@
  */
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Api\V1;
+namespace Tests\Feature\Livewire;
 
-use App\DTO\Accounts\UserData;
-use App\Http\Controllers\Api\ApiController;
-use App\Http\Requests\CreateUserRequest;
-use App\Services\ServiceContracts\AccountServiceContract;
-use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
+use App\DTO\Images\ImageData;
+use App\Http\Livewire\PagePreviewScroller;
+use App\Models\AccountModels\User;
+use App\Models\ImageModels\Image;
+use Crypt;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Livewire\Livewire;
+use PHPUnit\Framework\Attributes\Test;
+use Tests\TestCase;
 
-#[CodeCoverageIgnore]
-class UserApiController extends ApiController
+class PagePreviewScrollerTest extends TestCase
 {
-    public function __construct(protected readonly AccountServiceContract $accountService)
-    {
-    }
+    use RefreshDatabase;
 
-    public function create(CreateUserRequest $createUserRequest)
+
+    #[Test]
+    public function canOpenBookmarkDialogViaEvent(): void
     {
-        $finalUserFields = collect();
-        $createUserRequest->getUsefulKeys()->each(
-            fn(string $key) => $finalUserFields->put($key, $createUserRequest->input($key))
-        );
-        $userData = UserData::from($finalUserFields);
-        $this->accountService->createUser($userData, $createUserRequest->input('password'));
+        $imageData = ImageData::fromModel(Image::factory()->create());
+        $encryptedPayload = Crypt::encryptString(json_encode($imageData));
+        $this->actingAs(User::factory()->create());
+        Livewire::test(PagePreviewScroller::class)
+            ->call('openEditBookmark', $encryptedPayload)
+            ->assertDispatched('edit-bookmark');
     }
 }

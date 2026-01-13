@@ -1,7 +1,6 @@
 <?php
-
 /*
- * Copyright (c) 2022
+ * Copyright (c) 2026
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this
  * software and associated documentation files (the "Software"), to deal in the Software
  * without restriction, including without limitation the rights to use, copy, modify, merge,
@@ -23,28 +22,30 @@
  */
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Api\V1;
+namespace Tests\Unit\Http\Controllers\Web\Private;
 
-use App\DTO\Accounts\UserData;
-use App\Http\Controllers\Api\ApiController;
-use App\Http\Requests\CreateUserRequest;
-use App\Services\ServiceContracts\AccountServiceContract;
-use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
+use App\Http\Controllers\Web\Private\FullViewController;
+use App\Models\AccountModels\User;
+use App\Models\DocumentModels\Document;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
+use Tests\TestCase;
 
-#[CodeCoverageIgnore]
-class UserApiController extends ApiController
+#[CoversClass(FullViewController::class)]
+class FullViewControllerTest extends TestCase
 {
-    public function __construct(protected readonly AccountServiceContract $accountService)
-    {
-    }
 
-    public function create(CreateUserRequest $createUserRequest)
+    use RefreshDatabase;
+
+    #[Test]
+    public function fullViewHasDocumentId(): void
     {
-        $finalUserFields = collect();
-        $createUserRequest->getUsefulKeys()->each(
-            fn(string $key) => $finalUserFields->put($key, $createUserRequest->input($key))
-        );
-        $userData = UserData::from($finalUserFields);
-        $this->accountService->createUser($userData, $createUserRequest->input('password'));
+        $document = Document::factory()->create();
+        $response = $this->actingAs(user: User::factory()->create())
+            ->get(route('private.full-view', ['documentId' => $document->uuid]));
+        $response->assertOk();
+        $response->assertViewIs('private.full-view');
+        $response->assertViewHas('documentId', $document->uuid);
     }
 }

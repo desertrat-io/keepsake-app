@@ -29,10 +29,15 @@ use App\Http\Livewire\MainTable;
 use App\Models\AccountModels\User;
 use App\Models\ImageModels\Image;
 use App\Models\ImageModels\ImageMeta;
+use App\Services\ServiceContracts\DocumentServiceContract;
+use App\Services\ServiceContracts\ImageServiceContract;
+use Illuminate\Contracts\Pagination\CursorPaginator;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 use Livewire;
+use Log;
+use Mockery;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Storage;
@@ -53,10 +58,8 @@ class MainTableTest extends TestCase
         parent::setUp();
         $this->user = User::factory()->create();
         $this->images = Image::factory()->count(3)->create(['uploaded_by' => $this->user->id]);
-        $this->imageMetaEntities = collect([]);
+        $this->imageMetaEntities = collect();
         $this->images->each(fn(Image $image) => $this->imageMetaEntities->push(ImageMeta::factory()->create(['image_id' => $image->id])));
-
-
     }
 
     #[Test]
@@ -64,10 +67,60 @@ class MainTableTest extends TestCase
     {
         Storage::fake('s3');
         $this->withoutVite();
-        $this->actingAs($this->user)->get(route('private.home'))->assertOk()->assertViewIs('private.index');
+        $this->actingAs($this->user)->get(route('private.home'))
+            ->assertOk()
+            ->assertViewIs('private.index');
         $this->imageMetaEntities
             ->each(fn(ImageMeta $imageMetaData) => Livewire::test(MainTable::class)->assertOk()->assertSee($imageMetaData->current_image_name));
 
+    }
 
+    #[Test]
+    public function doesImageListUpdate(): void
+    {
+
+        Log::shouldReceive('info')->with('updating image list')->once();
+
+        $imageService = Mockery::mock(ImageServiceContract::class);
+        $documentService = Mockery::mock(DocumentServiceContract::class);
+
+        $paginator = Mockery::mock(CursorPaginator::class);
+
+        $imageService->shouldReceive('getImages')
+            ->with(perPage: 10, pageName: MainTable::PAGE_NAME)
+            ->andReturn($paginator);
+
+        Livewire::actingAs($this->user)->test(MainTable::class, [
+            'imageService' => $imageService,
+            'documentService' => $documentService
+        ])
+            ->call('updateImageList')
+            ->assertSet('perPage', 10);
+    }
+
+    #[Test]
+    public function processingListUpdateLogs(): void
+    {
+        Log::shouldReceive('info')->with('updating processing list')->once();
+
+        Livewire::actingAs($this->user)->test(MainTable::class)
+            ->call('updateProcessingList', ['some' => 'data'])
+            ->assertOk();
+    }
+
+    #[Test]
+    public function pdfConversionLogs(): void
+    {
+        Log::shouldReceive('info')->with('pdf converted')->once();
+
+        Livewire::actingAs($this->user)->test(MainTable::class)
+            ->call('pdfConverted', collect([]))
+            ->assertOk();
+    }
+
+    protected function tearDown(): void
+    {
+        Mockery::close();
+        parent::tearDown();
     }
 }
