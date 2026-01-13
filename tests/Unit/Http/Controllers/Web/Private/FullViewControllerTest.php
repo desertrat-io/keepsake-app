@@ -41,6 +41,7 @@ class FullViewControllerTest extends TestCase
     #[Test]
     public function fullViewHasDocumentId(): void
     {
+        $this->withoutVite();
         $document = Document::factory()->create();
         $response = $this->actingAs(user: User::factory()->create())
             ->get(route('private.full-view', ['documentId' => $document->uuid]));
