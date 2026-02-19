@@ -37,7 +37,6 @@ class MainTable extends Component
     {
         $this->images = $this->imageService->getImages(perPage: $this->perPage, pageName: static::PAGE_NAME);
         Log::info('updating image list');
-        $this->setPage(page: 1, pageName: static::PAGE_NAME);
     }
 
     public function updateProcessingList($documentData): void

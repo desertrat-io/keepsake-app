@@ -35,6 +35,17 @@ class PagePreviewScroller extends Component
         $this->loadThumbnails();
     }
 
+    private function setSelectedThumbnail(string $selectedThumbnailEncrypted): void
+    {
+        $this->selectedThumbnail = ImageData::from(json_decode(Crypt::decryptString($selectedThumbnailEncrypted)));
+    }
+
+    public function changePageTo(int $pageNum, string $selectedThumbnailEncrypted): void
+    {
+        $this->setSelectedThumbnail($selectedThumbnailEncrypted);
+        $this->dispatch('set-pdf-page-number', $pageNum);
+    }
+
     /**
      * Let's use the thumbnails instance variable as a cache?
      */
@@ -53,8 +64,8 @@ class PagePreviewScroller extends Component
 
     public function openEditBookmark(string $selectedThumbnailEncrypted): void
     {
-        $selectedThumbnail = ImageData::from(json_decode(Crypt::decryptString($selectedThumbnailEncrypted)));
-        $this->dispatch('edit-bookmark', selectedThumbnail: $selectedThumbnail);
+        $this->setSelectedThumbnail($selectedThumbnailEncrypted);
+        $this->dispatch('edit-bookmark', selectedThumbnail: $this->selectedThumbnail);
     }
 
     public function render()

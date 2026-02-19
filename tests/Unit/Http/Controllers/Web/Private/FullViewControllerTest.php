@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2026
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this
@@ -27,6 +28,8 @@ namespace Tests\Unit\Http\Controllers\Web\Private;
 use App\Http\Controllers\Web\Private\FullViewController;
 use App\Models\AccountModels\User;
 use App\Models\DocumentModels\Document;
+use App\Models\ImageModels\Image;
+use App\Models\ImageModels\ImageMeta;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
@@ -35,14 +38,15 @@ use Tests\TestCase;
 #[CoversClass(FullViewController::class)]
 class FullViewControllerTest extends TestCase
 {
-
     use RefreshDatabase;
 
     #[Test]
     public function fullViewHasDocumentId(): void
     {
         $this->withoutVite();
-        $document = Document::factory()->create();
+
+        $imageMeta = ImageMeta::factory()->create(['image_id' => Image::factory()->create()->id]);
+        $document = Document::factory()->create(['image_id' => $imageMeta->image->id]);
         $response = $this->actingAs(user: User::factory()->create())
             ->get(route('private.full-view', ['documentId' => $document->uuid]));
         $response->assertOk();

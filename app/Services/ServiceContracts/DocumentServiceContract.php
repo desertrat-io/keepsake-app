@@ -18,4 +18,6 @@ interface DocumentServiceContract
     ): DocumentData;
 
     public function getDocumentThumbnails(string $documentUUID): DataCollection|Lazy;
+
+    public function getPathToPhysicalDocument(string $documentUUID): string;
 }

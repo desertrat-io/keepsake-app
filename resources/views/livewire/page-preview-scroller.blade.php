@@ -3,6 +3,7 @@
     @foreach($thumbnails as $thumbnail)
         <div $wire:key="{{  Keepsake::idToKey($thumbnail->uuid) }}" class="mb-7.5">
             <img class="hover:border w-full h-full"
+                 @click="$wire.changePageTo({{ $thumbnail->pageNumber }}, '{{ Crypt::encryptString(json_encode($thumbnail->toArray()))}}')"
                  src="{{ Storage::disk('s3')->url($thumbnail->storageId) }}"/>
             <p class="pl-1.25 text-left"
                @click="$wire.openEditBookmark('{{ Crypt::encryptString(json_encode($thumbnail->toArray()))}}')">{{ $thumbnail->pageNumber }}

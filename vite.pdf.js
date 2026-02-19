@@ -7,8 +7,8 @@ export default defineConfig({
         outDir: path.resolve(__dirname, "./public/build/assets"),
         minify: "esbuild",
         lib: {
-            entry: path.resolve(__dirname, "./resources/js/pdf.js"),
-            formats: ["es"],
+            entry: path.resolve(__dirname, "./resources/js/lib/keepsake-pdf.ts"),
+            formats: ["es2015"],
             rollupOptions: {
                 outDir: path.resolve(__dirname, "./public/build/assets"),
             }

@@ -30,5 +30,13 @@ class DocumentEloquentRepository implements DocumentRepositoryContract, Keepsake
         return DocumentData::fromModel(Document::whereUuid($documentUUID)->first()->load('pages'));
     }
 
+    public function getDocument(string|int $documentId): DocumentData
+    {
+        if (gettype($documentId) === 'string') {
+            return DocumentData::fromModel(Document::whereUuid($documentId)->first());
+        }
+        return DocumentData::fromModel(Document::find($documentId));
+    }
+
 
 }
