@@ -1,5 +1,5 @@
 <div class="m-auto flex justify-end relative">
-    @if(count($images) > 0)
+    @if($images->count() > 0)
         <div class="w-[40%] mr-10 mt-5">
             <div class="overflow-auto h-125">
                 <table class="w-full" x-init="
@@ -58,7 +58,7 @@
                                         </button>
                                     </div>
                                 </div>
-                                <div tabindex=0 class="text-xs"><a
+                                <div tabindex="0" class="text-xs"><a
                                         href="{{ route('private.full-view', $image->pageOf?->uuid ?? '#') }}">{{ __('keepsake.button.full_record') }}</a>
                                     <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-4 h-4"
                                          viewBox="0 0 576 512">
@@ -72,7 +72,9 @@
                     </tbody>
                 </table>
             </div>
-            {{ $images->links() }}
+            @if($images->hasPages())
+                {{ $images->links() }}
+            @endif
         </div>
 
     @endif

@@ -31,9 +31,9 @@ use App\Models\ImageModels\Image;
 use App\Models\ImageModels\ImageMeta;
 use App\Services\ServiceContracts\DocumentServiceContract;
 use App\Services\ServiceContracts\ImageServiceContract;
-use Illuminate\Contracts\Pagination\CursorPaginator;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Support\Collection;
 use Livewire;
 use Log;
@@ -59,7 +59,7 @@ class MainTableTest extends TestCase
         $this->user = User::factory()->create();
         $this->images = Image::factory()->count(3)->create(['uploaded_by' => $this->user->id]);
         $this->imageMetaEntities = collect();
-        $this->images->each(fn(Image $image) => $this->imageMetaEntities->push(ImageMeta::factory()->create(['image_id' => $image->id])));
+        $this->images->each(fn (Image $image) => $this->imageMetaEntities->push(ImageMeta::factory()->create(['image_id' => $image->id])));
     }
 
     #[Test]
@@ -71,7 +71,7 @@ class MainTableTest extends TestCase
             ->assertOk()
             ->assertViewIs('private.index');
         $this->imageMetaEntities
-            ->each(fn(ImageMeta $imageMetaData) => Livewire::test(MainTable::class)->assertOk()->assertSee($imageMetaData->current_image_name));
+            ->each(fn (ImageMeta $imageMetaData) => Livewire::test(MainTable::class)->assertOk()->assertSee($imageMetaData->current_image_name));
 
     }
 
@@ -79,21 +79,31 @@ class MainTableTest extends TestCase
     public function doesImageListUpdate(): void
     {
 
+        $this->withoutExceptionHandling();
         Log::shouldReceive('info')->with('updating image list')->once();
 
         $imageService = Mockery::mock(ImageServiceContract::class);
         $documentService = Mockery::mock(DocumentServiceContract::class);
 
-        $paginator = Mockery::mock(CursorPaginator::class);
-
+        $paginator = new class (
+            items: $this->images->values(),
+            perPage: 10,
+            cursor: null,
+            options: ['path' => '/'],
+        ) extends CursorPaginator {
+            public function hasPages(): bool
+            {
+                return false;
+            }
+        };
         $imageService->shouldReceive('getImages')
-            ->with(perPage: 10, pageName: MainTable::PAGE_NAME)
+            ->with(perPage: 10)
+            ->twice() // Once for render, once for updateImageList
             ->andReturn($paginator);
+        $this->app->instance(ImageServiceContract::class, $imageService);
+        $this->app->instance(DocumentServiceContract::class, $documentService);
 
-        Livewire::actingAs($this->user)->test(MainTable::class, [
-            'imageService' => $imageService,
-            'documentService' => $documentService
-        ])
+        Livewire::actingAs($this->user)->test(MainTable::class)
             ->call('updateImageList')
             ->assertSet('perPage', 10);
     }

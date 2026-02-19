@@ -87,5 +87,9 @@ readonly class DocumentService implements DocumentServiceContract, KeepsakeServi
         return $this->documentRepository->getDocumentThumbnails($documentUUID)->pages;
     }
 
-
+    public function getPathToPhysicalDocument(string $documentUUID): string
+    {
+        $imageData = $this->documentRepository->getDocument($documentUUID)->image;
+        return $imageData->storagePath . '/' . $imageData->meta->currentImageName . '.' . $imageData->meta->originalFileExt;
+    }
 }

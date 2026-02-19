@@ -22,7 +22,7 @@
  */
 declare(strict_types=1);
 
-namespace Tests\Feature\Livewire;
+namespace Tests\Feature\Http\Livewire;
 
 use App\DTO\Images\ImageData;
 use App\Http\Livewire\PagePreviewScroller;

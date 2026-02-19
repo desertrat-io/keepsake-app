@@ -31,6 +31,7 @@ use App\Exceptions\KeepsakeExceptions\KeepsakeException;
 use App\Models\ImageModels\Image;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
+use Storage;
 use Str;
 
 class Keepsake
@@ -84,7 +85,7 @@ class Keepsake
     /**
      * We're taking both to support eloquent models and data transfer objects.
      */
-    public function getPathToImage(ImageData|Image $image): string
+    public function getPathToImage(Image|ImageData $image): string
     {
         $imageData = $image;
         if ($image instanceof Image) {
@@ -92,5 +93,16 @@ class Keepsake
         }
 
         return $image->storage_path . '/' . $image->meta->current_image_name . '.' . $image->meta->original_file_ext;
+    }
+
+    public function getTemporarySignedUrl($actualUrl): string
+    {
+        if (app()->environment('testing')) {
+            return 'https://example.test/tmp-url';
+        } else {
+            $disk = Storage::disk($this->getCurrentDiskName());
+        }
+
+        return $disk->temporaryUrl($actualUrl, now()->addMinutes(5));
     }
 }

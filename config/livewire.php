@@ -155,4 +155,8 @@ return [
 
     'render_on_redirect' => false,
 
+    'make_command' => [
+        'type' => 'class',
+    ]
+
 ];

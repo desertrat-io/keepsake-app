@@ -25,12 +25,13 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Web\Private;
 
 use App\Http\Controllers\Controller;
+use App\Services\ServiceContracts\DocumentServiceContract;
 use Illuminate\Contracts\View\View;
 
 class FullViewController extends Controller
 {
-    public function index(string $documentId): View
+    public function index(string $documentId, DocumentServiceContract $documentService): View
     {
-        return view('private.full-view', ['documentId' => $documentId]);
+        return view('private.full-view', ['documentId' => $documentId, 'documentPath' => $documentService->getPathToPhysicalDocument($documentId)]);
     }
 }

@@ -42,23 +42,25 @@ class ImageData extends Data implements Wireable
     use WireableData;
 
     public function __construct(
-        public readonly ?int                   $id,
-        public readonly ?string                $uuid,
-        public readonly ?int                   $parentImageId,
-        public readonly ?int                   $pageNumber,
-        public readonly ?string                $storageId,
-        public readonly ?string                $storagePath,
-        public readonly null|UserData|Lazy     $uploadedBy,
-        public readonly null|ImageData|Lazy    $parent,
-        public readonly null|DocumentData|Lazy $pageOf,
-        public readonly null|BookmarkData|Lazy $bookmark,
-        public readonly ?bool                  $isLocked,
-        public readonly ?bool                  $isDirty,
-        public readonly ?Carbon                $createdAt,
-        public readonly ?Carbon                $updatedAt,
-        public readonly ?Carbon                $deletedAt,
-        public readonly ?bool                  $isDeleted
-    ) {
+        public readonly ?int                    $id,
+        public readonly ?string                 $uuid,
+        public readonly ?int                    $parentImageId,
+        public readonly ?int                    $pageNumber,
+        public readonly ?string                 $storageId,
+        public readonly ?string                 $storagePath,
+        public readonly null|UserData|Lazy      $uploadedBy,
+        public readonly null|ImageData|Lazy     $parent,
+        public readonly null|DocumentData|Lazy  $pageOf,
+        public readonly null|BookmarkData|Lazy  $bookmark,
+        public readonly null|ImageMetaData|Lazy $meta,
+        public readonly ?bool                   $isLocked,
+        public readonly ?bool                   $isDirty,
+        public readonly ?Carbon                 $createdAt,
+        public readonly ?Carbon                 $updatedAt,
+        public readonly ?Carbon                 $deletedAt,
+        public readonly ?bool                   $isDeleted
+    )
+    {
     }
 
     public static function fromModel(Image $image): ImageData
@@ -70,10 +72,11 @@ class ImageData extends Data implements Wireable
             pageNumber: $image->page_number,
             storageId: $image->storage_id,
             storagePath: $image->storage_path,
-            uploadedBy: Lazy::create(fn () => UserData::fromModel($image->uploadedBy)),
-            parent: Lazy::create(fn () => ImageData::fromModel($image->parent)),
-            pageOf: Lazy::create(fn () => DocumentData::fromModel($image->pageOf)),
-            bookmark: Lazy::create(fn () => BookmarkData::fromModel($image->bookmark)),
+            uploadedBy: Lazy::create(fn() => UserData::fromModel($image->uploadedBy)),
+            parent: Lazy::create(fn() => ImageData::fromModel($image->parent)),
+            pageOf: Lazy::create(fn() => DocumentData::fromModel($image->pageOf)),
+            bookmark: Lazy::create(fn() => BookmarkData::fromModel($image->bookmark)),
+            meta: Lazy::create(fn() => ImageMetaData::fromModel($image->meta)),
             isLocked: $image->is_locked,
             isDirty: $image->is_dirty,
             createdAt: $image->created_at,

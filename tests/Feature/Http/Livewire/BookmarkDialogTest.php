@@ -22,7 +22,7 @@
  */
 declare(strict_types=1);
 
-namespace Feature\Http\Livewire;
+namespace Tests\Feature\Http\Livewire;
 
 use App\Http\Livewire\BookmarkDialog;
 use App\Models\AccountModels\User;
@@ -68,9 +68,9 @@ class BookmarkDialogTest extends TestCase
         $imageService->shouldReceive('getBookmarkLabel')
             ->with($image->id)
             ->andReturn($mockLabel);
-
+        $this->app->instance(ImageServiceContract::class, $imageService);
         // We pass the mock service into the component
-        Livewire::actingAs($this->user)->test(BookmarkDialog::class, ['imageService' => $imageService])
+        Livewire::actingAs($this->user)->test(BookmarkDialog::class)
             ->assertSet('isBookmarkDialogOpen', false)
             ->call('editBookmarkDialogToggle', selectedThumbnail: ['id' => $image->id])
             ->assertSet('isBookmarkDialogOpen', true)

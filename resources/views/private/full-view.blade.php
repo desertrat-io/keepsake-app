@@ -2,12 +2,12 @@
 @section('content')
     <div class="container">
         <div class="inline-block">
-
-            <p>{{ $documentId }}</p>
+            <div class="container h-50"></div>
+            <canvas id="__keepsake__pdf__viewer__" class="ml-12.5"></canvas>
         </div>
         <div
             {{-- TODO: the image is set to 100% w/h but is constrainted by this container, use this to control total size --}}
-            class="col-end-1 absolute right-0 mr-50 w-50 bg-amber-400 h-[80vh] overflow-scroll overscroll-contain">
+            class="inline-block col-end-1 absolute right-0 mr-50 w-50 bg-amber-400 h-[80vh] overflow-scroll overscroll-contain">
             <livewire:page-preview-scroller :$documentId/>
         </div>
     </div>
@@ -15,5 +15,5 @@
 @stop
 
 @section('extra_scripts')
-    @vite(['resources/js/pdf.js'])
+    <livewire:pdf-viewer :$documentPath/>
 @stop

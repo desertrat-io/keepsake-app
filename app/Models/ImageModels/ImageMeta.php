@@ -34,6 +34,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
+use Spatie\LaravelData\WithData;
 
 /**
  * App\Models\ImageModels\ImageMeta
@@ -68,8 +69,8 @@ use Illuminate\Support\Carbon;
  * @method static Builder|ImageMeta withTrashed()
  * @method static Builder|ImageMeta withoutTrashed()
  * @property-read mixed $is_deleted
- * @property-read \App\Models\ImageModels\TFactory|null $use_factory
- * @method static \Database\Factories\ImageModels\ImageMetaFactory factory($count = null, $state = [])
+ * @property-read TFactory|null $use_factory
+ * @method static ImageMetaFactory factory($count = null, $state = [])
  * @mixin Eloquent
  */
 class ImageMeta extends Model
@@ -77,6 +78,7 @@ class ImageMeta extends Model
     use SoftDeletes;
     use BoolDeleteColumn;
     use HasFactory;
+    use WithData;
 
     protected $table = 'image_meta';
 
