@@ -42,7 +42,6 @@ use Tests\TestCase;
 #[CoversClass(KeepsakeImpl::class)]
 class KeepsakeTest extends TestCase
 {
-
     use RefreshDatabase;
 
     #[Test]
@@ -73,9 +72,8 @@ class KeepsakeTest extends TestCase
     {
         $generatedPath = Keepsake::getNewStoragePath();
         $this->assertStringStartsWith('media/images/' . config(
-                'keepsake.tenant_name',
-                env('DEFAULT_TENANT_NAME')
-            ) . '/', $generatedPath);
+            'keepsake.tenant_name'
+        ) . '/', $generatedPath);
     }
 
     #[Test]

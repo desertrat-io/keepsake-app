@@ -6,11 +6,13 @@ use App\DTO\Accounts\UserData;
 use App\DTO\Images\ImageData;
 use App\Models\DocumentModels\Document;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Support\Collection as SupportCollection;
 use Livewire\Wireable;
+use Spatie\LaravelData\Attributes\DataCollectionOf;
 use Spatie\LaravelData\Attributes\MapName;
 use Spatie\LaravelData\Concerns\WireableData;
 use Spatie\LaravelData\Data;
-use Spatie\LaravelData\DataCollection;
 use Spatie\LaravelData\Lazy;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
@@ -20,26 +22,27 @@ class DocumentData extends Data implements Wireable
     use WireableData;
 
     public function __construct(
-        public readonly ?int                     $id,
-        public readonly ?string                  $uuid,
-        public readonly ?string                  $title,
-        public readonly ?int                     $numPages,
-        public readonly ?string                  $storageId,
-        public readonly ?int                     $imageId,
-        public readonly null|UserData|Lazy       $uploadedBy,
-        public readonly ?Carbon                  $createdAt,
-        public readonly ?Carbon                  $updatedAt,
-        public readonly ?Carbon                  $deletedAt,
-        public readonly ?bool                    $isDeleted = false,
-        public readonly null|ImageData|Lazy      $image,
-        /** DataCollection<ImageData> */
-        public readonly null|Lazy|DataCollection $pages,
+        public readonly ?int                $id,
+        public readonly ?string             $uuid,
+        public readonly ?string             $title,
+        public readonly ?int                $numPages,
+        public readonly ?string             $storageId,
+        public readonly ?int                $imageId,
+        public readonly ?UserData           $uploadedBy,
+        public readonly ?Carbon             $createdAt,
+        public readonly ?Carbon             $updatedAt,
+        public readonly ?Carbon             $deletedAt,
+        public readonly ?bool               $isDeleted = false,
+        public readonly null|ImageData|Lazy $image,
+        #[DataCollectionOf(ImageData::class)]
+        public readonly ?array              $pages,
     )
     {
     }
 
     public static function fromModel(Document $document): self
     {
+        $document->load('image', 'pages', 'uploadedBy');
         return new self(
             id: $document->id,
             uuid: $document->uuid,
@@ -47,13 +50,18 @@ class DocumentData extends Data implements Wireable
             numPages: $document->num_pages,
             storageId: $document->storage_id,
             imageId: $document->image_id,
-            uploadedBy: Lazy::create(fn() => UserData::fromModel($document->uploadedBy)),
+            uploadedBy: UserData::from($document->uploadedBy),
             createdAt: $document->created_at,
             updatedAt: $document->updated_at,
             deletedAt: $document->deleted_at,
             isDeleted: $document->is_deleted,
-            image: Lazy::create(fn() => ImageData::fromModel($document->image)),
-            pages: Lazy::create(fn() => ImageData::collect($document->pages))
+            image: ImageData::fromModel($document->image),
+            pages: ImageData::collectFromModel($document->pages)->all()
         );
+    }
+
+    public static function collectFromModel(EloquentCollection $models): SupportCollection
+    {
+        return $models->map(fn(Document $model) => DocumentData::fromModel($model));
     }
 }

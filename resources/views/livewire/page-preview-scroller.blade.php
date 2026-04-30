@@ -1,12 +1,16 @@
 <div class="cursor-pointer">
 
     @foreach($thumbnails as $thumbnail)
-        <div $wire:key="{{  Keepsake::idToKey($thumbnail->uuid) }}" class="mb-7.5">
+        <div x-data="{bookmarkLabel: @js($thumbnail->resolvedBookmark()?->bookmarkLabel)}"
+             x-on:update-bookmark-label.window="if ($event.detail.imageId === '{{ $thumbnail->uuid }}') bookmarkLabel = $event.detail.bookmarkLabel"
+             $wire:key="{{  Keepsake::idToKey($thumbnail->uuid) }}" class="mb-7.5">
             <img class="hover:border w-full h-full"
+                 alt="{{ $thumbnail->resolvedMeta()?->originalImageName }}"
                  @click="$wire.changePageTo({{ $thumbnail->pageNumber }}, '{{ Crypt::encryptString(json_encode($thumbnail->toArray()))}}')"
                  src="{{ Storage::disk('s3')->url($thumbnail->storageId) }}"/>
             <p class="pl-1.25 text-left"
                @click="$wire.openEditBookmark('{{ Crypt::encryptString(json_encode($thumbnail->toArray()))}}')">{{ $thumbnail->pageNumber }}
+                <span x-text="bookmarkLabel"></span>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" tabindex="0"
                      class="inline-block w-5 h-5 absolute right-0 mr-3 mt-1">
                     <path

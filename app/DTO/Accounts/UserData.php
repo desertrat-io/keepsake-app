@@ -43,26 +43,30 @@ class UserData extends Data implements Wireable
     use WireableData;
 
     public function __construct(
-        public readonly ?int $id,
-        public readonly ?string $uuid,
-        public readonly ?string $name,
-        public readonly ?string $email,
-        public readonly ?Carbon $emailVerifiedAt,
-        public readonly ?string $rememberToken,
-        public readonly ?Carbon $createdAt,
-        public readonly ?Carbon $updatedAt,
-        public readonly ?Carbon $deletedAt,
-        public readonly ?bool $isDeleted,
+        public readonly ?int                  $id,
+        public readonly ?string               $uuid,
+        public readonly ?string               $name,
+        public readonly ?string               $email,
+        public readonly ?Carbon               $emailVerifiedAt,
+        public readonly ?string               $rememberToken,
+        public readonly ?Carbon               $createdAt,
+        public readonly ?Carbon               $updatedAt,
+        public readonly ?Carbon               $deletedAt,
+        public readonly ?bool                 $isDeleted,
         /** @var Collection<ImageData> */
-        public readonly null|Collection|Lazy $images,
+        public readonly null|Collection|Lazy  $images,
         /** @var Collection<DocumentData> */
-        public readonly null|Collection|Lazy $documents,
+        public readonly null|Collection|Lazy  $documents,
         public readonly null|Lazy|AccountData $account
-    ) {
+    )
+    {
     }
 
-    public static function fromModel(User $user): self
+    public static function fromModel(?User $user): self
     {
+        if ($user === null) {
+            return UserData::from([]);
+        }
         return new self(
             id: $user->id,
             uuid: $user->uuid,
@@ -74,9 +78,9 @@ class UserData extends Data implements Wireable
             updatedAt: $user->updated_at,
             deletedAt: $user->deleted_at,
             isDeleted: false,
-            images: Lazy::create(fn () => ImageData::collect($user->images)),
-            documents: Lazy::create(fn () => DocumentData::collect($user->documents)),
-            account: Lazy::create(fn () => AccountData::fromModel($user->account)),
+            images: Lazy::whenLoaded('images', $user, fn() => ImageData::collectFromModel($user->images)),
+            documents: Lazy::whenLoaded('documents', $user, fn() => DocumentData::collectFromModel($user->documents)),
+            account: Lazy::whenLoaded('account', $user, fn() => AccountData::fromModel($user->account)),
         );
     }
 }

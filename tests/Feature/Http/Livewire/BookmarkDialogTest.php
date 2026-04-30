@@ -58,29 +58,35 @@ class BookmarkDialogTest extends TestCase
     }
 
     #[Test]
-    public function togglesLabelDialogWithPreset(): void
+    public function openEditLoadsExistingBookmark(): void
     {
         $image = Image::factory()->create();
-        $mockLabel = 'My Awesome Bookmark';
-        Bookmark::factory()->create(['image_id' => $image->id, 'bookmark_label' => $mockLabel]);
+        $bookmarkLabel = 'My Awesome Bookmark';
+
+        Bookmark::factory()->create(['image_id' => $image->id, 'bookmark_label' => $bookmarkLabel]);
+
         $imageService = Mockery::mock(ImageServiceContract::class);
-        // the method is being called directly, why is this failing expected receipts?? o.O
         $imageService->shouldReceive('getBookmarkLabel')
-            ->with($image->id)
-            ->andReturn($mockLabel);
+            ->once()
+            ->with($image->uuid)
+            ->andReturn($bookmarkLabel);
+
         $this->app->instance(ImageServiceContract::class, $imageService);
-        // We pass the mock service into the component
-        Livewire::actingAs($this->user)->test(BookmarkDialog::class)
-            ->assertSet('isBookmarkDialogOpen', false)
-            ->call('editBookmarkDialogToggle', selectedThumbnail: ['id' => $image->id])
+
+        Livewire::actingAs($this->user)
+            ->test(BookmarkDialog::class)
+            ->call('openEditBookmarkDialog', ['uuid' => $image->uuid])
             ->assertSet('isBookmarkDialogOpen', true)
-            ->assertSet('bookmarkLabel', $mockLabel);
+            ->assertSet('imageId', $image->uuid)
+            ->assertSet('bookmarkLabel', $bookmarkLabel);
     }
 
     #[Test]
     public function saveClosesTheDialog(): void
     {
+        $image = Image::factory()->create();
         Livewire::actingAs($this->user)->test(BookmarkDialog::class)
+            ->set('imageId', $image->uuid)
             ->set('isBookmarkDialogOpen', true)
             ->call('saveLabel')
             ->assertSet('isBookmarkDialogOpen', false);

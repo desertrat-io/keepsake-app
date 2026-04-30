@@ -17,7 +17,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
-use Spatie\LaravelData\WithData;
 
 /**
  * @property int $id
@@ -61,7 +60,6 @@ class Document extends Model
     use SoftDeletes;
     use BoolDeleteColumn;
     use HasFactory;
-    use WithData;
 
     protected $fillable = [
         'uuid',
@@ -94,6 +92,8 @@ class Document extends Model
 
     protected function casts()
     {
-        return ['uuid' => 'string'];
+        return [
+            'uuid' => 'string'
+        ];
     }
 }

@@ -33,8 +33,14 @@ class BookmarkEloquentRepository implements KeepsakeEloquentRepository, Bookmark
 {
     public function upsertBookmark(BookmarkData $bookmarkData): BookmarkData
     {
-        
-        return BookmarkData::from([]);
+        Bookmark::upsert(values: [
+            'uuid' => $bookmarkData->uuid,
+            'bookmark_label' => $bookmarkData->bookmarkLabel,
+            'created_by' => $bookmarkData->createdBy->id,
+            'image_id' => $bookmarkData->image->id
+        ], uniqueBy: ['image_id'], update: ['bookmark_label']);
+        // we want to make sure the updated_at timestamp is refreshed
+        return BookmarkData::fromModel(Bookmark::whereUuid($bookmarkData->uuid)->with('image')->first());
     }
 
     public function getBookmarksForImage(int $imageId): BookmarkData

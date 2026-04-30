@@ -76,9 +76,6 @@ class User extends Authenticatable
     use Notifiable;
     use SoftDeletes;
     use GenerateUUID;
-
-    // saturates the UserData DTO
-
     use BoolDeleteColumn;
 
 
@@ -130,7 +127,7 @@ class User extends Authenticatable
     {
         return [
             'uuid' => 'string',
-            'email_verified_at' => 'datetime',
+            'email_verified_at' => 'datetime'
         ];
     }
 }

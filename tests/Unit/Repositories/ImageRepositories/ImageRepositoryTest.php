@@ -32,7 +32,7 @@ class ImageRepositoryTest extends TestCase
     #[Test]
     public function ifEloquentBoundToCorrectConcrete(): void
     {
-        if (env('MODEL_MODE') === 'eloquent') {
+        if (config('keepsake.model_mode') === 'eloquent') {
             $repo = new ImageEloquentRepository();
             $this->assertEquals(Image::class, $repo->concreteEntityClass());
         } else {
@@ -93,7 +93,7 @@ class ImageRepositoryTest extends TestCase
         $imagePaginator = $this->imageRepository->getImages();
         $this->assertFalse($imagePaginator->isEmpty());
         $this->assertFalse($imagePaginator->hasPages());
-        $this->assertCount(1, $imagePaginator->items());
+        $this->assertCount(2, $imagePaginator->items());
         $retrievedImageModel = $imagePaginator->items()[0];
         $this->assertInstanceOf(Image::class, $retrievedImageModel);
     }

@@ -50,7 +50,8 @@ class BookmarkData extends Data implements Wireable
         public readonly ?Carbon             $updatedAt,
         public readonly ?Carbon             $deletedAt,
         public readonly ?bool               $isDeleted
-    ) {
+    )
+    {
     }
 
     public static function fromModel(?Bookmark $bookmark): self
@@ -59,8 +60,8 @@ class BookmarkData extends Data implements Wireable
             id: $bookmark?->id,
             uuid: $bookmark?->uuid,
             bookmarkLabel: $bookmark?->bookmark_label,
-            image: Lazy::create(fn () => ImageData::fromModel($bookmark?->image)),
-            createdBy: Lazy::create(fn () => UserData::fromModel($bookmark?->createdBy)),
+            image: Lazy::whenLoaded('image', $bookmark ?? new Bookmark(), fn() => ImageData::fromModel($bookmark->image)),
+            createdBy: Lazy::whenLoaded('createdBy', $bookmark ?? new Bookmark(), fn() => UserData::fromModel($bookmark->createdBy)),
             createdAt: $bookmark?->created_at,
             updatedAt: $bookmark?->updated_at,
             deletedAt: $bookmark?->deleted_at,

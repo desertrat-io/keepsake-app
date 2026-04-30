@@ -25,7 +25,6 @@ declare(strict_types=1);
 
 namespace App\Models\ImageModels;
 
-use App\DTO\Images\ImageData;
 use App\Models\AccountModels\User;
 use App\Models\BoolDeleteColumn;
 use App\Models\DocumentModels\Document;
@@ -40,7 +39,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
-use Spatie\LaravelData\WithData;
 
 /**
  * App\Models\ImageModels\ImageFacade
@@ -93,10 +91,6 @@ class Image extends Model
     use BoolDeleteColumn;
     use GenerateUUID;
     use HasFactory;
-    use WithData;
-
-
-    protected string $dataClass = ImageData::class;
 
     protected $fillable = [
         'uuid',

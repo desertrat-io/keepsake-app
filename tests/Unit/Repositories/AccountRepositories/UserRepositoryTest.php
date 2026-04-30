@@ -29,7 +29,7 @@ class UserRepositoryTest extends TestCase
     #[Test]
     public function ifEloquentBoundToCorrectConcrete(): void
     {
-        if (env('MODEL_MODE') === 'eloquent') {
+        if (config('keepsake.model_mode') === 'eloquent') {
             $repo = new UserEloquentRepository();
             $this->assertEquals(User::class, $repo->concreteEntityClass());
         } else {

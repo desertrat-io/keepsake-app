@@ -2,7 +2,6 @@
 
 namespace App\Http\Livewire;
 
-use App\DTO\Images\ImageData;
 use App\Services\ServiceContracts\ImageServiceContract;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -16,21 +15,30 @@ class BookmarkDialog extends Component
 
     private ImageServiceContract $imageService;
 
+    public ?string $imageId = null;
+
     public function boot(ImageServiceContract $imageService): void
     {
         $this->imageService = $imageService;
     }
 
     #[On('edit-bookmark')]
-    public function editBookmarkDialogToggle(array $selectedThumbnail): void
+    public function openEditBookmarkDialog(array $selectedThumbnail): void
     {
-        $this->isBookmarkDialogOpen = !$this->isBookmarkDialogOpen;
-        $this->bookmarkLabel = $this->imageService->getBookmarkLabel(ImageData::fromLivewire($selectedThumbnail)->id);
+        $this->isBookmarkDialogOpen = true;
+        $this->imageId = $selectedThumbnail['uuid'] ?? null;
+        $this->bookmarkLabel = $this->imageService->getBookmarkLabel($this->imageId);
+    }
+
+    public function closeBookmarkDialog(): void
+    {
+        $this->isBookmarkDialogOpen = false;
     }
 
     public function saveLabel(): void
     {
         $this->isBookmarkDialogOpen = false;
+        $this->imageService->upsertBookmarkForImage($this->bookmarkLabel, $this->imageId)->image->uuid;
     }
 
     public function render()

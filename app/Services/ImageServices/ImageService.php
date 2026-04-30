@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace App\Services\ImageServices;
 
 use App\DTO\Accounts\UserData;
+use App\DTO\Images\BookmarkData;
 use App\DTO\Images\ImageData;
 use App\DTO\Images\ImageMetaData;
 use App\Events\Images\ImageUploaded;
@@ -41,6 +42,7 @@ use Illuminate\Contracts\Pagination\CursorPaginator;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\Cursor;
+use Intervention\Image\Format;
 use Intervention\Image\Laravel\Facades\Image;
 use Keepsake;
 use Override;
@@ -117,11 +119,11 @@ readonly class ImageService implements ImageServiceContract, KeepsakeService
                 name: $imageName . '.' . $uploadedFile->getClientOriginalExtension()
             );
         }
-        $thumbNail = Image::read($uploadedFile);
+        $thumbNail = Image::decode($uploadedFile);
         $thumbNail->scaleDown(width: config('keepsake.thumbnail_scale_size'), height: config('keepsake.thumbnail_scale_size'));
         return Storage::disk(Keepsake::getCurrentDiskName())->putFileAs(
             path: $storagePath,
-            file: $thumbNail->toJpeg()->toDataUri(),
+            file: $thumbNail->encodeUsingFormat(Format::JPEG)->toDataUri()->toString(),
             name: "$imageName.thumb.{$uploadedFile->getClientOriginalExtension()}"
         );
     }
@@ -198,19 +200,25 @@ readonly class ImageService implements ImageServiceContract, KeepsakeService
         $this->imageRepository->markProcessed(storageId: $storageId);
     }
 
-    public function getBookmarkLabel(int $imageId): string
+    public function getBookmarkLabel(string $imageId): string
     {
-        $imageData = $this->imageRepository->getImageByID($imageId);
-        if ($imageData->bookmark->bookmarkLabel === null) {
+        $imageData = $this->imageRepository->getImageByUUID($imageId);
+        if ($imageData->resolvedBookmark() === null) {
             return '';
         }
         return $imageData->bookmark->bookmarkLabel;
     }
 
-    public function upsertBookmarkForImage(string $bookmarkLabel, string $imageId): void
+    public function upsertBookmarkForImage(string $bookmarkLabel, string $imageId): BookmarkData
     {
         // TODO: convert imageUUID to regular ID before inserting
-        $this->bookmarkRepository->upsertBookmark($bookmarkLabel, $imageId);
+        $bookmarkData = BookmarkData::from([
+            'uuid' => $imageId,
+            'bookmarkLabel' => $bookmarkLabel,
+            'image' => $this->imageRepository->getImageByUUID($imageId),
+            'createdBy' => $this->userRepository->getUserById(Auth::id(), asData: true),
+        ]);
+        return $this->bookmarkRepository->upsertBookmark($bookmarkData);
     }
 
 

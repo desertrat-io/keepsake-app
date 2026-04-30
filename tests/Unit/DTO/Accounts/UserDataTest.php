@@ -25,7 +25,7 @@ class UserDataTest extends TestCase
         $account = Account::factory()->create(['user_id' => $user->id]);
         Document::factory()->count(3)->create(['uploaded_by' => $user->id]);
         Image::factory()->count(5)->create(['uploaded_by' => $user->id]);
-        $userData = UserData::fromModel($user);
+        $userData = UserData::fromModel($user->load('documents', 'images'));
         $this->assertEquals($user->id, $userData->id);
         $this->assertEquals($account->id, $userData->account->id);
         $imageDataCollection = $userData->images; // it's lazy loaded so force a resolution

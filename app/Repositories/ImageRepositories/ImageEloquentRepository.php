@@ -76,7 +76,8 @@ class ImageEloquentRepository implements ImageRepositoryContract, KeepsakeEloque
     /**
      * @param int $perPage
      * @param int $limit
-     * @param $pageName
+     * @param string $pageName
+     * @param bool $useCursor
      * @param string|null $cursor
      * @return Paginator|CursorPaginator
      */

@@ -16,8 +16,6 @@ use Illuminate\Http\UploadedFile;
 use Keepsake;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Override;
-use Spatie\LaravelData\DataCollection;
-use Spatie\LaravelData\Lazy;
 
 readonly class DocumentService implements DocumentServiceContract, KeepsakeService
 {
@@ -79,10 +77,10 @@ readonly class DocumentService implements DocumentServiceContract, KeepsakeServi
 
     /**
      * @param string $documentUUID
-     * @return DataCollection<ImageData>|Lazy
+     * @return array<ImageData>
      */
     #[Override]
-    public function getDocumentThumbnails(string $documentUUID): DataCollection|Lazy
+    public function getDocumentThumbnails(string $documentUUID): array
     {
         return $this->documentRepository->getDocumentThumbnails($documentUUID)->pages;
     }
