@@ -8,11 +8,13 @@
                        x-model="$wire.bookmarkLabel">
                 <div class=" absolute bottom-0 right-0 mr-5 mb-5">
 
-                    <button @click="$wire.isBookmarkDialogOpen = false"
+                    <button @click="$wire.closeBookmarkDialog()"
                             class="keepsake__cancel-gray-btn">
                         {{ __('keepsake.button.close') }}
                     </button>
-                    <button @click="$wire.saveLabel()" class="keepsake__action-green-btn">
+                    <button
+                        @click.once="$wire.saveLabel(); $dispatch('update-bookmark-label', {bookmarkLabel: $wire.bookmarkLabel, imageId: $wire.imageId})"
+                        class="keepsake__action-green-btn">
                         {{ __('keepsake.button.save') }}
                     </button>
                 </div>

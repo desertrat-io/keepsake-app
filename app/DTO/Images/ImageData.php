@@ -29,12 +29,15 @@ use App\DTO\Accounts\UserData;
 use App\DTO\Documents\DocumentData;
 use App\Models\ImageModels\Image;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Support\Collection as SupportCollection;
 use Livewire\Wireable;
 use Spatie\LaravelData\Attributes\MapName;
 use Spatie\LaravelData\Concerns\WireableData;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Lazy;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
+use Spatie\LaravelData\Support\Lazy\RelationalLazy;
 
 #[MapName(SnakeCaseMapper::class)]
 class ImageData extends Data implements Wireable
@@ -48,7 +51,7 @@ class ImageData extends Data implements Wireable
         public readonly ?int                    $pageNumber,
         public readonly ?string                 $storageId,
         public readonly ?string                 $storagePath,
-        public readonly null|UserData|Lazy      $uploadedBy,
+        public readonly ?UserData               $uploadedBy,
         public readonly null|ImageData|Lazy     $parent,
         public readonly null|DocumentData|Lazy  $pageOf,
         public readonly null|BookmarkData|Lazy  $bookmark,
@@ -63,8 +66,12 @@ class ImageData extends Data implements Wireable
     {
     }
 
-    public static function fromModel(Image $image): ImageData
+    public static function fromModel(?Image $image): ImageData
     {
+        if ($image === null) {
+            return ImageData::from([]);
+        }
+        $image->load('uploadedBy');
         return new self(
             id: $image->id,
             uuid: $image->uuid,
@@ -72,11 +79,11 @@ class ImageData extends Data implements Wireable
             pageNumber: $image->page_number,
             storageId: $image->storage_id,
             storagePath: $image->storage_path,
-            uploadedBy: Lazy::create(fn() => UserData::fromModel($image->uploadedBy)),
-            parent: Lazy::create(fn() => ImageData::fromModel($image->parent)),
-            pageOf: Lazy::create(fn() => DocumentData::fromModel($image->pageOf)),
-            bookmark: Lazy::create(fn() => BookmarkData::fromModel($image->bookmark)),
-            meta: Lazy::create(fn() => ImageMetaData::fromModel($image->meta)),
+            uploadedBy: UserData::from($image->uploadedBy),
+            parent: Lazy::whenLoaded('parent', $image, fn() => ImageData::fromModel($image->parent)),
+            pageOf: Lazy::whenLoaded('pageOf', $image, fn() => DocumentData::fromModel($image->pageOf)),
+            bookmark: Lazy::whenLoaded('bookmark', $image, fn() => BookmarkData::fromModel($image->bookmark)),
+            meta: Lazy::whenLoaded('meta', $image, fn() => ImageMetaData::fromModel($image->meta)),
             isLocked: $image->is_locked,
             isDirty: $image->is_dirty,
             createdAt: $image->created_at,
@@ -84,5 +91,33 @@ class ImageData extends Data implements Wireable
             deletedAt: $image->deleted_at,
             isDeleted: $image->is_deleted
         );
+    }
+
+    public static function collectFromModel(EloquentCollection $models): SupportCollection
+    {
+        return $models->map(fn(Image $model) => ImageData::fromModel($model));
+    }
+
+    public function resolvedBookmark(): ?BookmarkData
+    {
+        if ($this->bookmark instanceof RelationalLazy) {
+            return $this->bookmark->shouldBeIncluded() ? $this->bookmark->resolve() : null;
+        }
+        if ($this->bookmark instanceof Lazy) {
+            return $this->bookmark->resolve();
+        }
+
+        return $this->bookmark;
+    }
+
+    public function resolvedMeta(): ?ImageMetaData
+    {
+        if ($this->meta instanceof RelationalLazy) {
+            return $this->meta->shouldBeIncluded() ? $this->meta->resolve() : null;
+        }
+        if ($this->meta instanceof Lazy) {
+            return $this->meta->resolve();
+        }
+        return $this->meta;
     }
 }

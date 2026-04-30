@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use App\DTO\Images\ImageData;
 use App\Services\ServiceContracts\DocumentServiceContract;
 use App\Services\ServiceContracts\ImageServiceContract;
+use Arr;
 use Crypt;
 use Livewire\Component;
 use Spatie\LaravelData\DataCollection;
@@ -15,10 +16,12 @@ class PagePreviewScroller extends Component
 
     public $documentId;
 
-    /** @var DataCollection<ImageData> */
+    /** @var array<ImageData> */
     public $thumbnails;
 
     public $selectedThumbnail;
+
+    public $bookmarkLabel;
 
     private ImageServiceContract $imageService;
 
@@ -45,20 +48,24 @@ class PagePreviewScroller extends Component
         $this->setSelectedThumbnail($selectedThumbnailEncrypted);
         $this->dispatch('set-pdf-page-number', $pageNum);
     }
+    
 
     /**
      * Let's use the thumbnails instance variable as a cache?
+     * TODO: stop being a moron and use the cache that laravel comes with
      */
     public function loadThumbnails(): DataCollection|array
     {
         if (!$this->documentId) {
             // i don't like doing things this way but I'm going to chance the AI here
             // sets the value of thumbnails and returns it at the same time
-            return $this->thumbnails = [];
+            return $this->thumbnails = Arr::keyBy(ImageData::collect([]), 'uuid');
         }
-        $this->thumbnails = ImageData::collect(
-            $this->documentService->getDocumentThumbnails($this->documentId)->toArray(),
+        $raw = ImageData::collect(
+            $this->documentService->getDocumentThumbnails($this->documentId),
         );
+        $this->thumbnails = Arr::keyBy($raw, 'uuid');
+
         return $this->thumbnails;
     }
 

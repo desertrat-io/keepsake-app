@@ -22,9 +22,10 @@ class DocumentDataTest extends TestCase
         $user = User::factory()->create();
         $document = Document::factory()->create(['uploaded_by' => $user->id]);
         $documentData = DocumentData::fromModel($document);
+
         $this->assertEquals($document->id, $documentData->id);
         $this->assertEquals($document->title, $documentData->title);
-        $userData = $documentData->uploadedBy;
-        $this->assertEquals($userData->id, $user->id);
+
+        $this->assertEquals($documentData->uploadedBy->id, $user->id);
     }
 }

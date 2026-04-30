@@ -24,6 +24,7 @@
 namespace App\Services\ServiceContracts;
 
 use App\DTO\Accounts\UserData;
+use App\DTO\Images\BookmarkData;
 use App\DTO\Images\ImageData;
 use App\DTO\Images\ImageMetaData;
 use Illuminate\Contracts\Pagination\CursorPaginator;
@@ -56,8 +57,8 @@ interface ImageServiceContract
 
     public function imageProcessed(string $storageId): void;
 
-    public function getBookmarkLabel(int $imageId): string;
+    public function getBookmarkLabel(string $imageId): string;
 
-    public function upsertBookmarkForImage(string $bookmarkLabel, string $imageId): void;
+    public function upsertBookmarkForImage(string $bookmarkLabel, string $imageId): BookmarkData;
 
 }

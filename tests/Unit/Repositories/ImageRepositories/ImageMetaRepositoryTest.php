@@ -55,7 +55,7 @@ class ImageMetaRepositoryTest extends TestCase
     #[Test]
     public function isModelBound(): void
     {
-        if (env('MODEL_MODE') === 'eloquent') {
+        if (config('keepsake.model_mode') === 'eloquent') {
             $repo = new ImageMetaEloquentRepository();
             $this->assertEquals(ImageMeta::class, $repo->concreteEntityClass());
         } else {

@@ -5,8 +5,7 @@ namespace App\Services\ServiceContracts;
 use App\DTO\Documents\DocumentData;
 use App\DTO\Images\ImageData;
 use Illuminate\Http\UploadedFile;
-use Spatie\LaravelData\DataCollection;
-use Spatie\LaravelData\Lazy;
+use Spatie\LaravelData\Data;
 
 interface DocumentServiceContract
 {
@@ -17,7 +16,11 @@ interface DocumentServiceContract
         ?ImageData   $imageData = null,
     ): DocumentData;
 
-    public function getDocumentThumbnails(string $documentUUID): DataCollection|Lazy;
+    /**
+     * @param string $documentUUID
+     * @return array<Data>
+     */
+    public function getDocumentThumbnails(string $documentUUID): array;
 
     public function getPathToPhysicalDocument(string $documentUUID): string;
 }

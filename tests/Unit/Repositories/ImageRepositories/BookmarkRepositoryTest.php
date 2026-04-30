@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Repositories\ImageRepositories;
 
 use App\DTO\Images\BookmarkData;
+use App\Models\AccountModels\User;
 use App\Models\ImageModels\Bookmark;
 use App\Repositories\ImageRepositories\BookmarkEloquentRepository;
 use App\Repositories\RepositoryContracts\BookmarkRepositoryContract;
@@ -48,13 +49,25 @@ class BookmarkRepositoryTest extends TestCase
         $this->bookmarkRepository = $this->app->make(BookmarkRepositoryContract::class);
     }
 
+    #[Test]
+    public function isModelBound(): void
+    {
+        if (config('keepsake.model_mode') === 'eloquent') {
+            $repo = new BookmarkEloquentRepository();
+            $this->assertEquals(Bookmark::class, $repo->concreteEntityClass());
+        } else {
+            $this->markTestSkipped('Model mode is not eloquent, no need for this test');
+        }
+    }
+
     // TODO: update when actual data is returned
     #[Test]
     public function upsertBookmarkReturnsEmpty(): void
     {
-        $shouldBeAnEmptyBookmarkData = $this->bookmarkRepository->upsertBookmark(BookmarkData::from([]));
-        $this->assertInstanceOf(BookmarkData::class, $shouldBeAnEmptyBookmarkData);
-        $this->assertEquals(null, $shouldBeAnEmptyBookmarkData->id);
+        $bookmark = Bookmark::factory()->create(['created_by' => User::factory()->create()->id]);
+        $bookmarkData = $this->bookmarkRepository->upsertBookmark(BookmarkData::fromModel($bookmark));
+        $this->assertInstanceOf(BookmarkData::class, $bookmarkData);
+        $this->assertEquals($bookmarkData->id, $bookmark->id);
 
     }
 

@@ -80,6 +80,7 @@ class MainTableTest extends TestCase
     {
 
         $this->withoutExceptionHandling();
+        $this->withoutVite();
         Log::shouldReceive('info')->with('updating image list')->once();
 
         $imageService = Mockery::mock(ImageServiceContract::class);
@@ -111,6 +112,7 @@ class MainTableTest extends TestCase
     #[Test]
     public function processingListUpdateLogs(): void
     {
+        $this->withoutVite();
         Log::shouldReceive('info')->with('updating processing list')->once();
 
         Livewire::actingAs($this->user)->test(MainTable::class)
@@ -121,6 +123,7 @@ class MainTableTest extends TestCase
     #[Test]
     public function pdfConversionLogs(): void
     {
+        $this->withoutVite();
         Log::shouldReceive('info')->with('pdf converted')->once();
 
         Livewire::actingAs($this->user)->test(MainTable::class)

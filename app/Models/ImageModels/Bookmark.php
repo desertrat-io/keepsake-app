@@ -24,7 +24,6 @@ declare(strict_types=1);
 
 namespace App\Models\ImageModels;
 
-use App\DTO\Images\BookmarkData;
 use App\Models\AccountModels\User;
 use App\Models\BoolDeleteColumn;
 use App\Models\GenerateUUID;
@@ -37,7 +36,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
-use Spatie\LaravelData\WithData;
 
 /**
  * @property int $id
@@ -60,9 +58,9 @@ use Spatie\LaravelData\WithData;
  * @method static Builder<static>|Bookmark whereUpdatedAt($value)
  * @method static Builder<static>|Bookmark whereUuid($value)
  * @property-read User $createdBy
- * @property-read \App\Models\ImageModels\Image $image
+ * @property-read Image $image
  * @property-read mixed $is_deleted
- * @method static \Database\Factories\ImageModels\BookmarkFactory factory($count = null, $state = [])
+ * @method static BookmarkFactory factory($count = null, $state = [])
  * @method static Builder<static>|Bookmark onlyTrashed()
  * @method static Builder<static>|Bookmark withTrashed(bool $withTrashed = true)
  * @method static Builder<static>|Bookmark withoutTrashed()
@@ -75,9 +73,8 @@ class Bookmark extends Model
     use BoolDeleteColumn;
     use GenerateUUID;
     use HasFactory;
-    use WithData;
 
-    protected string $dataClass = BookmarkData::class;
+
     protected $fillable = [
         'uuid',
         'bookmark_label',

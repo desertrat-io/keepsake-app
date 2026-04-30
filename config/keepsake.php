@@ -30,7 +30,7 @@ return [
     'pdf_converter_url' => env('KEEPSAKE_PDF_CONVERTER', '127.0.0.1:50051'),
     'pdf_converter_credentials' => ChannelCredentials::createInsecure(),
     'cloud_provider' => env('CLOUD_PROVIDER', 'AWS'),
-    //'tenant_name' => env('TENANT_NAME')
+    'tenant_name' => env('DEFAULT_TENANT_NAME', 'dev'),
     // in kb
     'min_image_size' => 128,
     'thumbnail_scale_size' => 500, // in pixels

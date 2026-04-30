@@ -58,7 +58,7 @@ class ImageServiceTest extends TestCase
     {
         $images = $this->imageService->getImages();
         $this->assertTrue($images->isNotEmpty());
-        $this->assertCount(1, $images);
+        $this->assertCount(2, $images);
         $this->assertInstanceOf(Image::class, $images[0]);
     }
 

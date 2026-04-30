@@ -31,7 +31,7 @@ class DocumentRepositoryTest extends TestCase
     #[Test]
     public function ifEloquentBoundToCorrectConcrete(): void
     {
-        if (env('MODEL_MODE') === 'eloquent') {
+        if (config('keepsake.model_mode') === 'eloquent') {
             $repo = new DocumentEloquentRepository();
             $this->assertEquals(Document::class, $repo->concreteEntityClass());
         } else {
