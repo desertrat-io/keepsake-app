@@ -7,6 +7,7 @@ use App\DTO\Documents\DocumentData;
 use App\DTO\Images\ImageData;
 use App\Models\AccountModels\User;
 use App\Models\DocumentModels\Document;
+use App\Models\ImageModels\Bookmark;
 use App\Models\ImageModels\Image;
 use App\Repositories\DocumentRepositories\DocumentEloquentRepository;
 use App\Repositories\RepositoryContracts\DocumentRepositoryContract;
@@ -56,6 +57,22 @@ class DocumentRepositoryTest extends TestCase
         $this->assertEquals($documentData->title, $newDocumentData->title);
         $this->assertEquals($documentData->uploadedBy->id, $newDocumentData->uploadedBy->id);
         $this->assertEquals($documentData->storageId, $newDocumentData->storageId);
+    }
+
+    #[Test]
+    public function canGetDocumentThumbnailsWithLoadedPageRelations(): void
+    {
+        $rootImage = Image::factory()->create();
+        $document = Document::factory()->create(['image_id' => $rootImage->id]);
+        $page = Image::factory()->create(['parent_image_id' => $rootImage->id]);
+        $bookmark = Bookmark::factory()->create(['image_id' => $page->id]);
+
+        $documentData = $this->documentRepository->getDocumentThumbnails($document->uuid);
+
+        $this->assertCount(1, $documentData->pages);
+        $this->assertEquals($page->id, $documentData->pages[0]->id);
+        $this->assertNotNull($documentData->pages[0]->uploadedBy);
+        $this->assertEquals($bookmark->id, $documentData->pages[0]->resolvedBookmark()->id);
     }
 
 

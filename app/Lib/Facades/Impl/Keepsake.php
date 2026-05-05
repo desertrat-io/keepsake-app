@@ -92,7 +92,7 @@ class Keepsake
             $imageData = ImageData::fromModel($image);
         }
 
-        return $image->storage_path . '/' . $image->meta->current_image_name . '.' . $image->meta->original_file_ext;
+        return $imageData->storagePath . '/' . $imageData->meta->currentImageName . '.' . $imageData->meta->originalFileExt;
     }
 
     public function getTemporarySignedUrl($actualUrl): string
