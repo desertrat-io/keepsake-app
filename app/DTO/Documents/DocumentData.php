@@ -42,7 +42,7 @@ class DocumentData extends Data implements Wireable
 
     public static function fromModel(Document $document): self
     {
-        $document->load('image', 'pages', 'uploadedBy');
+        $document->loadMissing('image', 'pages', 'pages.bookmark', 'uploadedBy');
         return new self(
             id: $document->id,
             uuid: $document->uuid,

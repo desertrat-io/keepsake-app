@@ -27,7 +27,7 @@ class DocumentEloquentRepository implements DocumentRepositoryContract, Keepsake
 
     public function getDocumentThumbnails(string $documentUUID): DocumentData
     {
-        return DocumentData::from(Document::whereUuid($documentUUID)->with(['uploadedBy', 'pages', 'pages.bookmark', 'pages.uploadedBy'])->first());
+        return DocumentData::fromModel(Document::whereUuid($documentUUID)->with(['uploadedBy', 'pages', 'pages.bookmark', 'pages.uploadedBy'])->first());
     }
 
     public function getDocument(string|int $documentId): DocumentData
